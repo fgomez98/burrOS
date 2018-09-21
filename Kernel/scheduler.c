@@ -213,7 +213,7 @@ void init_(void * startingPoint) {
     blocked = newQueue(sizeof(tProcess), cmpProcess);
     running = createProcess("theGodFather", startingPoint, 0, 0, NULL);
     running->state = RUNNING;
-    printProcess(running);
+    //printProcess(running);
     contextSwitch(running->stackPointer);
 }
 
