@@ -77,6 +77,11 @@ int getRunningPid() {
     return (running == NULL ) ? -1 : running->pid;
 }
 
+tProcess* getRunningProcess(){
+  return running;
+}
+
+
 void addProcess(tProcess * p) {
     push(ready, p);
 }
@@ -106,13 +111,13 @@ void unblockProcess(int pid) {
 changeProcessState(int pid, pState state) {
     if (running->pid == pid) {
         running->state = state;
-        
+
         putChar('\n', yellow);
         putStr("RunningDead Pid:", yellow);
         uintToBase(getRunningPid(), buff, 10);
         putStr(buff, yellow);
         putChar('\n', yellow);
-        
+
         return;
     }
     //TODO: esta parte del codigo jamas fue testada, nose si se usara en algun caso mucho sentido no tiene
@@ -191,15 +196,15 @@ int cmpProcess(tProcess * p1, tProcess * p2) {
 void init_Process() {
     tProcess * proc = createProcess("maite capa", probandoEscribirEnKernel, 0, 0, NULL);
     printProcess(proc);
-    
+
     tProcess * anotherP = createProcess("fer0", probandoEscribirEnKernel2, 0, 0, NULL);
     printProcess(anotherP);
-    
+
     tProcess * anotherP1 = createProcess("fer1", probandoEscribirEnKernel3, 0, 0, NULL);
     printProcess(anotherP1);
-    
+
     dumpMemory();
-    
+
     push(ready, proc);
     push(ready, anotherP);
     push(ready, anotherP1);

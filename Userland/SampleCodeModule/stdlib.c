@@ -1,6 +1,5 @@
 #include "stdlib.h"
-#include "stdio.h"
-#include "systemCall.h"
+
 
 int atoi(char * str){
   int res = 0;
@@ -33,4 +32,31 @@ int isSpace(char c){
 
 int isSuper(char c){
   return (c >= 'A') && (c <= 'Z');
+}
+
+
+void* malloc(int bytes){
+    void* address;
+    systemCall(3, bytes, &address, 0,0,0 );
+    return address;
+}
+
+void free(void* ad){
+  systemCall(4, ad,0,0,0,0);
+}
+
+int exec(void* startingPoint, int argc, void* argv[]){ // los parametros no se bien todavia
+  int pid;
+  systemCall(5, startingPoint, &pid, argc, argv, 0);
+  return pid;
+}
+
+/*
+  msg:
+    0: ends process
+    1: blocks process
+    2: unblocks process
+*/
+void kill(int pid, int msg){
+  systemCall(6, pid, msg, 0,0,0);
 }

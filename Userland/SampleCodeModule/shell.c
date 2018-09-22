@@ -3,9 +3,24 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-void initializeShell(){
+int probando(){
+  printf("ANDUVOOOOOOOOOOOOOOOO\n");
+  return 0;
+}
 
+void initializeShell(){
+  //exec(probando, 0, 0);
   printf("Welcome to the shell!! Please type help to get a list of our commands\n");
+  //char* b = malloc(sizeof(char));
+  // int *a = malloc(sizeof(int));
+  //
+  //  *a = 5;
+  // // printf("%d\n", a);
+  // // printf("%d\n", *a);
+  // //
+  //  free(a);
+  //  //printf("%d\n", a);
+  //  //printf("%d", *a);
 
   static char command[MAXLENGTH];
   int running = 1;
