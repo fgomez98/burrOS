@@ -96,7 +96,7 @@ void removeFromList(int level, list_t * node) {
     } if ( next != NULL) {
         next->prev = prev;
     }
-    
+
 }
 
 int blockHasBeenSplit(uint8_t * memoryAdr, int level) {
@@ -170,6 +170,7 @@ void freeMemory(void * memoryAdr) {
     int level = findLevel(memoryAdr);
     int index = indexInLevelOf(memoryAdr, level);
     toggle_bit(allocatedBlocks, index);
+
     while (index > 0) {
         if (get_bit(allocatedBlocks, move_to_sibling(index)) || get_bit(splitBlocks, move_to_sibling(index))) {
             break;
@@ -180,6 +181,7 @@ void freeMemory(void * memoryAdr) {
         level--;
     }
     pushList(level, adress(index, level));
+
 }
 
 void * reallocMemory(void * memorySrc, size_t request) {

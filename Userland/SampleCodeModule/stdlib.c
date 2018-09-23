@@ -1,5 +1,5 @@
 #include "stdlib.h"
-
+void killCurrentProcess();
 
 int atoi(char * str){
   int res = 0;
@@ -59,4 +59,9 @@ int exec(void* startingPoint, int argc, void* argv[]){ // los parametros no se b
 */
 void kill(int pid, int msg){
   systemCall(6, pid, msg, 0,0,0);
+}
+
+//kill q mata al current process
+void killCurrentProcess(){
+  systemCall(7, 0, 0, 0,0,0);
 }

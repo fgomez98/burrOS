@@ -63,9 +63,10 @@ tProcess* createProcess(char* processName,void* startingPoint, int parentPid, in
 void deleteProcess(tProcess* process);
 //void initializeStack(tStackFrame* stackPointer, int argc, char* argv[], void* startingPoint);
 void* initializeStack(void * stackPointer, int argc, char* argv[], void * startingPoint);
-void* mallocProcessMemory(size_t request, tProcess* running);
+void* mallocMemoryInProcess(size_t request, tProcess* running);
 int cmpPointers(uint64_t  p1, uint64_t  p2) ;
-void freeProcessMemory(void* memoryAdr, tProcess* running);
-void freeProcessHeap(queueADT* heap);
+void freeMemoryInProcess(void* memoryAdr, tProcess* running);
+void freeProcessHeap(queueADT heap);
+void stateToString(char* st, pState state);
 
 #endif

@@ -6,6 +6,8 @@ Colour colour2 = {255, 255, 255};
 Colour yellow2 = {100, 1000, 255};
 static int nextPid = 1; //Esta variable le asigna a cada proceso un pid distinto
 
+
+
 tProcess* createProcess(char* processName,void* startingPoint, int parentPid, int argc, char* argv[]){
     /*Se reserva espacio para la estructura del proceso*/
     tProcess* process = mallocMemory(sizeof(tProcess));
@@ -164,9 +166,9 @@ void printProcess(tProcess * p) {
 
 // implementar yield para pasar a un proceso de ruuning a ready/waiting asi darle timepo a otro sin que este sea interrumpido por el timer tick
 
-void endProcess() {
+void endProcess(int pid) {
     _cli();
-    changeProcessState(getRunningPid(), DEAD);
+    changeProcessState(pid, DEAD);
     _hlt();
     //runNextProcess();
 }
@@ -177,11 +179,8 @@ void deleteProcess(tProcess* process) {
     freeMemory(process);
 }
 
-void freeProcessHeap(queueADT* heap){
-  if(heap == NULL){
-    return;
-  }
-  while(heap!=NULL){
+void freeProcessHeap(queueADT heap){
+  while(heap!=NULL && (heap->dim > 0)){
     freeMemory(pop(heap)); //libera lo q quedo reservado y sin liberar y tamb el pop va borrando los nodos de la cola
   }
 }
@@ -191,7 +190,7 @@ int cmpPointers(uint64_t  p1, uint64_t  p2) {
     return p1 - p2;
 }
 
-void* mallocProcessMemory(size_t request, tProcess* running){
+void* mallocMemoryInProcess(size_t request, tProcess* running){
   void* p = mallocMemory(request);
   if(running->heap == NULL){
       running->heap = newQueue(sizeof(uint64_t), cmpPointers);
@@ -200,7 +199,25 @@ void* mallocProcessMemory(size_t request, tProcess* running){
 return p;
 }
 
-void freeProcessMemory(void* memoryAdr, tProcess* running){
+void freeMemoryInProcess(void* memoryAdr, tProcess* running){
   removeElem(running->heap, memoryAdr);
   freeMemory(memoryAdr);
+
+}
+
+
+void stateToString(char* st, pState state){
+  if(state == READY){
+    strcpy(st, "ready\n");
+  }
+  else if(state == RUNNING){
+    strcpy(st, "running\n");
+  }
+  else if(state == WAITING){
+    strcpy(st, "waiting\n");
+  }
+  else if(state == DEAD){
+    strcpy(st, "dead\n");
+  }
+
 }

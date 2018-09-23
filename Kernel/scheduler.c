@@ -1,4 +1,5 @@
 #include "scheduler.h"
+#include "queueADT.h"
 
 char buff[8];
 Colour colour = {255, 255, 255};
@@ -25,7 +26,7 @@ void probandoEscribirEnKernel2() {
         putStr(" Cosa ", colour);
         i++;
     }
-    endProcess();
+    endProcess(getRunningPid());
 }
 
 void probandoEscribirEnKernel5() {
@@ -37,7 +38,7 @@ void probandoEscribirEnKernel5() {
         putChar('\n', colour);
         i++;
     }
-    endProcess();
+    endProcess(getRunningPid());
 }
 
 void probandoEscribirEnKernel4() {
@@ -48,7 +49,7 @@ void probandoEscribirEnKernel4() {
             putStr("Hola", colour);
             i++;
         }
-        endProcess();
+        endProcess(getRunningPid());
 }
 
 void probandoEscribirEnKernel3() {
@@ -58,7 +59,7 @@ void probandoEscribirEnKernel3() {
         i++;
     }
     unblockProcess(3);
-    endProcess();
+    endProcess(getRunningPid());
 }
 void probandoEscribirEnKernel() {
     int i = 0;
@@ -70,7 +71,7 @@ void probandoEscribirEnKernel() {
     while(1) {
         putStr(" Genere ", colour);
     }
-    endProcess();
+    endProcess(getRunningPid());
 }
 
 int getRunningPid() {
@@ -218,6 +219,7 @@ void init_(void * startingPoint) {
     blocked = newQueue(sizeof(tProcess), cmpProcess);
     running = createProcess("theGodFather", startingPoint, 0, 0, NULL);
     running->state = RUNNING;
+
     //printProcess(running);
     contextSwitch(running->stackPointer);
 }
@@ -304,3 +306,73 @@ void init_(void * startingPoint) {
 //    return running->process->stackPointer;
 //}
 //
+
+
+
+void sprintProcesses(char* buffer, int buffSize){
+  TNode* aux;
+  int index = 0;
+  int occ;
+  char pid[0];
+  char* state = mallocMemory(8);
+
+    intToString(pid, running->pid);
+    occ = strcpy2(buffer + index, pid, buffSize);
+    index += occ;
+    buffSize -= occ;
+     occ = strcpy2(buffer+index,"     ",buffSize);
+     index+=occ;
+     buffSize-=occ;
+    stateToString(state, running->state);
+    occ = strcpy2(buffer+index, state, buffSize);
+    index+=occ;
+    buffSize-=occ;
+
+    if(ready != NULL){
+        aux = ready->first;
+        while(aux!= NULL){
+          tProcess* p = aux->elem;
+          intToString(pid, p->pid);
+          occ = strcpy2(buffer + index, pid, buffSize);
+          index += occ;
+          buffSize -= occ;
+          if(buffSize<=0) break;
+           occ = strcpy2(buffer+index,"     ",buffSize);
+           index+=occ;
+           buffSize-=occ;
+           if(buffSize<=0) break;
+           stateToString(state, p>state);
+           occ = strcpy2(buffer+index, state, buffSize);
+           index+=occ;
+           buffSize-=occ;
+           if(buffSize<=0) break;
+           aux = aux->next;
+        }
+
+  }
+
+     if(blocked != NULL){
+         aux = blocked->first;
+         while(aux!= NULL){
+           tProcess* p = aux->elem;
+           intToString(pid, p->pid);
+           occ = strcpy2(buffer + index, pid, buffSize);
+           index += occ;
+           buffSize -= occ;
+           if(buffSize<=0) break;
+            occ = strcpy2(buffer+index,"     ",buffSize);
+            index+=occ;
+            buffSize-=occ;
+            if(buffSize<=0) break;
+            stateToString(state, p>state);
+            occ = strcpy2(buffer+index, state, buffSize);
+            index+=occ;
+            buffSize-=occ;
+            if(buffSize<=0) break;
+            aux = aux->next;
+         }
+   }
+
+freeMemory(state);
+
+}
