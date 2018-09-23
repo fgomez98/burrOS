@@ -1,5 +1,6 @@
 #include "scheduler.h"
 #include "mutex.h"
+#include "queueADT.h"
 
 char buff[8];
 Colour colour = {255, 255, 255};
@@ -12,8 +13,6 @@ Colour red = {100, 100, 255};
 static queueADT ready; // colas de procesos en espera para ser ejecutados
 static queueADT blocked; // cola de procesos bloqueados
 static tProcess * running; // puntero al proceso que se esta corriendo en este momento
-
-
 
 void probandoEscribirEnKernel2() {
     int i = 0;
@@ -29,8 +28,7 @@ void probandoEscribirEnKernel2() {
         i++;
     }
     unblockProcess(4);
-    endProcess();
-}
+    endProcess(getRunningPid());
 
 void probandoEscribirEnKernel5() {
     int i = 0;
@@ -70,7 +68,7 @@ void probandoEscribirEnKernel3() {
         i++;
     }
 
-    endProcess();
+    endProcess(getRunningPid());
 }
 void probandoEscribirEnKernel() {
     int i = 0;

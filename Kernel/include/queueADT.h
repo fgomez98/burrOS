@@ -9,6 +9,9 @@ typedef struct TNode {
     void * elem;
 } TNode;
 
+/**
+ Creaa una queue genericas de elementos de tamañ bytes y recive una funciona coparadora (con esta queue podemos uitlizar las funciones belongs y remove) si no se va a utilizar pasar NULL
+ */
 
 typedef struct queueCDT {
     size_t bytes;
@@ -18,13 +21,8 @@ typedef struct queueCDT {
     int dim;
 } queueCDT;
 
-
-
 typedef queueCDT* queueADT;
 
-/**
- Creaa una queue genericas de elementos de tamañ bytes y recive una funciona coparadora (con esta queue podemos uitlizar las funciones belongs y remove) si no se va a utilizar pasar NULL
- */
 queueADT newQueue(size_t bytes, int (*cmp)(void *, void *));
 
 /**
