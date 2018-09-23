@@ -43,4 +43,9 @@ int belongsElem(queueADT q, void * elem);
  */
 int getSize(queueADT q);
 
+/**
+ Retonra el puntero al elemento en la cola
+ */
+void * getElem(queueADT q, void * elem);
+
 #endif

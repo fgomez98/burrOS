@@ -21,3 +21,18 @@ char* strcpy(char* destination, const char* source) {
     *destination = 0;
     return ptr;
 }
+
+int strcmp(char string1[], char string2[] ){
+    for (int i = 0; ; i++)
+    {
+        if (string1[i] != string2[i])
+        {
+            return string1[i] < string2[i] ? -1 : 1;
+        }
+        
+        if (string1[i] == '\0')
+        {
+            return 0;
+        }
+    }
+}

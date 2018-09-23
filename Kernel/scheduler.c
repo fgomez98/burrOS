@@ -1,16 +1,19 @@
 #include "scheduler.h"
+#include "mutex.h"
 
 char buff[8];
 Colour colour = {255, 255, 255};
 Colour yellow = {100, 1000, 255};
 Colour green = {50, 50, 280};
-
+Colour red = {100, 100, 255};
 //static tProcessNode * running;
 //static int amount = 0;
 
 static queueADT ready; // colas de procesos en espera para ser ejecutados
 static queueADT blocked; // cola de procesos bloqueados
 static tProcess * running; // puntero al proceso que se esta corriendo en este momento
+
+
 
 void probandoEscribirEnKernel2() {
     int i = 0;
@@ -25,6 +28,7 @@ void probandoEscribirEnKernel2() {
         putStr(" Cosa ", colour);
         i++;
     }
+    unblockProcess(4);
     endProcess();
 }
 
@@ -58,6 +62,14 @@ void probandoEscribirEnKernel3() {
         i++;
     }
     unblockProcess(3);
+    putStr(" Me Bloqueo ", green);
+    blockProcess(getRunningPid());
+    i = 0;
+    while (i < 100) {
+        putStr(" Vamo ", colour);
+        i++;
+    }
+
     endProcess();
 }
 void probandoEscribirEnKernel() {
@@ -83,13 +95,20 @@ void addProcess(tProcess * p) {
 
 void blockProcess(int pid) {
     _cli();
+    putStr("Block: ", green);
+    uintToBase(pid, buff, 10);
+    putStr(buff, yellow);
+    putChar('\n', yellow);
     changeProcessState(pid, WAITING);
     _hlt();
 }
 
 void unblockProcess(int pid) {
     _cli();
-    putStr("Volvi", green);
+    putStr("Volvi: ", green);
+    uintToBase(pid, buff, 10);
+    putStr(buff, yellow);
+    putChar('\n', yellow);
     tProcess * elem = mallocMemory(sizeof(tProcess));
     elem->pid = pid;
     tProcess * aux = removeElem(blocked, elem);
@@ -106,13 +125,6 @@ void unblockProcess(int pid) {
 changeProcessState(int pid, pState state) {
     if (running->pid == pid) {
         running->state = state;
-        
-        putChar('\n', yellow);
-        putStr("RunningDead Pid:", yellow);
-        uintToBase(getRunningPid(), buff, 10);
-        putStr(buff, yellow);
-        putChar('\n', yellow);
-        
         return;
     }
     //TODO: esta parte del codigo jamas fue testada, nose si se usara en algun caso mucho sentido no tiene
@@ -155,15 +167,27 @@ void runNextProcess() {
 
 void scheduler() {
     if (running->state == DEAD) {
+        putChar('\n', yellow);
+        putStr("RunningDeadPid:", yellow);
+        uintToBase(getRunningPid(), buff, 10);
+        putStr(buff, yellow);
+        putChar('\n', yellow);
         deleteProcess(running);
     } else if (running->state == RUNNING) {
         running->state = READY;
         push(ready, running);
     } else if (running->state == WAITING) {
         push(blocked, running);
+    } else if (running->state == READY) {
+        push(ready, running);
     }
     while ((running = pop(ready))->state != READY) {
         if (running->state == DEAD) {
+            putChar('\n', yellow);
+            putStr("RunningDeadPid:", yellow);
+            uintToBase(getRunningPid(), buff, 10);
+            putStr(buff, yellow);
+            putChar('\n', yellow);
             deleteProcess(running);
         } else if (running->state == WAITING) {
             push(blocked, running);
@@ -204,9 +228,217 @@ void init_Process() {
     push(ready, anotherP);
     push(ready, anotherP1);
 
-    //probandoEscribirEnKernel4();
+    probandoEscribirEnKernel4();
+    //endProcess();
+}
+
+//static mutex * myMutex;
+static int critical;
+
+void mutexTest1() {
+mutex * myMutex =getMutex("myMutex");
+    putChar('\n', yellow);
+    putChar('\n', yellow);
+    putStr("Dir2: ", yellow);
+    uintToBase(myMutex, buff, 10);
+    putStr(buff, green);
+    putChar('\n', yellow);
+    putChar('\n', yellow);
+   
+adquire(myMutex);
+  
+    putStr("My pid: 2", yellow);
+   
+     critical++;
+    putStr("valor del mutex: ", yellow);
+    uintToBase(critical, buff, 10);
+    putStr(buff, yellow);
+      putChar('\n', yellow);
+    int i = 0;
+    while (i < 500000) {
+        i++;
+    }
+    
+     
+    
+release(myMutex);
+    
+    i = 0;
+    while (i<500) {
+        i++;
+    }
+    
+    i = 0;
+    
+
+adquire(myMutex);
+    
+    while (i < 5) {
+        critical++;
+   putStr("My pid: ", yellow);
+        uintToBase(getRunningPid(), buff, 10);
+        putStr(buff, yellow);
+        putStr("valor del mutex: ", yellow);
+        uintToBase(critical, buff, 10);
+        putStr(buff,yellow);
+        putChar('\n', yellow);
+        i++;
+    }
+    
+release(myMutex);
+
+    putStr("llegue2", colour);
     endProcess();
 }
+
+void mutexTest2() {
+mutex * myMutex2 =getMutex("myMutex");
+    putChar('\n', yellow);
+    putChar('\n', yellow);
+    putStr("Dir3: ", yellow);
+    uintToBase(myMutex2, buff, 10);
+    putStr(buff, green);
+    putChar('\n', yellow);
+    putChar('\n', yellow);
+    
+    int i = 0;
+    while (i<90000) {
+        i++;
+    }
+    
+    i = 0;
+
+
+adquire(myMutex2);
+    
+    putChar('\n', red);
+    putChar('\n', red);
+   putStr("My pid: ", yellow);
+    uintToBase(getRunningPid(), buff, 10);
+    putStr(buff, yellow);
+
+       critical++;
+    putStr("valor del mutex: ", yellow);
+    uintToBase(critical, buff, 10);
+    putStr(buff,yellow);
+    putChar('\n', yellow);
+    putChar('\n', red);
+
+    
+release(myMutex2);
+
+    
+    i = 0;
+    while (i<500) {
+        i++;
+    }
+    
+    i = 0;
+    
+adquire(myMutex2);
+    
+    while (i < 5) {
+        critical++;
+          putStr("My pid: 3", yellow);
+        putStr("valor del mutex: ", yellow);
+        uintToBase(critical, buff, 10);
+        putStr(buff, yellow);
+        putChar('\n', yellow);
+        putChar('\n', red);
+        i++;
+    }
+    
+release(myMutex2);
+    
+
+    putStr("llegue3", colour);
+    endProcess();
+}
+
+void mutexTest3() {
+mutex * myMutex3 = getMutex("myMutex");
+    putChar('\n', yellow);
+    putChar('\n', yellow);
+    putStr("Dir4: ", yellow);
+    uintToBase(myMutex3, buff, 10);
+    putStr(buff, green);
+    putChar('\n', yellow);
+    putChar('\n', yellow);
+
+  
+adquire(myMutex3);
+    
+    putStr("My pid: ", yellow);
+    uintToBase(getRunningPid(), buff, 10);
+    putStr(buff, yellow);
+    critical--;
+    putStr("valor del mutex: ", yellow);
+    uintToBase(critical, buff, 10);
+    putStr(buff,yellow);
+    putChar('\n', yellow);
+    putChar('\n', red);
+    
+release(myMutex3);
+    
+    int i = 0;
+//    while (i<500) {
+//        i++;
+//    }
+//    
+//    i = 0;
+    
+adquire(myMutex3);
+    while (i < 5) {
+        critical--;
+        putStr("My pid: ", yellow);
+        uintToBase(getRunningPid(), buff, 10);
+        putStr(buff, yellow);
+        putStr("valor del mutex: ", yellow);
+        uintToBase(critical, buff, 10);
+        putStr(buff, yellow);
+        putChar('\n', yellow);
+        putChar('\n', red);
+        i++;
+    }
+    
+release(myMutex3);
+    putStr("llegue", colour);
+    uintToBase(getRunningPid(), buff, 10);
+    putStr(buff, yellow);
+    putStr("valor del mutex: ", yellow);
+    uintToBase(critical, buff, 10);
+    putStr(buff, yellow);
+
+    endProcess();
+
+}
+
+void mutexTest() {
+    //myMutex = initMutex("myMutex");
+    critical = 1;
+    tProcess * proc = createProcess("mutez1", mutexTest1, 0, 0, NULL);
+    printProcess(proc);
+    
+    tProcess * anotherP = createProcess("mutex2", mutexTest2, 0, 0, NULL);
+    printProcess(anotherP);
+    
+    tProcess * anotherP1 = createProcess("mutex3", mutexTest3, 0, 0, NULL);
+    printProcess(anotherP1);
+
+    tProcess * anotherP2 = createProcess("mutex3", mutexTest3, 0, 0, NULL);
+    printProcess(anotherP2);
+
+    
+    //dumpMemory();
+    
+    //push(ready, proc);
+    //push(ready, anotherP);
+    push(ready, anotherP1);
+    //push(ready, anotherP2);
+    while(1);
+    endProcess();
+}
+
 
 void init_(void * startingPoint) {
     ready = newQueue(sizeof(tProcess), cmpProcess);
