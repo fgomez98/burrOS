@@ -1,12 +1,13 @@
 //
 //  String.c
-//  
+//
 //
 //  Created by Fermin Gomez on 5/22/18.
 //
 //
 
 #include "String.h"
+int strcpy2(char* str1, const char* str2, int length);
 
 char* strcpy(char* destination, const char* source) {
     if (destination == NULL) {

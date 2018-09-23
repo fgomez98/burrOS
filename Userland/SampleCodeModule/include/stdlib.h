@@ -1,5 +1,8 @@
 #ifndef lib_h
 #define lib_h
+#include <stdint.h>
+#include "stdio.h"
+#include "systemCall.h"
 
 /*Recieves a char array containing anumber and returns said number as an integer(base 10)*/
 int atoi(char * str);
@@ -15,5 +18,9 @@ int isSpace(char c);
 
 /*Returns 1 if c is an Uppercase letter, else it returns 0*/
 int isSuper(char c);
+
+void* malloc(int bytes);
+void free(void* ad);
+void kill(int pid, int msg);
 
 #endif

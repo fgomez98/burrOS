@@ -2,20 +2,6 @@
 #include "VideoDriver.h"
 
 Colour colour3 = {100, 1000, 255};
-typedef struct TNode {
-    struct TNode * next;
-    void * elem;
-} TNode;
-
-
-typedef struct queueCDT {
-    size_t bytes;
-    int (*cmp)(void *, void *);
-    TNode * last;
-    TNode * first;
-    int dim;
-} queueCDT;
-
 queueADT newQueue(size_t bytes, int (*cmp)(void *, void *)) {
     queueADT new = mallocMemory(sizeof(*new));
     new->bytes = bytes;

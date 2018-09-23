@@ -3,9 +3,14 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-void initializeShell(){
+void probando(){
+  printf("Exec\n");
+  killCurrentProcess();
+}
 
+void initializeShell(){
   printf("Welcome to the shell!! Please type help to get a list of our commands\n");
+
 
   static char command[MAXLENGTH];
   int running = 1;
@@ -35,9 +40,17 @@ void initializeShell(){
     else if(strcmp("exit", command) == 0){
       running = 0;
     }
+    else if(strcmp("ps", command) == 0){
+      ps();
+      
+    }
+    else if(strcmp("exec", command) == 0){
+      int pid = exec(probando, 0, 0);
+    }
     else{
       printf("\nUnknown command, type help\n");
     }
+
 
   }
    printf("\n\n\nSee you soon!");

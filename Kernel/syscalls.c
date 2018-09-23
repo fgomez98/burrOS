@@ -4,6 +4,9 @@
 #include "math.h"
 #include "Beep.h"
 #include "TimeDriver.h"
+#include "BuddyAllocationSystem.h"
+#include "scheduler.h"
+#include "String.h"
 
 #define WRITE 1
 #define READ 0
@@ -17,19 +20,49 @@
 
 void write(uint64_t arg2, uint64_t arg3, uint64_t arg4,  uint64_t arg5,  uint64_t arg6);
 void read(uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5 , uint64_t arg6);
-
+void sysKill(int pid, int message);
 void syscall_handler(uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t arg6);
-
 
 /*First function called, it defines if the systemCall will be READ or WRITE, using arg1 decide*/
 void syscall_handler(uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t arg6) {
+	void** pp;
+	void* p;
+	tProcess* process;
+	Colour colour;
+  colour.Red = 255;
+  colour.Green = 255;
+  colour.Blue = 255;
 	switch(arg1) {
     case READ:
 			read(arg2, arg3, arg4, arg5, arg6);
 			 break;
 		case WRITE:
-            write(arg2, arg3, arg4, arg5, arg6);
+      write(arg2, arg3, arg4, arg5, arg6);
 	 	break;
+		case 3:
+			pp =(void **) arg3;
+		  *pp =  mallocMemoryInProcess(arg2, getRunningProcess());
+		break;
+		case 4:
+			p = (void*) arg2;
+		 freeMemoryInProcess(p, getRunningProcess());
+
+		break;
+		case 5:
+		 	 process = createProcess("default", arg2, 0, arg3, NULL);//despues ver bien lo del primer parametro q es el process name
+    																													 //volar tamb lo de parent pid
+			addProcess(process);
+		break;
+		case 6:
+			sysKill(arg2, arg3);
+		break;
+		case 7:
+			endProcess(getRunningProcess()->pid);
+		break;
+		case 8:
+			sprintProcesses(arg2, arg3);
+		break;
+
 	}
 }
 
@@ -99,4 +132,19 @@ void write(uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t 
 void read(uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5 , uint64_t arg6){
 	char * p =(char *) arg3;
 	*(p) =  getKeyInput();
+}
+
+
+void sysKill(int pid, int message){
+	switch(message){
+		case 0:
+			endProcess(pid); //NO LE PUEDO PASAR EL PID cambiar estoooooo
+		break;
+		case 1:
+			blockProcess(pid);
+		break;
+		case 2:
+			unblockProcess(pid);
+		break;
+	}
 }

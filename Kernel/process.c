@@ -1,14 +1,17 @@
 #include "process.h"
 #include "scheduler.h"
+
 char buff2[8];
 Colour colour2 = {255, 255, 255};
 Colour yellow2 = {100, 1000, 255};
 static int nextPid = 1; //Esta variable le asigna a cada proceso un pid distinto
 
+
+
 tProcess* createProcess(char* processName,void* startingPoint, int parentPid, int argc, char* argv[]){
     /*Se reserva espacio para la estructura del proceso*/
     tProcess* process = mallocMemory(sizeof(tProcess));
-    
+
     /*Se completan los campos del nuevo proceso*/
     process->pid = nextPid++;
     process->parentPid = parentPid;
@@ -17,6 +20,7 @@ tProcess* createProcess(char* processName,void* startingPoint, int parentPid, in
     void* processMemoryUpperAddress = process->processMemoryLowerAddress + PROCESS_SIZE -1;
     process->stackPointer = initializeStack(processMemoryUpperAddress - sizeof(tStackFrame) +1 , argc, argv, startingPoint);
     process->state = READY;
+    process->heap = NULL;
     return process;
 }
 
@@ -105,17 +109,17 @@ void printStackFrame(tStackFrame * stackFrame) {
     uintToBase(stackFrame->rsi, buff2, 10);
     putStr(buff2, colour2);
     putChar('\n', colour2);
-    
+
     putStr(" rdi: ", colour2);
     uintToBase(stackFrame->rdi, buff2, 10);
     putStr(buff2, colour2);
     putChar('\n', colour2);
-    
+
     putStr(" rip: ", colour2);
     uintToBase(stackFrame->rip, buff2, 10);
     putStr(buff2, colour2);
     putChar('\n', colour2);
-    
+
     putStr(" rsp: ", colour2);
     uintToBase(stackFrame->rsp, buff2, 10);
     putStr(buff2, colour2);
@@ -151,25 +155,69 @@ void printProcess(tProcess * p) {
     uintToBase(p->stackPointer, buff2, 10);
     putStr(buff2, colour2);
     putChar('\n', colour2);
-    
+
     putStr("memory low: ", colour2);
     uintToBase(p->processMemoryLowerAddress, buff2, 10);
     putStr(buff2, colour2);
     putChar('\n', colour2);
-    
+
     printStackFrame(p->stackPointer);
 }
 
 // implementar yield para pasar a un proceso de ruuning a ready/waiting asi darle timepo a otro sin que este sea interrumpido por el timer tick
 
-void endProcess() {
+void endProcess(int pid) {
     _cli();
-    changeProcessState(getRunningPid(), DEAD);
+    changeProcessState(pid, DEAD);
     _hlt();
     //runNextProcess();
 }
 
 void deleteProcess(tProcess* process) {
     freeMemory(process->processMemoryLowerAddress);
+    freeProcessHeap(process->heap);
     freeMemory(process);
+}
+
+void freeProcessHeap(queueADT heap){
+  while(heap!=NULL && (heap->dim > 0)){
+    freeMemory(pop(heap)); //libera lo q quedo reservado y sin liberar y tamb el pop va borrando los nodos de la cola
+  }
+}
+
+
+int cmpPointers(uint64_t  p1, uint64_t  p2) {
+    return p1 - p2;
+}
+
+void* mallocMemoryInProcess(size_t request, tProcess* running){
+  void* p = mallocMemory(request);
+  if(running->heap == NULL){
+      running->heap = newQueue(sizeof(uint64_t), cmpPointers);
+  }
+  insertInOrder(running->heap, p);
+return p;
+}
+
+void freeMemoryInProcess(void* memoryAdr, tProcess* running){
+  removeElem(running->heap, memoryAdr);
+  freeMemory(memoryAdr);
+
+}
+
+
+void stateToString(char* st, pState state){
+  if(state == READY){
+    strcpy(st, "ready\n");
+  }
+  else if(state == RUNNING){
+    strcpy(st, "running\n");
+  }
+  else if(state == WAITING){
+    strcpy(st, "waiting\n");
+  }
+  else if(state == DEAD){
+    strcpy(st, "dead\n");
+  }
+
 }

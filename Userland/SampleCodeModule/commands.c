@@ -30,6 +30,7 @@ void help(){
   printf("clear - clears screen\n");
   printf("zero division - shows how the cero division exception is handled\n");
   printf("invalid opcode - shows how the cero division exception is handled\n");
+  printf("ps - shows information about the current processes in the system\n");
   printf("exit - exits from shell\n");
 }
 
@@ -43,7 +44,7 @@ void showTime() {
     printf("\n");
 }
 
-void showDigitalHour(){ 
+void showDigitalHour(){
     Colour myColours[5] = {colour1, colour2, colour3, colour4, colour5};
     cleanScreen();
     char key;
@@ -86,4 +87,14 @@ void delay(int i) {
         for (int k = 0; k < i; k++) {
         }
     }
+}
+
+void ps(){
+  char* buffer = malloc(1024);
+  printf("\n");
+  printf("pid   state");
+  printf("\n");
+  systemCall(8, buffer, 1024, 0, 0, 0);
+  printf(buffer);
+  free(buffer);
 }

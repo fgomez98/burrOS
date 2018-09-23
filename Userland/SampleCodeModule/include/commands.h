@@ -24,4 +24,7 @@ void divi();
 /*Divides the integer 100 by the number n*/
 int div100(int n);
 
+void ls();
+void ps();
+
 #endif
