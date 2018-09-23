@@ -29,6 +29,7 @@ void probandoEscribirEnKernel2() {
     }
     unblockProcess(4);
     endProcess(getRunningPid());
+}
 
 void probandoEscribirEnKernel5() {
     int i = 0;
@@ -232,7 +233,7 @@ void init_Process() {
     push(ready, anotherP1);
 
     probandoEscribirEnKernel4();
-    //endProcess();
+    //endProcess(getRunningPid());
 }
 
 //static mutex * myMutex;
@@ -291,7 +292,7 @@ adquire(myMutex);
 release(myMutex);
 
     putStr("llegue2", colour);
-    endProcess();
+    endProcess(getRunningPid());
 }
 
 void mutexTest2() {
@@ -355,7 +356,7 @@ release(myMutex2);
     
 
     putStr("llegue3", colour);
-    endProcess();
+    endProcess(getRunningPid());
 }
 
 void mutexTest3() {
@@ -384,11 +385,11 @@ adquire(myMutex3);
 release(myMutex3);
     
     int i = 0;
-//    while (i<500) {
-//        i++;
-//    }
-//    
-//    i = 0;
+    while (i<500) {
+        i++;
+    }
+    
+    i = 0;
     
 adquire(myMutex3);
     while (i < 5) {
@@ -412,7 +413,7 @@ release(myMutex3);
     uintToBase(critical, buff, 10);
     putStr(buff, yellow);
 
-    endProcess();
+    endProcess(getRunningPid());
 
 }
 
@@ -434,21 +435,20 @@ void mutexTest() {
     
     //dumpMemory();
     
-    //push(ready, proc);
-    //push(ready, anotherP);
+    push(ready, proc);
+    push(ready, anotherP);
     push(ready, anotherP1);
     //push(ready, anotherP2);
-    while(1);
-    endProcess();
+    while (1);
+    endProcess(getRunningPid());
 }
 
 
 void init_(void * startingPoint) {
     ready = newQueue(sizeof(tProcess), cmpProcess);
     blocked = newQueue(sizeof(tProcess), cmpProcess);
-    running = createProcess("theGodFather", startingPoint, 0, 0, NULL);
+    running = createProcess("theGodFather", mutexTest, 0, 0, NULL);
     running->state = RUNNING;
-
     //printProcess(running);
     contextSwitch(running->stackPointer);
 }

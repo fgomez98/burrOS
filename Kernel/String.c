@@ -36,6 +36,7 @@ int strcmp(char string1[], char string2[] ){
             return 0;
         }
     }
+}
 int strcpy2(char* str1, const char* str2, int length) {
 	int i;
 	for (i = 0; i < length && str2[i]!='\0'; i++) {
