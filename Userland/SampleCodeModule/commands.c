@@ -30,6 +30,7 @@ void help(){
   printf("clear - clears screen\n");
   printf("zero division - shows how the cero division exception is handled\n");
   printf("invalid opcode - shows how the cero division exception is handled\n");
+  printf("ps - shows information about the current processes in the system\n");
   printf("exit - exits from shell\n");
 }
 
