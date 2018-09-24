@@ -190,34 +190,90 @@ int cmpPointers(uint64_t  p1, uint64_t  p2) {
     return p1 - p2;
 }
 
-void* mallocMemoryInProcess(size_t request, tProcess* running){
+void* mallocMemoryInProcess(size_t request, tProcess* process){
   void* p = mallocMemory(request);
-  if(running->heap == NULL){
-      running->heap = newQueue(sizeof(uint64_t), cmpPointers);
+  if(process->heap == NULL){
+      process->heap = newQueue(sizeof(uint64_t), cmpPointers);
   }
-  insertInOrder(running->heap, p);
+
+  // putStr("\ntamano cola heap antes: ", colour2);
+  // uintToBase((process->heap)->dim, buff2, 10);
+  // putStr(buff2, colour2);
+  // putStr("\n", colour2);
+
+
+  push(process->heap, p);
+  //putStr("\nno la quedo en push", colour2);
+
+  //TNode* aux = (process->heap)->first;
+
+  // // putStr("\nse inserto: \n", colour2);
+  // putStr("\ntamano cola heap despues: ", colour2);
+  // uintToBase((process->heap)->dim, buff2, 10);
+  // putStr(buff2, colour2);
+  // putStr("\n", colour2);
+  // // putStr("\ncola heap: ", colour2);
+
+
+  // while(aux != NULL){
+  //   putStr("M", colour2);
+  //   uintToBase(aux->elem, buff2, 10);
+  //   putStr(buff2, colour2);
+  //   putStr("\n", colour2);
+  //   aux = aux->next;
+  // }
+  //
+  // putStr("\n", colour2);
 return p;
 }
 
-void freeMemoryInProcess(void* memoryAdr, tProcess* running){
-  removeElem(running->heap, memoryAdr);
-  freeMemory(memoryAdr);
+void freeMemoryInProcess(void* memoryAdr, tProcess* process){
+  // TNode* aux = (process->heap)->first;
+  // putStr("\ntamano cola heap antes de borrar: ", colour2);
+  // uintToBase((process->heap)->dim, buff2, 10);
+  // putStr(buff2, colour2);
+  // putStr("\n", colour2);
+  //
+  // while(aux != NULL){
+  //   putStr("F", colour2);
+  //   uintToBase(aux->elem, buff2, 10);
+  //   putStr(buff2, colour2);
+  //   putStr("\n", colour2);
+  //   aux = aux->next;
+  // }
+
+  removeElem(process->heap, memoryAdr);
+
+  ///putStr("\nno la quedo en free mem: ", colour2);
+
+  // putStr("\ntamano cola heap despues de borrar: ", colour2);
+  // uintToBase((process->heap)->dim, buff2, 10);
+  // putStr(buff2, colour2);
+  // putStr("\n", colour2);
+  //
+  // aux = (process->heap)->first;
+  //
+  // while(aux != NULL){
+  //   putStr("F", colour2);
+  //   uintToBase(aux->elem, buff2, 10);
+  //   putStr(buff2, colour2);
+  //   putStr("\n", colour2);
+  //   aux = aux->next;
+  // }
 
 }
 
 
-void stateToString(char* st, pState state){
+int stateIdentifier(pState state){
   if(state == READY){
-    strcpy(st, "ready\n");
+     return 0;
   }
   else if(state == RUNNING){
-    strcpy(st, "running\n");
+    return 1;
   }
   else if(state == WAITING){
-    strcpy(st, "waiting\n");
+    return 2;
   }
-  else if(state == DEAD){
-    strcpy(st, "dead\n");
-  }
+    return 3;
 
 }

@@ -2,6 +2,8 @@
 #include "VideoDriver.h"
 
 Colour colour3 = {100, 1000, 255};
+
+
 queueADT newQueue(size_t bytes, int (*cmp)(void *, void *)) {
     queueADT new = mallocMemory(sizeof(*new));
     new->bytes = bytes;
@@ -74,9 +76,7 @@ static
 TNode * removeREC(TNode * current, TNode * prev, void * elem, queueADT q, void * aux, char * found) {
     if (current == NULL) {
         return NULL;
-        putStr("LLEGUE AL FINAL", colour3);
     } else if ((*(q->cmp))(current->elem, elem) == 0) {
-        putStr("IGUALES", colour3);
         *(found) = 1;
         memcpy(aux, current->elem, q->bytes);
         if (current == q->last) {
@@ -100,6 +100,7 @@ void * removeElem(queueADT q, void * elem) {
     char found = 0;
     q->first = removeREC(q->first, NULL, elem, q, aux, &found);
     if (found) {
+        (q->dim)--;
         return aux;
     } else {
         freeMemory(aux);
@@ -125,6 +126,20 @@ int belongsElem(queueADT q, void * elem) {
         return 0;
     }
     return belongsREC(q->first, elem, q->cmp);
+}
+
+void * getElem(queueADT q, void * elem) {
+    if (q == NULL || q->first == NULL || q->cmp == NULL) {
+        return NULL;
+    }
+    TNode * current = q->first;
+    while (current != NULL) {
+        if ((*(q->cmp))(current->elem, elem) == 0) {
+            return current->elem;
+        }
+        current = current->next;
+    }
+    return NULL;
 }
 
 void freeQueue(queueADT q) {

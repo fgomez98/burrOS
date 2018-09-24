@@ -42,10 +42,18 @@ void initializeShell(){
     }
     else if(strcmp("ps", command) == 0){
       ps();
-      
+    }
+    else if(strcmp("memory", command) == 0){
+      memory();
     }
     else if(strcmp("exec", command) == 0){
       int pid = exec(probando, 0, 0);
+    }
+    else if(strcmp("malloc", command) == 0){
+      // char* a = malloc(10);
+      // char *b = malloc(20);
+      // free(a);
+      // free(b);
     }
     else{
       printf("\nUnknown command, type help\n");

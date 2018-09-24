@@ -67,6 +67,6 @@ void* mallocMemoryInProcess(size_t request, tProcess* running);
 int cmpPointers(uint64_t  p1, uint64_t  p2) ;
 void freeMemoryInProcess(void* memoryAdr, tProcess* running);
 void freeProcessHeap(queueADT heap);
-void stateToString(char* st, pState state);
+int stateIdentifier(pState state);
 
 #endif

@@ -308,25 +308,31 @@ void init_(void * startingPoint) {
 //
 
 
-
 void sprintProcesses(char* buffer, int buffSize){
-  TNode* aux;
-  int index = 0;
-  int occ;
-  char pid[0];
-  char* state = mallocMemory(8);
+    TNode* aux;
+    int index = 0;
+    int occ;
+    char pid[0];
+    int s;
+    char* states[4];
+    states[0] = "ready\n";
+    states[1] = "running\n";
+    states[2] = "waiting\n";
+    states[3] = "dead\n";
 
-    intToString(pid, running->pid);
-    occ = strcpy2(buffer + index, pid, buffSize);
-    index += occ;
-    buffSize -= occ;
-     occ = strcpy2(buffer+index,"     ",buffSize);
+     intToString(pid, running->pid);
+     occ = strcpy2(buffer+index,pid,buffSize);
+     index += occ;
+     buffSize -= occ;
+      occ = strcpy2(buffer+index,"     ",buffSize);
+      index += occ;
+     buffSize -= occ;
+
+     s = stateIdentifier(running->state);
+     occ = strcpy2(buffer+index,states[s],buffSize);
      index+=occ;
      buffSize-=occ;
-    stateToString(state, running->state);
-    occ = strcpy2(buffer+index, state, buffSize);
-    index+=occ;
-    buffSize-=occ;
+
 
     if(ready != NULL){
         aux = ready->first;
@@ -341,8 +347,8 @@ void sprintProcesses(char* buffer, int buffSize){
            index+=occ;
            buffSize-=occ;
            if(buffSize<=0) break;
-           stateToString(state, p>state);
-           occ = strcpy2(buffer+index, state, buffSize);
+           s = stateIdentifier(p->state);
+           occ = strcpy2(buffer+index,states[s],buffSize);
            index+=occ;
            buffSize-=occ;
            if(buffSize<=0) break;
@@ -364,8 +370,8 @@ void sprintProcesses(char* buffer, int buffSize){
             index+=occ;
             buffSize-=occ;
             if(buffSize<=0) break;
-            stateToString(state, p>state);
-            occ = strcpy2(buffer+index, state, buffSize);
+            s = stateIdentifier(p->state);
+            occ = strcpy2(buffer+index,states[s],buffSize);
             index+=occ;
             buffSize-=occ;
             if(buffSize<=0) break;
@@ -373,6 +379,5 @@ void sprintProcesses(char* buffer, int buffSize){
          }
    }
 
-freeMemory(state);
 
 }
