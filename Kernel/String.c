@@ -9,6 +9,30 @@
 #include "String.h"
 int strcpy2(char* str1, const char* str2, int length);
 
+char * strconcat(char * s1, char * s2, char * dest) {
+	int s1lenght= strlenght(s1);
+	int s2lenght = strlenght(s2);
+	for(int i = 0, j = 0; i <= s1lenght+s2lenght; i++,j++) {
+		if(i < s1lenght) {
+			dest[i] = s1[j];
+			if(i + 1 >= s1lenght)
+				j = -1;
+		}
+		else {
+			dest[i] = s2[j];
+		}
+	}
+	return dest;
+}
+
+
+int strlenght(char * s) {
+	int i;
+	for(i = 0; s[i] != '\0'; i++) {
+	}
+	return i;
+}
+
 char* strcpy(char* destination, const char* source) {
     if (destination == NULL) {
         return NULL;
@@ -67,6 +91,8 @@ void intToString(char* str, int num) {
 	str[length] = '\0';
 	return length;
 }
+
+
 
 void reverseCharArray(char* str, int length) {
 	char aux[length];
