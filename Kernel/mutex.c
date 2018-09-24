@@ -1,5 +1,5 @@
 #include "mutex.h"
-#include "videoDriver.h"
+#include "VideoDriver.h"
 #include "lib.h"
 Colour colour5 = {255, 255, 255};
 Colour red2 = {100, 100, 255};
