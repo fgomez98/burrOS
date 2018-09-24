@@ -22,5 +22,6 @@ int isSuper(char c);
 void* malloc(int bytes);
 void free(void* ad);
 void kill(int pid, int msg);
-
+void* calloc(int bytes);
+void* realloc(void* ptr, int bytes);
 #endif

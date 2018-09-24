@@ -264,6 +264,30 @@ void freeMemoryInProcess(void* memoryAdr, tProcess* process){
 }
 
 
+void* callocMemoryInProcess(size_t request, tProcess* process){
+  void* p = callocMemory(request);
+  if(process->heap == NULL){
+      process->heap = newQueue(sizeof(uint64_t), cmpPointers);
+  }
+
+  push(process->heap, p);
+
+return p;
+}
+
+void* reallocMemoryInProcess(size_t request, tProcess* process, uint64_t oldPtr){
+  removeElem(process->heap, oldPtr);
+  void* p = reallocMemoryAlreadyFreed(oldPtr, request);
+  if(process->heap == NULL){
+      process->heap = newQueue(sizeof(uint64_t), cmpPointers);
+  }
+
+  push(process->heap, p);
+
+return p;
+}
+
+
 int stateIdentifier(pState state){
   if(state == READY){
      return 0;

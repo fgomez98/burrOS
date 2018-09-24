@@ -43,4 +43,6 @@ void put();
 
 void sprintMemory(char* buffer, int buffSize);
 
+void * reallocMemoryAlreadyFreed(void * memorySrc, size_t request);
+
 #endif /* BuddyAllocationSystem */
