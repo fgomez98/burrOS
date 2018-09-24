@@ -7,6 +7,7 @@
 #include "BuddyAllocationSystem.h"
 #include "scheduler.h"
 #include "String.h"
+#include "mutex.h"
 
 #define WRITE 1
 #define READ 0
@@ -28,7 +29,9 @@ void syscall_handler(uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4,
 void syscall_handler(uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t arg6) {
 	void** pp;
 	void* p;
+	uint64_t* ui;
 	tProcess* process;
+	mutex* m ;
 	Colour colour;
   colour.Red = 255;
   colour.Green = 255;
@@ -63,6 +66,22 @@ void syscall_handler(uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4,
 		break;
 		case 9:
 			sprintMemory(arg2, arg3);
+		break;
+		case 10:
+			ui = (uint64_t*)arg3;
+			*ui = getMutex(arg2);
+		break;
+		case 11:
+			m = (mutex*) arg2;
+			destroyMutex(m);
+		break;
+		case 12:
+			m = (mutex*) arg2;
+			adquire(m);
+		break;
+		case 13:
+			m = (mutex*) arg2;
+			release(m);
 		break;
 
 	}
@@ -140,7 +159,7 @@ void read(uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5 , uint64_t 
 void sysKill(int pid, int message){
 	switch(message){
 		case 0:
-			endProcess(pid); 
+			endProcess(pid);
 		break;
 		case 1:
 			blockProcess(pid);

@@ -248,11 +248,11 @@ mutex * myMutex =getMutex("myMutex");
     putStr(buff, green);
     putChar('\n', yellow);
     putChar('\n', yellow);
-   
+
 adquire(myMutex);
-  
+
     putStr("My pid: 2", yellow);
-   
+
      critical++;
     putStr("valor del mutex: ", yellow);
     uintToBase(critical, buff, 10);
@@ -262,21 +262,21 @@ adquire(myMutex);
     while (i < 500000) {
         i++;
     }
-    
-     
-    
+
+
+
 release(myMutex);
-    
+
     i = 0;
     while (i<500) {
         i++;
     }
-    
+
     i = 0;
-    
+
 
 adquire(myMutex);
-    
+
     while (i < 5) {
         critical++;
    putStr("My pid: ", yellow);
@@ -288,7 +288,7 @@ adquire(myMutex);
         putChar('\n', yellow);
         i++;
     }
-    
+
 release(myMutex);
 
     putStr("llegue2", colour);
@@ -304,17 +304,17 @@ mutex * myMutex2 =getMutex("myMutex");
     putStr(buff, green);
     putChar('\n', yellow);
     putChar('\n', yellow);
-    
+
     int i = 0;
     while (i<90000) {
         i++;
     }
-    
+
     i = 0;
 
 
 adquire(myMutex2);
-    
+
     putChar('\n', red);
     putChar('\n', red);
    putStr("My pid: ", yellow);
@@ -328,19 +328,19 @@ adquire(myMutex2);
     putChar('\n', yellow);
     putChar('\n', red);
 
-    
+
 release(myMutex2);
 
-    
+
     i = 0;
     while (i<500) {
         i++;
     }
-    
+
     i = 0;
-    
+
 adquire(myMutex2);
-    
+
     while (i < 5) {
         critical++;
           putStr("My pid: 3", yellow);
@@ -351,9 +351,9 @@ adquire(myMutex2);
         putChar('\n', red);
         i++;
     }
-    
+
 release(myMutex2);
-    
+
 
     putStr("llegue3", colour);
     endProcess(getRunningPid());
@@ -369,9 +369,9 @@ mutex * myMutex3 = getMutex("myMutex");
     putChar('\n', yellow);
     putChar('\n', yellow);
 
-  
+
 adquire(myMutex3);
-    
+
     putStr("My pid: ", yellow);
     uintToBase(getRunningPid(), buff, 10);
     putStr(buff, yellow);
@@ -381,16 +381,16 @@ adquire(myMutex3);
     putStr(buff,yellow);
     putChar('\n', yellow);
     putChar('\n', red);
-    
+
 release(myMutex3);
-    
+
     int i = 0;
     while (i<500) {
         i++;
     }
-    
+
     i = 0;
-    
+
 adquire(myMutex3);
     while (i < 5) {
         critical--;
@@ -404,7 +404,7 @@ adquire(myMutex3);
         putChar('\n', red);
         i++;
     }
-    
+
 release(myMutex3);
     putStr("llegue", colour);
     uintToBase(getRunningPid(), buff, 10);
@@ -422,19 +422,19 @@ void mutexTest() {
     critical = 1;
     tProcess * proc = createProcess("mutez1", mutexTest1, 0, 0, NULL);
     printProcess(proc);
-    
+
     tProcess * anotherP = createProcess("mutex2", mutexTest2, 0, 0, NULL);
     printProcess(anotherP);
-    
+
     tProcess * anotherP1 = createProcess("mutex3", mutexTest3, 0, 0, NULL);
     printProcess(anotherP1);
 
     tProcess * anotherP2 = createProcess("mutex3", mutexTest3, 0, 0, NULL);
     printProcess(anotherP2);
 
-    
+
     //dumpMemory();
-    
+
     push(ready, proc);
     push(ready, anotherP);
     push(ready, anotherP1);
@@ -447,7 +447,7 @@ void mutexTest() {
 void init_(void * startingPoint) {
     ready = newQueue(sizeof(tProcess), cmpProcess);
     blocked = newQueue(sizeof(tProcess), cmpProcess);
-    running = createProcess("theGodFather", mutexTest, 0, 0, NULL);
+    running = createProcess("theGodFather", startingPoint, 0, 0, NULL);
     running->state = RUNNING;
     //printProcess(running);
     contextSwitch(running->stackPointer);
