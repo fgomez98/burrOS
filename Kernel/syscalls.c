@@ -7,6 +7,7 @@
 #include "BuddyAllocationSystem.h"
 #include "scheduler.h"
 #include "String.h"
+#include "mutex.h"
 
 #define WRITE 1
 #define READ 0
@@ -15,6 +16,7 @@
 #define CLEAR 0
 #define CLOCK 2
 #define BEEP 3
+static char buff[8];
 
 /*For more information visit systemCall.h*/
 
@@ -27,7 +29,9 @@ void syscall_handler(uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4,
 void syscall_handler(uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t arg6) {
 	void** pp;
 	void* p;
+	uint64_t* ui;
 	tProcess* process;
+	mutex* m ;
 	Colour colour;
   colour.Red = 255;
   colour.Green = 255;
@@ -40,13 +44,11 @@ void syscall_handler(uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4,
       write(arg2, arg3, arg4, arg5, arg6);
 	 	break;
 		case 3:
-			pp =(void **) arg3;
+			pp = (void **)arg3;
 		  *pp =  mallocMemoryInProcess(arg2, getRunningProcess());
 		break;
 		case 4:
-			p = (void*) arg2;
-		 freeMemoryInProcess(p, getRunningProcess());
-
+		 		freeMemoryInProcess(arg2, getRunningProcess());
 		break;
 		case 5:
 		 	 process = createProcess("default", arg2, 0, arg3, NULL);//despues ver bien lo del primer parametro q es el process name
@@ -61,6 +63,25 @@ void syscall_handler(uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4,
 		break;
 		case 8:
 			sprintProcesses(arg2, arg3);
+		break;
+		case 9:
+			sprintMemory(arg2, arg3);
+		break;
+		case 10:
+			ui = (uint64_t*)arg3;
+			*ui = getMutex(arg2);
+		break;
+		case 11:
+			m = (mutex*) arg2;
+			destroyMutex(m);
+		break;
+		case 12:
+			m = (mutex*) arg2;
+			adquire(m);
+		break;
+		case 13:
+			m = (mutex*) arg2;
+			release(m);
 		break;
 
 	}
@@ -138,7 +159,7 @@ void read(uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5 , uint64_t 
 void sysKill(int pid, int message){
 	switch(message){
 		case 0:
-			endProcess(pid); //NO LE PUEDO PASAR EL PID cambiar estoooooo
+			endProcess(pid);
 		break;
 		case 1:
 			blockProcess(pid);

@@ -44,7 +44,9 @@ void initializeShell(){
     }
     else if(strcmp("ps", command) == 0){
       ps();
-      
+    }
+    else if(strcmp("memory", command) == 0){
+      memory();
     }
     else if(strcmp("exec", command) == 0){
       int pid = exec(probando, 0, 0);

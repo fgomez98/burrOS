@@ -2,6 +2,8 @@
 #include "VideoDriver.h"
 
 Colour colour3 = {100, 1000, 255};
+
+
 queueADT newQueue(size_t bytes, int (*cmp)(void *, void *)) {
     queueADT new = mallocMemory(sizeof(*new));
     new->bytes = bytes;
@@ -98,6 +100,7 @@ void * removeElem(queueADT q, void * elem) {
     char found = 0;
     q->first = removeREC(q->first, NULL, elem, q, aux, &found);
     if (found) {
+        (q->dim)--;
         return aux;
     } else {
         freeMemory(aux);

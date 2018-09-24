@@ -96,5 +96,15 @@ void ps(){
   printf("\n");
   systemCall(8, buffer, 1024, 0, 0, 0);
   printf(buffer);
+
+  printf("\n");
   free(buffer);
+}
+
+void memory(){
+    char* buffer = malloc(3000);
+    printf("\n");
+    systemCall(9, buffer, 3000, 0, 0, 0);
+    printf(buffer);
+    free(buffer);
 }

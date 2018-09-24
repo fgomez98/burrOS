@@ -15,6 +15,8 @@
 #define toggle_bit(array, i) (array[i / 8] ^= 1 << (i % 8))
 #define get_bit(array, i) (1 & (array[i / 8] >> (i % 8)))
 
+
+
 typedef struct list_t {
     struct list_t * next, * prev;
 } list_t;
@@ -164,6 +166,7 @@ void splitBlock(int level) {
 
 // TODO: hay que chequear el rango de la direccion de memoria??
 void freeMemory(void * memoryAdr) {
+
     if (memoryAdr == NULL) {
         return;
     }
@@ -250,4 +253,67 @@ void dumpMemory() {
         level++;
     }
     putChar('\n', colour);
+}
+
+
+void sprintMemory(char* buffer, int buffSize){
+  int i = 0;
+  int occ;
+  occ = strcpy2(buffer+i,"block   baseAddress  finalAddress\n",buffSize);
+  i += occ;
+  buffSize -= occ;
+  uint64_t base;
+  uint64_t limit;
+
+  int index = 0;
+  int level = 0;
+  int maxIndex = 0;
+
+  while (level < BUCKET_AMOUNT) {
+      maxIndex += max_blocks_of_level(level);
+      while (index < maxIndex) {
+          if (get_bit(allocatedBlocks, index)) {
+              base = adress(index, level);
+              limit = base + size_of_level(level);
+
+              uintToBase(index, buff, 10);
+              occ = strcpy2(buffer+i, buff ,buffSize);
+              i += occ;
+              buffSize -= occ;
+              if(buffSize<=0) break;
+
+              occ = strcpy2(buffer+i, "    " ,buffSize);
+              i += occ;
+              buffSize -= occ;
+              if(buffSize<=0) break;
+
+              uintToBase(base, buff, 10);
+              occ = strcpy2(buffer+i, buff ,buffSize);
+              i += occ;
+              buffSize -= occ;
+              if(buffSize<=0) break;
+
+              occ = strcpy2(buffer+i, "    " ,buffSize);
+              i += occ;
+              buffSize -= occ;
+              if(buffSize<=0) break;
+
+              uintToBase(limit, buff, 10);
+              occ = strcpy2(buffer+i, buff ,buffSize);
+              i += occ;
+              buffSize -= occ;
+              if(buffSize<=0) break;
+
+              occ = strcpy2(buffer+i, "\n" ,buffSize);
+              i += occ;
+              buffSize -= occ;
+              if(buffSize<=0) break;
+
+          }
+          index++;
+      }
+      level++;
+  }
+  occ = strcpy2(buffer+i, "\n" ,buffSize);
+
 }

@@ -7,6 +7,7 @@
 
 #include "VideoDriver.h"
 #include "lib.h"
+#include "String.h"
 
 /**
   Desc: Libera un bloque de memoria (* memoryAdr) que fue previamente alocado por "malloc" asi este es disponible para otro uso.
@@ -39,5 +40,7 @@ void * callocMemory(size_t request);
 void dumpMemory();
 
 void put();
+
+void sprintMemory(char* buffer, int buffSize);
 
 #endif /* BuddyAllocationSystem */
