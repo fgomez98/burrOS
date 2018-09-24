@@ -180,7 +180,7 @@ void deleteProcess(tProcess* process) {
 }
 
 void freeProcessHeap(queueADT heap){
-  while(heap!=NULL && (heap->dim > 0)){
+  while(heap!=NULL && (getSize(heap) > 0)){
     freeMemory(pop(heap)); //libera lo q quedo reservado y sin liberar y tamb el pop va borrando los nodos de la cola
   }
 }

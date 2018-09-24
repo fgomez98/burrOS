@@ -41,10 +41,10 @@ void putString(char * str) {
 char getChar(){
   char c=0;
 	while(1) {
-    systemCall(READ, STDIN, &c,1, 1,0);
-    if ( c > 0 && c <128) {
-      return c;
-    }
+        systemCall(READ, STDIN, &c,1, 1,0);
+        if ( c > 0 && c <128) {
+            return c;
+        }
 	}
   return 0;
 }

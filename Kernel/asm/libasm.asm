@@ -44,8 +44,10 @@ swapLock:
 swapUnLock:
     push rbp
     mov rbp, rsp
+
     mov rax, 0
     xchg rax, [rdi]
+
     mov rsp, rbp
     pop rbp
     ret

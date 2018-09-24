@@ -82,3 +82,13 @@ void release(mutex * m) {
     }
 }
 
+/**
+ Destruye todos los mutex liberando el espacio de memoria reservado
+ */
+void destroyAllMutexs() {
+    mutex * current;
+    while ((current = pop(myMutexs)) != NULL) {
+        freeMemory(current);
+    }
+}
+

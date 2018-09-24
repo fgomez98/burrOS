@@ -411,8 +411,9 @@ unsigned char colon[]  = {
     _,_,_,_,_,_,_,_,
     _,_,_,_,_,_,_,_,
     _,_,_,_,_,_,_,_,//9
+    
+    
 };
-
 
 unsigned char * clock_map(int number) {
     return digitalClockNumbers + BIG_NUMBER_HEIGHT * 8 * number;

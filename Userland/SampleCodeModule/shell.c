@@ -2,12 +2,14 @@
 #include "commands.h"
 #include "stdio.h"
 #include "stdlib.h"
+#include "VideoModule.h"
 
 void probando(){
   printf("Exec\n");
   killCurrentProcess();
 }
 
+Colour white = {255, 255, 255};
 void initializeShell(){
   printf("Welcome to the shell!! Please type help to get a list of our commands\n");
 
@@ -46,8 +48,7 @@ void initializeShell(){
     }
     else if(strcmp("exec", command) == 0){
       int pid = exec(probando, 0, 0);
-    }
-    else{
+    } else {
       printf("\nUnknown command, type help\n");
     }
 

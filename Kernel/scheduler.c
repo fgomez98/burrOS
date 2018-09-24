@@ -1,6 +1,7 @@
 #include "scheduler.h"
 #include "mutex.h"
 #include "queueADT.h"
+#include "prodCons.h"
 
 char buff[8];
 Colour colour = {255, 255, 255};
@@ -126,7 +127,7 @@ void unblockProcess(int pid) {
     _sti();
 }
 
-changeProcessState(int pid, pState state) {
+void changeProcessState(int pid, pState state) {
     if (running->pid == pid) {
         running->state = state;
         return;
@@ -146,6 +147,21 @@ changeProcessState(int pid, pState state) {
     aux->state = state;
     push(ready, aux);
 }
+
+tProcess * getProcessState(int pid) {
+    if (running->pid == pid) {
+        return running;
+    }
+    tProcess * elem = mallocMemory(sizeof(tProcess));
+    elem->pid = pid;
+    tProcess * aux = getElem(ready, elem);
+    if (aux == NULL) {
+        aux = getElem(blocked, elem);
+    }
+    freeMemory(elem);
+    return aux;
+}
+
 
 //void runNextProcess() { // yield
 //    if (running != NULL) {
@@ -241,13 +257,13 @@ static int critical;
 
 void mutexTest1() {
 mutex * myMutex =getMutex("myMutex");
-    putChar('\n', yellow);
-    putChar('\n', yellow);
-    putStr("Dir2: ", yellow);
-    uintToBase(myMutex, buff, 10);
-    putStr(buff, green);
-    putChar('\n', yellow);
-    putChar('\n', yellow);
+//    putChar('\n', yellow);
+//    putChar('\n', yellow);
+//    putStr("Dir2: ", yellow);
+//    uintToBase(myMutex, buff, 10);
+//    putStr(buff, green);
+//    putChar('\n', yellow);
+//    putChar('\n', yellow);
    
 adquire(myMutex);
   
@@ -297,13 +313,13 @@ release(myMutex);
 
 void mutexTest2() {
 mutex * myMutex2 =getMutex("myMutex");
-    putChar('\n', yellow);
-    putChar('\n', yellow);
-    putStr("Dir3: ", yellow);
-    uintToBase(myMutex2, buff, 10);
-    putStr(buff, green);
-    putChar('\n', yellow);
-    putChar('\n', yellow);
+//    putChar('\n', yellow);
+//    putChar('\n', yellow);
+//    putStr("Dir3: ", yellow);
+//    uintToBase(myMutex2, buff, 10);
+//    putStr(buff, green);
+//    putChar('\n', yellow);
+//    putChar('\n', yellow);
     
     int i = 0;
     while (i<90000) {
@@ -361,13 +377,13 @@ release(myMutex2);
 
 void mutexTest3() {
 mutex * myMutex3 = getMutex("myMutex");
-    putChar('\n', yellow);
-    putChar('\n', yellow);
-    putStr("Dir4: ", yellow);
-    uintToBase(myMutex3, buff, 10);
-    putStr(buff, green);
-    putChar('\n', yellow);
-    putChar('\n', yellow);
+//    putChar('\n', yellow);
+//    putChar('\n', yellow);
+//    putStr("Dir4: ", yellow);
+//    uintToBase(myMutex3, buff, 10);
+//    putStr(buff, green);
+//    putChar('\n', yellow);
+//    putChar('\n', yellow);
 
   
 adquire(myMutex3);
@@ -438,8 +454,18 @@ void mutexTest() {
     push(ready, proc);
     push(ready, anotherP);
     push(ready, anotherP1);
-    //push(ready, anotherP2);
+    push(ready, anotherP2);
     while (1);
+    endProcess(getRunningPid());
+}
+
+
+void prodConsTest() {
+    tProcess * proc = createProcess("mutez1", initProdCons, 0, 0, NULL);
+    push(ready, proc);
+    while (1) {
+        _hlt();
+    }
     endProcess(getRunningPid());
 }
 
@@ -447,7 +473,7 @@ void mutexTest() {
 void init_(void * startingPoint) {
     ready = newQueue(sizeof(tProcess), cmpProcess);
     blocked = newQueue(sizeof(tProcess), cmpProcess);
-    running = createProcess("theGodFather", mutexTest, 0, 0, NULL);
+    running = createProcess("theGodFather", startingPoint, 0, 0, NULL);
     running->state = RUNNING;
     //printProcess(running);
     contextSwitch(running->stackPointer);
