@@ -35,5 +35,6 @@ void delay(int i);
 void ls();
 void ps();
 void showBurro();
+void startProcessCommunication();
 
 #endif

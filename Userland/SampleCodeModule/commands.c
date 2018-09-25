@@ -13,6 +13,7 @@ Colour colour2 = {180, 40, 18};
 Colour colour3 = {200, 156, 12};
 Colour colour4 = {233, 80, 167};
 Colour colour5 = {46, 230, 210};
+
 void help(){
   printf("\nHELP:\n");
   printf("\n");
@@ -26,6 +27,7 @@ void help(){
   printf("memory - shows bock index in buddy allocation system with it's base adress and final address(exclusive)\n");
   printf("ps - shows information about the current processes in the system\n");
   printf("necesito que me apapachen - shows burro\n");
+  printf("MSN - short simulation between two processes that message each other");
   printf("exit - exits from shell\n");
 }
 
@@ -145,4 +147,8 @@ void showBurro() {
     printf("    /___|          /____|     ,:__| \n");
     printf("   /    /         /    |     /    ) \n");
     printf("   `---'          '----'      `---' \n");
+}
+
+void startProcessCommunication(){
+  printf("\n%s\n", "Starting conversation between Drake & Josh");
 }

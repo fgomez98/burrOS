@@ -70,6 +70,9 @@ void initializeShell(){
     else if(strcmp("m", command) == 0) {
         startMessagesDemo();
     }
+    else if(strcmp("MSN", command) == 0){
+      startProcessCommunication();
+    }
     else{
       printf("\nUnknown command, type help\n");
     }
