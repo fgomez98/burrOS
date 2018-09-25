@@ -688,34 +688,38 @@ void pipeTest() {
 
 
 void sender1(){
-  tMessage * message = createMessage(2, sizeof(char), "Sender 1 says hello");
-  while(1){
+  int i = 0;
+  while(i++<20){
+    tMessage * message = createMessage(2, sizeof(char), "Sender 1 says hello");
     sendMessage(message->source,message,getRunningProcess());
   }
 }
 
 void sender2(){
-  tMessage * message = createMessage(2, sizeof(char), "Sender 2 says hello");
-  while(1){
+  int i = 0;
+  while(i++<20){
+    tMessage * message = createMessage(2, sizeof(char), "Sender 2 says hello");
     sendMessage(message->source,message,getRunningProcess());
   }
 }
 
 void sender3(){
-  tMessage * message = createMessage(2, sizeof(char), "Sender 3 says hello");
-  while(1){
+  int i = 0;
+  while(i++<20){
+    tMessage * message = createMessage(2, sizeof(char), "Sender 3 says hello");
     sendMessage(message->source,message,getRunningProcess());
   }
 }
 
 void reciever(){
   tMessage * message1;
-  while(1){
+  int i = 0;
+  while(i++<60){
     message1 = getMessage(getRunningProcess());
     putStr(message1->text,colour);
     putChar('\n',colour);
+    freeMessage(message1);
   }
-
 }
 
 void messagesTest(){

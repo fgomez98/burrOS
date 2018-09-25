@@ -86,5 +86,7 @@ tMessage * getMessage(tProcess * p);
 void sendMessage(int pid, tMessage * message, tProcess * source);
 void setProcessMailBox(tProcess * process);
 tMessage * createMessage(int process, long type, char * text);
+void freeMessage(tMessage * message);
+void freeProcessMailBox(tMailBox * mailBox);
 
 #endif

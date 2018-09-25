@@ -179,6 +179,7 @@ void endProcess(int pid) {
 
 void deleteProcess(tProcess* process) {
     freeMemory(process->processMemoryLowerAddress);
+    freeProcessMailBox(process->mailBox);
     freeProcessHeap(process->heap);
     //freeQueue(process->heap);
     freeMemory(process);
@@ -190,6 +191,15 @@ void freeProcessHeap(queueADT heap){
   }
 }
 
+void freeProcessMailBox(tMailBox * mailBox){
+  freeMemory(mailBox->buffer);
+  freeQueue(mailBox->waitQueue);
+  destroyMutex(mailBox->send);
+}
+
+void freeMessage(tMessage * message){
+  freeMemory(message->text);
+}
 
 int cmpPointers(uint64_t  p1, uint64_t  p2) {
     return p1 - p2;
