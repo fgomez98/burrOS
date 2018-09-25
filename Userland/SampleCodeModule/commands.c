@@ -87,7 +87,7 @@ void delay(int i) {
 void ps(){
   char* buffer = malloc(1024);
   printf("\n");
-  printf("pid   state");
+  printf("PID   STATE      MEMORYALLOCATED   PROCESSNAME");
   printf("\n");
   systemCall(8, buffer, 1024, 0, 0, 0);
   printf(buffer);
@@ -146,4 +146,3 @@ void showBurro() {
     printf("   /    /         /    |     /    ) \n");
     printf("   `---'          '----'      `---' \n");
 }
-

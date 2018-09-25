@@ -1,6 +1,7 @@
 #include "process.h"
 #include "scheduler.h"
 
+
 char buff2[8];
 Colour colour2 = {255, 255, 255};
 Colour yellow2 = {100, 1000, 255};
@@ -19,6 +20,7 @@ tProcess* createProcess(char* processName,void* startingPoint, int parentPid, in
     process->processMemoryLowerAddress = mallocMemory(PROCESS_SIZE);
     void* processMemoryUpperAddress = process->processMemoryLowerAddress + PROCESS_SIZE -1;
     process->stackPointer = initializeStack(processMemoryUpperAddress - sizeof(tStackFrame) +1 , argc, argv, startingPoint);
+    process->memoryAllocated = PROCESS_SIZE;
     process->state = READY;
     process->heap = NULL;
     return process;
@@ -204,6 +206,7 @@ void* mallocMemoryInProcess(size_t request, tProcess* process){
 
 
   push(process->heap, p);
+  process->memoryAllocated += request;
   //putStr("\nno la quedo en push", colour2);
 
   //TNode* aux = (process->heap)->first;
@@ -242,7 +245,7 @@ void freeMemoryInProcess(void* memoryAdr, tProcess* process){
   //   putStr("\n", colour2);
   //   aux = aux->next;
   // }
-
+    process->memoryAllocated -= size_of_level(findLevel(memoryAdr));
     uint64_t * aux = removeElem(process->heap, memoryAdr);
     freeMemory(aux);
 
