@@ -43,13 +43,13 @@ void* malloc(int bytes){
 
 void* calloc(int bytes){
     void* address;
-    systemCall(14, bytes, &address, 0,0,0 );
+    systemCall(18, bytes, &address, 0,0,0 );
     return address;
 }
 
 void* realloc(void* ptr, int bytes){
     void* address;
-    systemCall(15, bytes, &address, ptr,0,0 );
+    systemCall(19, bytes, &address, ptr,0,0 );
     return address;
 }
 

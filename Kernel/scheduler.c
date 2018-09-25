@@ -524,10 +524,244 @@ void mutexTest() {
     
     push(ready, proc);
     push(ready, anotherP);
-    //push(ready, anotherP1);
+    push(ready, anotherP1);
     //push(ready, anotherP2);
     //push(ready, anotherP3);
     while (1);
     endProcess(getRunningPid());
 }
 
+void pipeTestWrite() {
+   pipe_t * pipeT = pipe("test");
+    writePipe(pipeT,"holaholaholaholaholaholaholahola", 8);
+    endProcess(getRunningPid());
+}
+void pipeTest1() {
+    pipe_t * pipeT = pipe("test");
+    char * resp = mallocMemory(5);
+
+    readPipe(pipeT,resp, 4);
+    resp[4] = '\0';
+    putStr(resp,yellow);
+    endProcess(getRunningPid());
+}
+
+void pipeTest2() {
+    pipe_t * pipeT = pipe("test");
+    char * resp = mallocMemory(5);
+
+    readPipe(pipeT,resp, 4);
+    resp[4] = '\0';
+    putStr(resp,yellow);
+    endProcess(getRunningPid());
+}
+
+void pipeTest3() {
+    pipe_t * pipeT = pipe("test");
+    char * resp = mallocMemory(5);
+
+    readPipe(pipeT,resp, 4);
+    resp[4] = '\0';
+    putStr(resp,yellow);
+    endProcess(getRunningPid());
+}
+
+
+
+void pipeTest() {
+    //myMutex = initMutex("myMutex");
+    critical = 1;
+    tProcess * write1 = createProcess("escritura", pipeTestWrite, 0, 0, NULL);
+
+    tProcess * write2 = createProcess("escritura2", pipeTestWrite, 0, 0, NULL);
+
+    tProcess * read1 = createProcess("lectura2", pipeTest2, 0, 0, NULL);
+
+    tProcess * read2 = createProcess("lectura3", pipeTest3, 0, 0, NULL);
+
+    tProcess * read3 = createProcess("lecura3", pipeTest1, 0, 0, NULL);
+
+
+    //dumpMemory();
+
+    push(ready,read2);
+    push(ready, write1);
+    push(ready, read1);
+    push(ready, read3);
+    float i = 0;
+    while(i<1000000)
+        i+=0.1;
+    push(ready, write2);
+
+   // push(ready, anotherP1);
+    //push(ready, anotherP2);
+    while (1);
+    endProcess(getRunningPid());
+}
+
+void init_(void * startingPoint) {
+    ready = newQueue(sizeof(tProcess), cmpProcess);
+    blocked = newQueue(sizeof(tProcess), cmpProcess);
+    running = createProcess("theGodFather", startingPoint, 0, 0, NULL);
+    running->state = RUNNING;
+    //printProcess(running);
+    contextSwitch(running->stackPointer);
+}
+
+//void * dispatcher(int rsp) {
+//    if (running != NULL) {
+//        running->stackPointer = rsp;
+//        push(ready, running);
+//    }
+//    running = pop(ready);
+//    if (running != NULL) {
+//        return running->stackPointer;
+//    }
+//    return rsp;
+//}
+
+//void * dispatcher(int rsp) {
+//    if (running == NULL) {
+//        running = pop(ready);
+//    } else {
+//        running->stackPointer = rsp;
+//        running = pop(ready);
+//    }
+//    return running->stackPointer;
+//}
+
+//void addProcess(tProcess * process) {
+//    tProcessNode * node = mallocMemory(sizeof(tProcessNode));
+//    node->process = process;
+//    if (running == NULL) {
+//        running = node;
+//        running->next = running;
+//    } else {
+//        node->next = running->next;
+//        running->next = node;
+//    }
+//    amount++;
+//}
+//
+////void removeProcess(int pid) {
+////    if (running == NULL) {
+////        return;
+////    } else if(cmpProcess(running->process, running->next->process) && running->process->pid == pid) {
+////        deleteProcess(running->process);
+////        freeMemory(running);
+////        running = NULL;
+////        amount--;
+////        return;
+////    }
+////    tProcessNode * prev = running;
+////    tProcessNode * current = running->next;
+////    while (current->process->pid != pid) {
+////        prev = current;
+////        current = current->next;
+////    }
+////    if (cmpProcess(current->process, running->process)) {
+////        running = running->next;
+////    }
+////    prev->next = current->next;
+////    amount--;
+////    addToFreeQueue(slotToRemove);
+////    deleteProcess(current->process);
+////    freeMemory(current);
+////}
+//
+//
+//void getNextProcess() {
+//    if (running->process->state = RUNNING) {
+//        running->process->state = READY;
+//    }
+//    running = running->next;
+//    while (running->process->state != READY) {
+//        running = running->next;
+//    }
+//    running->process->state = RUNNING;
+//}
+//
+//void * dispatcher(int rsp) {
+//    if (running == NULL) {
+//        return rsp;
+//    }
+//    running->process->stackPointer = rsp;
+//    getNextProcess();
+//    return running->process->stackPointer;
+//}
+//
+
+
+void sprintProcesses(char* buffer, int buffSize){
+    TNode* aux;
+    int index = 0;
+    int occ;
+    char pid[0];
+    int s;
+    char* states[4];
+    states[0] = "ready\n";
+    states[1] = "running\n";
+    states[2] = "waiting\n";
+    states[3] = "dead\n";
+
+     intToString(pid, running->pid);
+     occ = strcpy2(buffer+index,pid,buffSize);
+     index += occ;
+     buffSize -= occ;
+      occ = strcpy2(buffer+index,"     ",buffSize);
+      index += occ;
+     buffSize -= occ;
+
+     s = stateIdentifier(running->state);
+     occ = strcpy2(buffer+index,states[s],buffSize);
+     index+=occ;
+     buffSize-=occ;
+
+
+    if(ready != NULL){
+        aux = ready->first;
+        while(aux!= NULL){
+          tProcess* p = aux->elem;
+          intToString(pid, p->pid);
+          occ = strcpy2(buffer + index, pid, buffSize);
+          index += occ;
+          buffSize -= occ;
+          if(buffSize<=0) break;
+           occ = strcpy2(buffer+index,"     ",buffSize);
+           index+=occ;
+           buffSize-=occ;
+           if(buffSize<=0) break;
+           s = stateIdentifier(p->state);
+           occ = strcpy2(buffer+index,states[s],buffSize);
+           index+=occ;
+           buffSize-=occ;
+           if(buffSize<=0) break;
+           aux = aux->next;
+        }
+
+  }
+
+     if(blocked != NULL){
+         aux = blocked->first;
+         while(aux!= NULL){
+           tProcess* p = aux->elem;
+           intToString(pid, p->pid);
+           occ = strcpy2(buffer + index, pid, buffSize);
+           index += occ;
+           buffSize -= occ;
+           if(buffSize<=0) break;
+            occ = strcpy2(buffer+index,"     ",buffSize);
+            index+=occ;
+            buffSize-=occ;
+            if(buffSize<=0) break;
+            s = stateIdentifier(p->state);
+            occ = strcpy2(buffer+index,states[s],buffSize);
+            index+=occ;
+            buffSize-=occ;
+            if(buffSize<=0) break;
+            aux = aux->next;
+         }
+   }
+
+
+}

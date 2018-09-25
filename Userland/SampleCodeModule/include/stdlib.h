@@ -35,4 +35,6 @@ void kill(int pid, int msg);
 
 //kill q mata al current process
 void killCurrentProcess();
+void* calloc(int bytes);
+void* realloc(void* ptr, int bytes);
 #endif
