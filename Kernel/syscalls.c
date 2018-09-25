@@ -83,6 +83,14 @@ void syscall_handler(uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4,
 			m = (mutex*) arg2;
 			release(m);
 		break;
+		case 14:
+			pp = (void **)arg3;
+			*pp =  callocMemoryInProcess(arg2, getRunningProcess());
+		break;
+		case 15:
+		pp = (void **)arg3;
+		*pp =  reallocMemoryInProcess(arg2, getRunningProcess(), arg3);
+		break;
 
 	}
 }
