@@ -45,7 +45,7 @@ void free(void* ad){
   systemCall(4, ad,0,0,0,0);
 }
 
-int exec(void* startingPoint, int argc, void* argv[]){ // los parametros no se bien todavia
+int exec(void* startingPoint, int argc, void* argv[]) { // los parametros no se bien todavia
   int pid;
   systemCall(5, startingPoint, &pid, argc, argv, 0);
   return pid;
@@ -57,11 +57,11 @@ int exec(void* startingPoint, int argc, void* argv[]){ // los parametros no se b
     1: blocks process
     2: unblocks process
 */
-void kill(int pid, int msg){
+void kill(int pid, int msg) {
   systemCall(6, pid, msg, 0,0,0);
 }
 
 //kill q mata al current process
-void killCurrentProcess(){
+void killCurrentProcess() {
   systemCall(7, 0, 0, 0,0,0);
 }

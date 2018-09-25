@@ -1,6 +1,14 @@
 #ifndef commands_h
 #define commands_h
 
+#define CLOCK 2
+#define WRITE 1
+#define STDOUT 1
+#define READ 0
+#define STDIN 0
+#define CLEAR 0
+#define BEEP 3
+#define SIZE 5
 /*IMPORTANT: the imput of commands must be exactly as shown on "help" list, wuth no spaces before or after*/
 
 /*Prints the available list of commands on sreen*/
@@ -23,8 +31,9 @@ void divi();
 
 /*Divides the integer 100 by the number n*/
 int div100(int n);
-
+void delay(int i);
 void ls();
 void ps();
+void showBurro();
 
 #endif

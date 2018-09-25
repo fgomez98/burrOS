@@ -23,4 +23,16 @@ void* malloc(int bytes);
 void free(void* ad);
 void kill(int pid, int msg);
 
+
+int exec(void* startingPoint, int argc, void* argv[]);
+/*
+ msg:
+ 0: ends process
+ 1: blocks process
+ 2: unblocks process
+ */
+void kill(int pid, int msg);
+
+//kill q mata al current process
+void killCurrentProcess();
 #endif

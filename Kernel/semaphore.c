@@ -4,6 +4,7 @@
 
 Colour colour6 = {255, 255, 255};
 Colour red3 = {100, 100, 255};
+Colour c = {215, 100, 230};
 char buff6[8];
 static queueADT mySems;
 
@@ -29,7 +30,7 @@ sem * getSem(char * semName) {
     elem->name = semName;
     sem * aux = getElem(mySems, elem);
     if (aux == NULL) {
-        aux = initMutex(semName);
+        aux = initSem(semName);
         push(mySems, aux);
     }
     return aux;
@@ -40,6 +41,7 @@ void destroySem(sem * s) {
     elem->name = s->name;
     sem * aux = removeElem(mySems, elem);
     if (aux != NULL) {
+        //freeQueue(aux->queue);
         freeMemory(aux);
     }
 }
@@ -52,9 +54,10 @@ void destroyAllSem() {
 }
 
 void wait(sem * s) {
+    //_cli();
     adquire(s->lock);
     (s->value)--;
-    if(s->value < 0) {
+    if (s->value < 0) {
         int pid = getRunningPid();
         push(s->queue, pid);
         release(s->lock);
@@ -62,9 +65,11 @@ void wait(sem * s) {
     } else {
         release(s->lock);
     }
+    //_sti();
 }
 
 void post(sem * s) {
+     //_cli();
     adquire(s->lock);
     (s->value)++;
     if (s->value <= 0) {
@@ -74,5 +79,6 @@ void post(sem * s) {
         }
     }
     release(s->lock);
+    //_sti();
 }
 

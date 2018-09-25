@@ -167,7 +167,7 @@ void printProcess(tProcess * p) {
 // implementar yield para pasar a un proceso de ruuning a ready/waiting asi darle timepo a otro sin que este sea interrumpido por el timer tick
 
 void endProcess(int pid) {
-    _cli();
+    //_cli();
     changeProcessState(pid, DEAD);
     _hlt();
     //runNextProcess();
@@ -176,6 +176,7 @@ void endProcess(int pid) {
 void deleteProcess(tProcess* process) {
     freeMemory(process->processMemoryLowerAddress);
     freeProcessHeap(process->heap);
+    //freeQueue(process->heap);
     freeMemory(process);
 }
 
@@ -242,7 +243,8 @@ void freeMemoryInProcess(void* memoryAdr, tProcess* process){
   //   aux = aux->next;
   // }
 
-  removeElem(process->heap, memoryAdr);
+    uint64_t * aux = removeElem(process->heap, memoryAdr);
+    freeMemory(aux);
 
   ///putStr("\nno la quedo en free mem: ", colour2);
 

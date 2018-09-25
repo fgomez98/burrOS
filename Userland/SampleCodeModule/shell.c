@@ -3,6 +3,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "VideoModule.h"
+#include "prodCons.h"
 
 void probando(){
   printf("Exec\n");
@@ -11,8 +12,9 @@ void probando(){
 
 Colour white = {255, 255, 255};
 void initializeShell(){
-  printf("Welcome to the shell!! Please type help to get a list of our commands\n");
-
+    
+    showBurro();
+    printf("Welcome to the shell!! Please type help to get a list of our commands\n");
 
   static char command[MAXLENGTH];
   int running = 1;
@@ -50,11 +52,23 @@ void initializeShell(){
     }
     else if(strcmp("exec", command) == 0){
       int pid = exec(probando, 0, 0);
-    } else {
+    }
+    else if(strcmp("malloc", command) == 0){
+      // char* a = malloc(10);
+      // char *b = malloc(20);
+      // free(a);
+      // free(b);
+    } else if (strcmp("sushi", command) == 0) {
+        initProdCons();
+    } else if (strcmp("necesito que me apapachen", command) == 0) {
+        showBurro();
+    }
+    else{
       printf("\nUnknown command, type help\n");
     }
 
 
   }
    printf("\n\n\nSee you soon!");
+    
 }

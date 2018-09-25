@@ -15,5 +15,5 @@ int scanf(const char * fmt, ...);
 void getInput(char * string);
 char * getInt(const char * str, int * n );
 char* getString(const char* str, char * source);
-
+void deleteChar();
 #endif

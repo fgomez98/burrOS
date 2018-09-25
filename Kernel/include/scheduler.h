@@ -20,12 +20,13 @@ void getFromWaiting();
 void blockProcess(int pid);
 void unblockProcess(int pid);
 void runNextProcess();
-tProcess * removeProcess(tProcess * p);
+//tProcess * removeProcess(tProcess * p);
 void scheduler();
 void * dispatcher(int rsp);
 void init_Process();
 void init_(void * startingPoint);
 int cmpProcess(tProcess * p1, tProcess * p2);
 tProcess* getRunningProcess();
+void mutexTest();
 
 #endif

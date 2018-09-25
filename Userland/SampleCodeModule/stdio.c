@@ -30,6 +30,9 @@ void scanAndPrint(char* buffer) {
     buffer[i]=0;
 
   }
+void deleteChar() {
+    systemCall(WRITE, STDOUT,3,0,0,0);
+}
 
 void putChar(char c) {
     systemCall(WRITE, STDOUT, 1,c,0,0);

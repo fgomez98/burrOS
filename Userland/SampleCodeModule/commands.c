@@ -4,14 +4,6 @@
 #include "VideoModule.h"
 #include "TimeModule.h"
 #include "systemCall.h"
-#define CLOCK 2
-#define WRITE 1
-#define STDOUT 1
-#define READ 0
-#define STDIN 0
-#define CLEAR 0
-#define BEEP 3
-#define SIZE 5
 
 extern void opcodeExc();
 
@@ -30,7 +22,10 @@ void help(){
   printf("clear - clears screen\n");
   printf("zero division - shows how the cero division exception is handled\n");
   printf("invalid opcode - shows how the cero division exception is handled\n");
+  printf("sushi - interactive producer vs consumer problem with sushi\n");
+  printf("memory - shows bock index in buddy allocation system with it's base adress and final address(exclusive)\n");
   printf("ps - shows information about the current processes in the system\n");
+  printf("necesito que me apapachen - shows burro\n");
   printf("exit - exits from shell\n");
 }
 
@@ -108,3 +103,47 @@ void memory(){
     printf(buffer);
     free(buffer);
 }
+
+void showBurro() {
+    printf("    ,--._ \n");
+    printf("    `.   `.                      ,-. \n");
+    printf("      `.`. `.                  ,'   ) \n");
+    printf("          \`:  \               ,'    / \n");
+    printf("          \`:  ),.         ,-' ,   / \n");
+    printf("         ( :  |:::.    ,-' ,'   ,' \n");
+    printf("          `.;: |::::  ,' ,:'  ,-' \n");
+    printf("          ,^-. `,--.-/ ,'  _,' \n");
+    printf("         (__        ^ ( _,' \n");
+    printf("        __((o\   __   ,-' \n");
+    printf("      ,',-.     ((o)  / \n");
+    printf("    ,','   `.    `-- ( \n");
+    printf("    |'      ,`        \ \n");
+    printf("    |     ,:' `        | ");   printf("        This is burrOS\n");
+    printf("   (  `--      :-.     | \n");
+    printf("   `,.__       ,-,'   ; \n");
+    printf("   (_/  `,__,-' /   ,' \n");
+    printf("   |\`--|_/,' ,' _,' \n");
+    printf("    \_^--^,',-' -'( \n");
+    printf("    (_`--','       `-. \n");
+    printf("     ;;;;'       ::::.`------. \n");
+    printf("       ,::       `::::  `:.   `.\n");
+    printf("      ,:::`       :::::   `::.  \\ \n");
+    printf("     ;:::::       `::::     `::  \\ \n");
+    printf("     |:::::        `::'      `:   ; \n");
+    printf("     |:::::.        ;'        ;   |\n");
+    printf("     |:::::;                   )  | \n");
+    printf("     |::::::        ,   `::'   |  \\ \n");
+    printf("     |::::::.       ;.   :'    ;   ::. \n");
+    printf("     |::::,::        :.  :   ,;:   |:: \n");
+    printf("     ;:::;`::     ,:::  |,- `:   |::, \n");
+    printf("    /;::|    `--;""';'  |     :. (`; \n");
+    printf("    \\   ;           ;   |     ::  `, \n");
+    printf("     ;  |           |  ,:;     |  : \n");
+    printf("     |  ;           |  |:;     |  | \n");
+    printf("     |  |           |  |:      |  | \n");
+    printf("     |  |           |  ;:      |  | \n");
+    printf("    /___|          /____|     ,:__| \n");
+    printf("   /    /         /    |     /    ) \n");
+    printf("   `---'          '----'      `---' \n");
+}
+

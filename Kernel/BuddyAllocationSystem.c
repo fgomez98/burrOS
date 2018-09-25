@@ -167,7 +167,7 @@ void splitBlock(int level) {
 // TODO: hay que chequear el rango de la direccion de memoria??
 void freeMemory(void * memoryAdr) {
 
-    if (memoryAdr == NULL) {
+    if ((memoryAdr == NULL) || (memoryAdr < baseAdress) || (memoryAdr > (baseAdress+ total_size))) {
         return;
     }
     int level = findLevel(memoryAdr);

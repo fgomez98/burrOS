@@ -47,6 +47,7 @@ void destroyMutex(mutex * m) {
     elem->name = m->name;
     mutex * aux = removeElem(myMutexs, elem);
     if (aux != NULL) {
+        //freeQueue(aux->queue);
         freeMemory(aux);
     }
 }
@@ -57,12 +58,17 @@ void destroyMutex(mutex * m) {
  funcion atomica
  */
 void adquire(mutex * m) {
-    if(swapLock(&(m->value))) { // si no entramos al lock bloqueamos al proceso hasta que esta sea liberada
+    if(swapLock(&(m->value))) {
         int pid = getRunningPid();
         push(m->queue, pid);
         blockProcess(pid);
     }
-    m->mutex_holder = getRunningPid();
+    //m->mutex_holder = getRunningPid();
+//    putChar('\n', red2);
+//    putStr("adquire by: ", red2);
+//    uintToBase(getRunningPid(), buff5, 10);
+//    putStr(buff5, red2);
+//    putChar('\n', red2);
 }
 
 /**
@@ -71,15 +77,20 @@ void adquire(mutex * m) {
  funcion atomica
  */
 void release(mutex * m) {
-    if (m->mutex_holder == getRunningPid()) {
+    //if (m->mutex_holder == getRunningPid()) {
+//        putChar('\n', red2);
+//        putStr("released by: ", red2);
+//        uintToBase(getRunningPid(), buff5, 10);
+//        putStr(buff5, red2);
+//        putChar('\n', red2);
         int pid = pop(m->queue);
         if (pid != NULL) {
-            m->mutex_holder = pid;
+            //m->mutex_holder = pid;
             unblockProcess(pid);
         } else {
             swapUnLock(&(m->value));
         }
-    }
+    //}
 }
 
 /**

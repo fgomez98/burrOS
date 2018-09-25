@@ -1,6 +1,10 @@
 #ifndef prodCons_h
 #define prodCons_h
 
+#include "stdio.h"
+#include "sync.h"
+#include "stdlib.h"
+#include "commands.h"
 void initProdCons();
 int myRand();
 int myRandInRange(int min, int max);
@@ -11,4 +15,4 @@ char * makeSushi();
 void monster();
 void eatFromBuffer();
 
-#endif 
+#endif

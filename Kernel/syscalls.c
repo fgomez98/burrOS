@@ -8,6 +8,7 @@
 #include "scheduler.h"
 #include "String.h"
 #include "mutex.h"
+#include "semaphore.h"
 
 #define WRITE 1
 #define READ 0
@@ -32,6 +33,7 @@ void syscall_handler(uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4,
 	uint64_t* ui;
 	tProcess* process;
 	mutex* m ;
+    sem* s;
 	Colour colour;
   colour.Red = 255;
   colour.Green = 255;
@@ -83,7 +85,22 @@ void syscall_handler(uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4,
 			m = (mutex*) arg2;
 			release(m);
 		break;
-
+        case 14:
+            ui = (uint64_t*)arg3;
+            *ui = getSem(arg2);
+            break;
+        case 15:
+            s = (sem*) arg2;
+            destroySem(s);
+            break;
+        case 16:
+            s = (sem*) arg2;
+            wait(s);
+            break;
+        case 17:
+            s = (sem*) arg2;
+            post(s);
+            break;
 	}
 }
 
