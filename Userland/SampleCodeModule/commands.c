@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "VideoModule.h"
 #include "TimeModule.h"
-#include "systemCall.h"
+#include "syscall.h"
 
 extern void opcodeExc();
 
@@ -30,7 +30,7 @@ void help(){
 }
 
 void cleanScreen(){
-  systemCall(WRITE, CLEAR, 0,0, 0, 0);
+  _syscall(_clearScreen);
 }
 
 void showTime() {
@@ -45,12 +45,12 @@ void showDigitalHour(){
     char key;
     int j = 0;
     while (1) {
-        systemCall(READ, STDIN, &key,1, 1,0);
+        _syscall(_read, &key);
         switch (key) {
             case 'c': //hotkey
-                systemCall(WRITE, BEEP, 0,0,0,0);
+                _syscall(_beep);
                 delay(5000);
-                systemCall(WRITE, BEEP, 1,0,0,0);
+                _syscall(_unbeep);
                 j++;
                 j = j % SIZE;
                 break;
@@ -89,7 +89,7 @@ void ps(){
   printf("\n");
   printf("PID   STATE      MEMORYALLOCATED   PROCESSNAME");
   printf("\n");
-  systemCall(8, buffer, 1024, 0, 0, 0);
+  _syscall(_ps, buffer, 2000);
   printf(buffer);
 
   printf("\n");
@@ -99,7 +99,7 @@ void ps(){
 void memory(){
     char* buffer = malloc(3000);
     printf("\n");
-    systemCall(9, buffer, 3000, 0, 0, 0);
+    _syscall(_sprintMemory, buffer, 3000);
     printf(buffer);
     free(buffer);
 }

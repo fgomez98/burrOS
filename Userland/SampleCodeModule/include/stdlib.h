@@ -2,7 +2,7 @@
 #define lib_h
 #include <stdint.h>
 #include "stdio.h"
-#include "systemCall.h"
+#include "syscall.h"
 
 /*Recieves a char array containing anumber and returns said number as an integer(base 10)*/
 int atoi(char * str);

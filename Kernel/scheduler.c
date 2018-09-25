@@ -619,6 +619,7 @@ void mutexTest() {
 
 void pipeTestWrite() {
    pipe_t * pipeT = pipe("test");
+   putStr("escribo",yellow);
     writePipe(pipeT,"holaholaholaholaholaholaholahola", 8);
     endProcess(getRunningPid());
 }
@@ -670,8 +671,8 @@ void pipeTest() {
 
     //dumpMemory();
 
-    push(ready,read2);
-    push(ready, write1);
+    push(ready,write1);
+    push(ready, read2);
     push(ready, read1);
     push(ready, read3);
     float i = 0;

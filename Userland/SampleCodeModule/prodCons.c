@@ -45,7 +45,7 @@ void initProdCons() {
     printf(" 1  2  3  4  5  6  7  8  9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30\n");
     while (running) {
         char key;
-        systemCall(READ, STDIN, &key,1, 1,0);
+        _syscall(_read, &key);
         switch (key) {
             case 's':
                 if ((sushiMenCount < MAXSUSHIMEN) && initialized) {
@@ -122,12 +122,12 @@ void deleteSushi(int n) {
 
 void sushiMan() {
     while(running) {
-        
+
         adquire(buffMutex);
-        
+
         int i = (lfsr113_Bits()%10)+1;
         //printf("sushi %d ", i);
-        
+
         while ((i > 0) && (bufferIndex < BUFFER_LIMIT)) {
             if (bufferIndex >= 8) {
                 printf("(@) ");
@@ -148,10 +148,10 @@ void sushiMan() {
 
 void monster() {
     while(running) {
-        
+
         wait(items);
         adquire(buffMutex);
-        
+
         int i = (lfsr113_Bits()%10) + 1;
         // printf("moster %d ", i);
         while ((i > 0) && (bufferIndex > 0)) {
@@ -164,12 +164,10 @@ void monster() {
             bufferIndex--;
             delay(5000);
         }
-        
+
         release(buffMutex);
-        
+
     }
     post(finish);
     killCurrentProcess();
 }
-
-
