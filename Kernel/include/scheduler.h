@@ -28,4 +28,7 @@ void init_(void * startingPoint);
 int cmpProcess(tProcess * p1, tProcess * p2);
 tProcess* getRunningProcess();
 
+void mutexTest();
+void pipeTest();
+
 #endif

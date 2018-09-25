@@ -1,5 +1,6 @@
 #include "scheduler.h"
 #include "mutex.h"
+#include <pipe.h>
 #include "queueADT.h"
 
 char buff[8];
@@ -240,7 +241,7 @@ void init_Process() {
 static int critical;
 
 void mutexTest1() {
-mutex * myMutex =getMutex("myMutex");
+    mutex * myMutex =getMutex("myMutex");
     putChar('\n', yellow);
     putChar('\n', yellow);
     putStr("Dir2: ", yellow);
@@ -249,15 +250,15 @@ mutex * myMutex =getMutex("myMutex");
     putChar('\n', yellow);
     putChar('\n', yellow);
 
-adquire(myMutex);
+    adquire(myMutex);
 
     putStr("My pid: 2", yellow);
 
-     critical++;
+    critical++;
     putStr("valor del mutex: ", yellow);
     uintToBase(critical, buff, 10);
     putStr(buff, yellow);
-      putChar('\n', yellow);
+    putChar('\n', yellow);
     int i = 0;
     while (i < 500000) {
         i++;
@@ -265,7 +266,7 @@ adquire(myMutex);
 
 
 
-release(myMutex);
+    release(myMutex);
 
     i = 0;
     while (i<500) {
@@ -275,11 +276,11 @@ release(myMutex);
     i = 0;
 
 
-adquire(myMutex);
+    adquire(myMutex);
 
     while (i < 5) {
         critical++;
-   putStr("My pid: ", yellow);
+        putStr("My pid: ", yellow);
         uintToBase(getRunningPid(), buff, 10);
         putStr(buff, yellow);
         putStr("valor del mutex: ", yellow);
@@ -289,14 +290,14 @@ adquire(myMutex);
         i++;
     }
 
-release(myMutex);
+    release(myMutex);
 
     putStr("llegue2", colour);
     endProcess(getRunningPid());
 }
 
 void mutexTest2() {
-mutex * myMutex2 =getMutex("myMutex");
+    mutex * myMutex2 =getMutex("myMutex");
     putChar('\n', yellow);
     putChar('\n', yellow);
     putStr("Dir3: ", yellow);
@@ -313,15 +314,15 @@ mutex * myMutex2 =getMutex("myMutex");
     i = 0;
 
 
-adquire(myMutex2);
+    adquire(myMutex2);
 
     putChar('\n', red);
     putChar('\n', red);
-   putStr("My pid: ", yellow);
+    putStr("My pid: ", yellow);
     uintToBase(getRunningPid(), buff, 10);
     putStr(buff, yellow);
 
-       critical++;
+    critical++;
     putStr("valor del mutex: ", yellow);
     uintToBase(critical, buff, 10);
     putStr(buff,yellow);
@@ -329,7 +330,7 @@ adquire(myMutex2);
     putChar('\n', red);
 
 
-release(myMutex2);
+    release(myMutex2);
 
 
     i = 0;
@@ -339,11 +340,11 @@ release(myMutex2);
 
     i = 0;
 
-adquire(myMutex2);
+    adquire(myMutex2);
 
     while (i < 5) {
         critical++;
-          putStr("My pid: 3", yellow);
+        putStr("My pid: 3", yellow);
         putStr("valor del mutex: ", yellow);
         uintToBase(critical, buff, 10);
         putStr(buff, yellow);
@@ -352,12 +353,13 @@ adquire(myMutex2);
         i++;
     }
 
-release(myMutex2);
+    release(myMutex2);
 
 
     putStr("llegue3", colour);
     endProcess(getRunningPid());
 }
+
 
 void mutexTest3() {
 mutex * myMutex3 = getMutex("myMutex");
@@ -426,23 +428,90 @@ void mutexTest() {
     tProcess * anotherP = createProcess("mutex2", mutexTest2, 0, 0, NULL);
     printProcess(anotherP);
 
-    tProcess * anotherP1 = createProcess("mutex3", mutexTest3, 0, 0, NULL);
-    printProcess(anotherP1);
+   /*tProcess * anotherP1 = createProcess("mutex3", mutexTest3, 0, 0, NULL);
+    printProcess(anotherP1);*/
 
-    tProcess * anotherP2 = createProcess("mutex3", mutexTest3, 0, 0, NULL);
-    printProcess(anotherP2);
+  //  tProcess * anotherP2 = createProcess("mutex3", mutexTest3, 0, 0, NULL);
+    //printProcess(anotherP2);
 
 
     //dumpMemory();
 
     push(ready, proc);
     push(ready, anotherP);
-    push(ready, anotherP1);
+    //push(ready, anotherP1);
     //push(ready, anotherP2);
     while (1);
     endProcess(getRunningPid());
 }
 
+void pipeTestWrite() {
+   pipe_t * pipeT = pipe("test");
+    writePipe(pipeT,"holaholaholaholaholaholaholahola", 8);
+    endProcess(getRunningPid());
+}
+void pipeTest1() {
+    pipe_t * pipeT = pipe("test");
+    char * resp = mallocMemory(5);
+
+    readPipe(pipeT,resp, 4);
+    resp[4] = '\0';
+    putStr(resp,yellow);
+    endProcess(getRunningPid());
+}
+
+void pipeTest2() {
+    pipe_t * pipeT = pipe("test");
+    char * resp = mallocMemory(5);
+
+    readPipe(pipeT,resp, 4);
+    resp[4] = '\0';
+    putStr(resp,yellow);
+    endProcess(getRunningPid());
+}
+
+void pipeTest3() {
+    pipe_t * pipeT = pipe("test");
+    char * resp = mallocMemory(5);
+
+    readPipe(pipeT,resp, 4);
+    resp[4] = '\0';
+    putStr(resp,yellow);
+    endProcess(getRunningPid());
+}
+
+
+
+void pipeTest() {
+    //myMutex = initMutex("myMutex");
+    critical = 1;
+    tProcess * write1 = createProcess("escritura", pipeTestWrite, 0, 0, NULL);
+
+    tProcess * write2 = createProcess("escritura2", pipeTestWrite, 0, 0, NULL);
+
+    tProcess * read1 = createProcess("lectura2", pipeTest2, 0, 0, NULL);
+
+    tProcess * read2 = createProcess("lectura3", pipeTest3, 0, 0, NULL);
+
+    tProcess * read3 = createProcess("lecura3", pipeTest1, 0, 0, NULL);
+
+
+    //dumpMemory();
+
+    push(ready,read2);
+    push(ready, write1);
+    push(ready, read1);
+    push(ready, read3);
+    float i = 0;
+    while(i<1000000)
+        i+=0.1;
+    push(ready, write2);
+
+   // push(ready, anotherP1);
+    //push(ready, anotherP2);
+    while (1);
+    endProcess(getRunningPid());
+}
 
 void init_(void * startingPoint) {
     ready = newQueue(sizeof(tProcess), cmpProcess);

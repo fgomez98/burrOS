@@ -72,7 +72,9 @@ int main() {
 //    put();
 //    dumpMemory();
     load_idt();
-   init_(sampleCodeModuleAddress);
+
+    init_(pipeTest);
+  // init_(sampleCodeModuleAddress);
 //   rip = (uint64_t)sampleCodeModuleAddress;
 //    ((EntryPoint)sampleCodeModuleAddress)();
 
