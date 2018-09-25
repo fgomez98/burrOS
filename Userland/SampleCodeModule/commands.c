@@ -26,8 +26,7 @@ void help(){
   printf("sushi - interactive producer vs consumer problem with sushi\n");
   printf("memory - shows bock index in buddy allocation system with it's base adress and final address(exclusive)\n");
   printf("ps - shows information about the current processes in the system\n");
-  printf("necesito que me apapachen - shows burro\n");
-  printf("MSN - short simulation between two processes that message each other");
+  printf("necesitoquemeapapachen - shows burro\n");
   printf("exit - exits from shell\n");
 }
 
@@ -44,6 +43,8 @@ void showTime() {
 void showDigitalHour(){
     Colour myColours[5] = {colour1, colour2, colour3, colour4, colour5};
     cleanScreen();
+    printf("C - to change colour\n");
+    printf("Q - to quit");
     char key;
     int j = 0;
     while (1) {

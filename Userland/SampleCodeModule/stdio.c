@@ -119,11 +119,9 @@ int scanf(const char* fmt, ...){
         fmt++;
         str++;
       }
-    }else{
-      switch(*(++fmt)){
-        case '%': if(*str != '%') return i;
-                  else str++;
-                  break;
+    } else{
+      fmt++;
+      switch(*fmt){
         case 'd': str = getInt(str, va_arg(args, int));
                   i++;
                   break;
@@ -141,47 +139,53 @@ int scanf(const char* fmt, ...){
   return i;
 }
 
-int sscanf(const char * fmt, const char * str, ...){
 
-  va_list args;
-  va_start( args, fmt );
-
-  char strnum[10];
-  char * c;
-  int i = 0;
-
-  while(*fmt != '\0'){
-    if(*fmt != '%'){
-      if((*fmt) != (*str)){
-        return i;
-      }else{
-        fmt++;
-        str++;
-      }
-    }else{
-      switch(*(++fmt)){
-        case '%': if(*str != '%') return i;
-                  else str++;
-                  break;
-        case 'd': c = str;
-                  str = getInt(str, va_arg(args,int));
-                  if(str != c){
+int sscanf(const char * fmt, const char * str, ...) {
+    va_list args;
+    va_start( args, fmt );
+    char strnum[10];
+    char * c;
+    int i = 0;
+    while(*fmt != '\0'){
+        if(*fmt != '%'){
+            if((*fmt) != (*str)){
+                return i;
+            }else{
+                fmt++;
+                str++;
+            }
+        } else{
+            switch(*(++fmt)){
+                case '%':
+                    if (*str != '%') {
+                        return i;
+                    } else {
+                        str++;
+                    }
+                    break;
+                case 'd': c = str;
+                    str = getInt(str, va_arg(args,int));
+                    if(str != c){
+                        i++;
+                    }
+                    break;
+                case 'c': c = va_arg(args, char*);
+                    *c = *str++;
                     i++;
-                  }
-                  break;
-        case 'c': c = va_arg(args, char*);
-                  *c = *str++;
-                  i++;
-                  break;
-        case 's': c = getString(str, va_arg(args, char*));
-                  i++;
-                  break;
-
-      }
-      ++fmt;
+                    break;
+                case 's': c = va_arg(args, char*);
+                    while( *str &&  *str!= ' '){
+                        *c = *str;
+                        c++;
+                        str++;
+                    }
+                    i++;
+                    break;
+            }
+            ++fmt;
+        }
     }
-  }
-  return i;
+    return i;
 }
 
 char * getInt(const char * str, int * n){
@@ -195,9 +199,8 @@ char * getInt(const char * str, int * n){
   return str;
 }
 
-
 char* getString(const char * str, char* source){
-  while(*str != '\0'){
+  while(*str && *(str) != ' '){
     *source = *str;
     *source++;
     *str++;
@@ -208,7 +211,6 @@ char* getString(const char * str, char* source){
 void getInput(char * string){
   char c;
   int i=0;
-
   while((c = getChar()) != '\n'){
     putChar(c);
     if(i < MAXLENGTH && (c != '\b' && c != '$') && (c > 0 && c < 127)){

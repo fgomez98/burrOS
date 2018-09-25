@@ -28,18 +28,29 @@ typedef struct mail_box{
   struct mutex * send;
 }tMailBox;
 
-typedef struct{
+//typedef struct{
+//    int pid; //process ID
+//    int parentPid; //parent's ID
+//    char* name; //process name
+//    pState state; //process status
+//    void * stackPointer;
+//    void * processMemoryLowerAddress;
+//    queueADT heap;
+//    uint64_t memoryAllocated;
+//} tProcess;
+
+typedef struct {
     int pid; //process ID
     int parentPid; //parent's ID
-    char* name; //process name
+    char * name; //process name
     pState state; //process status
     void * stackPointer;
     void * processMemoryLowerAddress;
+    void * code;
     queueADT heap;
     uint64_t memoryAllocated;
     tMailBox * mailBox;
 } tProcess;
-
 
 //RowDaBoat
 typedef struct {
@@ -72,8 +83,8 @@ typedef struct {
 
 tProcess* createProcess(char* processName,void* startingPoint, int parentPid, int argc, char* argv[]);
 void deleteProcess(tProcess* process);
-//void initializeStack(tStackFrame* stackPointer, int argc, char* argv[], void* startingPoint);
-void* initializeStack(void * stackPointer, int argc, char* argv[], void * startingPoint);
+void initializeStack(tStackFrame* stackPointer, int argc, char* argv[], void* startingPoint);
+//void* initializeStack(void * stackPointer, int argc, char* argv[], void * startingPoint);
 void* mallocMemoryInProcess(size_t request, tProcess* running);
 int cmpPointers(uint64_t  p1, uint64_t  p2) ;
 void freeMemoryInProcess(void* memoryAdr, tProcess* running);

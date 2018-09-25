@@ -11,6 +11,7 @@ char getChar();
 void putString(char * str);
 void printf(char* fmt, ...);
 int scanf(const char * fmt, ...);
+int sscanf(const char * fmt, const char * str, ...);
 
 void getInput(char * string);
 char * getInt(const char * str, int * n );

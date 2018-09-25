@@ -35,19 +35,19 @@ int isSuper(char c){
 }
 
 
-void* malloc(int bytes){
+void * malloc(int bytes){
     void* address;
     _syscall(_malloc, bytes, &address);
     return address;
 }
 
-void* calloc(int bytes){
+void * calloc(int bytes) {
     void* address;
     _syscall(_calloc, bytes, &address);
     return address;
 }
 
-void* realloc(void* ptr, int bytes){
+void * realloc(void* ptr, int bytes){
     void* address;
     _syscall(_realloc, bytes, &address, ptr);
     return address;

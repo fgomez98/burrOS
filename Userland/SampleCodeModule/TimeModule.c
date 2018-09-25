@@ -26,7 +26,7 @@ char * getTime() {
     }
     buf[5] = ':';
     _syscall(_getSec, &aux);
-    uintToBase(aux, buf+6, 10);    
+    uintToBase(aux, buf+6, 10);
     if (buf[7] == 0) {
         buf[7] = buf[6];
         buf[6] = '0';

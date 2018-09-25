@@ -684,6 +684,7 @@ void pipeTest() {
     //push(ready, anotherP2);
     while (1);
     endProcess(getRunningPid());
+
 }
 
 
