@@ -5,11 +5,28 @@
 #include "BuddyAllocationSystem.h"
 #include "lib.h"
 #include "queueADT.h"
+#include "String.h"
 
 #define BLOCK_SIZE 4096
 #define PROCESS_SIZE 2*BLOCK_SIZE
+#define MAX_MESSAGES 5
+#define MESSAGE_SIZE 500
 typedef enum {READY, RUNNING, WAITING, DEAD} pState; //estados de un proceso
 
+//MESSAGING
+
+typedef struct message_buffer{
+  int source;
+  long type;
+  char * text;
+}tMessage;
+
+typedef struct mail_box{
+  tMessage * buffer[MAX_MESSAGES];
+  int messages;
+  queueADT * waitQueue;
+  struct mutex * send;
+}tMailBox;
 
 typedef struct{
     int pid; //process ID
@@ -20,17 +37,9 @@ typedef struct{
     void * processMemoryLowerAddress;
     queueADT heap;
     uint64_t memoryAllocated;
+    tMailBox * mailBox;
 } tProcess;
 
-//typedef struct {
-//    int pid; //process ID
-//    int parentPid; //parent's ID
-//    char * name; //process name
-//    pState state; //process status
-//    void * stackPointer;
-//    void * code;
-//    void * processMemoryLowerAddress;
-//} tProcess;
 
 //RowDaBoat
 typedef struct {
@@ -73,5 +82,9 @@ void endProcess(int pid);
 int stateIdentifier(pState state);
 void* callocMemoryInProcess(size_t request, tProcess* process);
 void* reallocMemoryInProcess(size_t request, tProcess* process, uint64_t oldPtr);
+tMessage * getMessage(tProcess * p);
+void sendMessage(int pid, tMessage * message, tProcess * source);
+void setProcessMailBox(tProcess * process);
+tMessage * createMessage(int process, long type, char * text);
 
 #endif

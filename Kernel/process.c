@@ -23,6 +23,8 @@ tProcess* createProcess(char* processName,void* startingPoint, int parentPid, in
     process->memoryAllocated = PROCESS_SIZE;
     process->state = READY;
     process->heap = NULL;
+    process->mailBox = mallocMemory(sizeof(tMailBox));
+    setProcessMailBox(process);
     return process;
 }
 
@@ -305,4 +307,57 @@ int stateIdentifier(pState state){
   }
     return 3;
 
+}
+
+//MESSAGES
+
+tMessage * getMessage(tProcess* p){
+  tMessage * aux;
+  if(p->mailBox->messages <= 0){
+    blockProcess(p->pid);
+  }
+  aux = p->mailBox->buffer[--p->mailBox->messages];
+  while(getSize(p->mailBox->waitQueue) > 0){
+    unblockProcess(pop(p->mailBox->waitQueue));
+  }
+  return aux;
+}
+
+void sendMessage(int pid, tMessage * message, tProcess * source){
+  tProcess * destination = getProcessState(pid);
+  adquire(destination->mailBox->send);
+  if(destination->mailBox->messages == MAX_MESSAGES){
+    release(destination->mailBox->send);
+    push(destination->mailBox->waitQueue, source->pid);
+    blockProcess(source->pid);
+    adquire(destination->mailBox->send);
+  }
+  destination->mailBox->buffer[destination->mailBox->messages++] = message;
+  if(destination->state == WAITING){
+    unblockProcess(destination->pid);
+  }
+  release(destination->mailBox->send);
+}
+
+void setProcessMailBox(tProcess * process){
+  process->mailBox = mallocMemory(sizeof(tMailBox));
+  process->mailBox->messages = 0;
+  process->mailBox->waitQueue = newQueue(sizeof(int), NULL);
+
+
+  char*buffer = mallocMemory(10);
+  int length1 = strlenght("sendMutex");
+  char * sendMutex = mallocMemory(length1 + uintToBase(process->pid,buffer,10)+1);
+  sendMutex = strcpy(sendMutex,"sendMutex");
+  sendMutex = mystrcat(sendMutex,buffer);
+  process->mailBox->send = getMutex(sendMutex);
+}
+
+tMessage * createMessage(int process, long type, char * text){
+  tMessage * message = mallocMemory(sizeof(tMessage));
+  message->source = process;
+  message->type = type;
+  message->text = mallocMemory(strlenght(text));
+  strcpy(message->text,text);
+  return message;
 }

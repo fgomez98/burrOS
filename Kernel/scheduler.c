@@ -30,36 +30,36 @@ void addProcess(tProcess * p) {
 }
 
 void blockProcess(int pid) {
-    //_cli();
+    _cli();
 
-//    putStr("Block: ", green);
-//    uintToBase(pid, buff, 10);
-//    putStr(buff, yellow);
-//    putChar('\n', yellow);
+  //  putStr("Block: ", green);
+  //  uintToBase(pid, buff, 10);
+  //  putStr(buff, yellow);
+  //  putChar('\n', yellow);
 
     changeProcessState(pid, WAITING);
     _hlt();
 }
 
 void unblockProcess(int pid) {
-    //_cli();
+    _cli();
 //
-//    putStr("Volvi: ", green);
-//    uintToBase(pid, buff, 10);
-//    putStr(buff, yellow);
-//    putChar('\n', yellow);
+  //  putStr("Volvi: ", green);
+  //  uintToBase(pid, buff, 10);
+  //  putStr(buff, yellow);
+  //  putChar('\n', yellow);
 
     tProcess * elem = mallocMemory(sizeof(tProcess));
     elem->pid = pid;
     tProcess * aux = removeElem(blocked, elem);
     if (aux == NULL) {
-        //_sti();
+        _sti();
        return;
     }
     freeMemory(elem);
     aux->state = READY;
     push(ready, aux);
-    //_sti();
+    _sti();
 }
 
 void changeProcessState(int pid, pState state) {
@@ -683,4 +683,56 @@ void pipeTest() {
     //push(ready, anotherP2);
     while (1);
     endProcess(getRunningPid());
+}
+
+
+void sender1(){
+  tMessage * message = createMessage(2, sizeof(char), "Sender 1 says hello");
+  while(1){
+    sendMessage(message->source,message,getRunningProcess());
+  }
+}
+
+void sender2(){
+  tMessage * message = createMessage(2, sizeof(char), "Sender 2 says hello");
+  while(1){
+    sendMessage(message->source,message,getRunningProcess());
+  }
+}
+
+void sender3(){
+  tMessage * message = createMessage(2, sizeof(char), "Sender 3 says hello");
+  while(1){
+    sendMessage(message->source,message,getRunningProcess());
+  }
+}
+
+void reciever(){
+  tMessage * message1;
+  while(1){
+    message1 = getMessage(getRunningProcess());
+    putStr(message1->text,colour);
+    putChar('\n',colour);
+  }
+
+}
+
+void messagesTest(){
+  tProcess * proc1 = createProcess("reciever",reciever,0,0,NULL);
+  tProcess * proc2 = createProcess("sender1",sender1,0,0,NULL);
+  tProcess * proc3 = createProcess("sender2",sender2,0,0,NULL);
+  tProcess * proc4 = createProcess("sender3",sender3,0,0,NULL);
+
+  // printProcess(proc1);
+  // printProcess(proc2);
+  // printProcess(proc3);
+
+  push(ready, proc1);
+  push(ready, proc2);
+  push(ready, proc3);
+  push(ready, proc4);
+
+
+  while(1);
+  endProcess(getRunningPid());
 }

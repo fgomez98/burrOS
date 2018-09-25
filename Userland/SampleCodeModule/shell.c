@@ -12,16 +12,17 @@ void probando(){
 
 Colour white = {255, 255, 255};
 void initializeShell(){
-    
-    showBurro();
-    printf("Welcome to the shell!! Please type help to get a list of our commands\n");
+
+  showBurro();
+  printf("Welcome to the shell!! Please type help to get a list of our commands\n");
 
   static char command[MAXLENGTH];
   int running = 1;
   while (running){
 
-    printf("$>");
-    scanAndPrint(command);
+  printf("$>");
+  scanAndPrint(command);
+
 
     if(strcmp("help", command) == 0){
         help();
@@ -70,5 +71,5 @@ void initializeShell(){
 
   }
    printf("\n\n\nSee you soon!");
-    
+
 }

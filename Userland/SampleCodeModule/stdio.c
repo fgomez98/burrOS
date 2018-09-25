@@ -107,7 +107,7 @@ int scanf(const char* fmt, ...){
   int i = 0;
   char* c;
 
-  while(*fmt){
+  while(*fmt!='\0'){
     if(*fmt != '%'){
       if((*fmt) != (*str)){
         return i;
@@ -116,8 +116,10 @@ int scanf(const char* fmt, ...){
         str++;
       }
     }else{
-      fmt++;
-      switch(*fmt){
+      switch(*(++fmt)){
+        case '%': if(*str != '%') return i;
+                  else str++;
+                  break;
         case 'd': str = getInt(str, va_arg(args, int));
                   i++;
                   break;
@@ -129,6 +131,50 @@ int scanf(const char* fmt, ...){
                   i++;
                   break;
       }
+      ++fmt; //este no se si lo rompe
+    }
+  }
+  return i;
+}
+
+int sscanf(const char * fmt, const char * str, ...){
+
+  va_list args;
+  va_start( args, fmt );
+
+  char strnum[10];
+  char * c;
+  int i = 0;
+
+  while(*fmt != '\0'){
+    if(*fmt != '%'){
+      if((*fmt) != (*str)){
+        return i;
+      }else{
+        fmt++;
+        str++;
+      }
+    }else{
+      switch(*(++fmt)){
+        case '%': if(*str != '%') return i;
+                  else str++;
+                  break;
+        case 'd': c = str;
+                  str = getInt(str, va_arg(args,int));
+                  if(str != c){
+                    i++;
+                  }
+                  break;
+        case 'c': c = va_arg(args, char*);
+                  *c = *str++;
+                  i++;
+                  break;
+        case 's': c = getString(str, va_arg(args, char*));
+                  i++;
+                  break;
+
+      }
+      ++fmt;
     }
   }
   return i;
@@ -147,7 +193,7 @@ char * getInt(const char * str, int * n){
 
 
 char* getString(const char * str, char* source){
-  while(*str){
+  while(*str != '\0'){
     *source = *str;
     *source++;
     *str++;

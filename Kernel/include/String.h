@@ -19,6 +19,7 @@ int strcmp(char string1[], char string2[] );
 void intToString(char* str, int num);
 void reverseCharArray(char* str, int length);
 int numLength(int num);
+char * mystrcat(char *dest, char *src);
 
 
 #endif /* String_h */
