@@ -201,6 +201,19 @@ void * reallocMemory(void * memorySrc, size_t request) {
     return memoryAdr;
 }
 
+void * reallocMemoryAlreadyFreed(void * memorySrc, size_t request) {
+    int level = findLevel(memorySrc);
+    char size = size_of_level(level);
+    if (size >= request) {
+        return memorySrc;
+    }
+    char * memoryAdr = mallocMemory(request);
+    for (int i = 0; i < size; i++) {
+         *(memoryAdr+i) = *((char *)memorySrc+i);
+    }
+    return memoryAdr;
+}
+
 void * callocMemory(size_t request) {
     char * memoryAdr = mallocMemory(request);
     for (int i = 0; i < request; i++) {

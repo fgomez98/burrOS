@@ -29,4 +29,7 @@ int cmpProcess(tProcess * p1, tProcess * p2);
 tProcess* getRunningProcess();
 void mutexTest();
 
+void mutexTest();
+void pipeTest();
+
 #endif

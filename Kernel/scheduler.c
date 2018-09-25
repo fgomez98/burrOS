@@ -1,5 +1,6 @@
 #include "scheduler.h"
 #include "mutex.h"
+#include <pipe.h>
 #include "queueADT.h"
 #include "prodCons.h"
 
@@ -442,6 +443,7 @@ void mutexTest2() {
     endProcess(getRunningPid());
 }
 
+
 void mutexTest3() {
     mutex * myMutex3 = getMutex("myMutex");
     //    putChar('\n', yellow);
@@ -522,7 +524,7 @@ void mutexTest() {
     
     push(ready, proc);
     push(ready, anotherP);
-    push(ready, anotherP1);
+    //push(ready, anotherP1);
     //push(ready, anotherP2);
     //push(ready, anotherP3);
     while (1);
