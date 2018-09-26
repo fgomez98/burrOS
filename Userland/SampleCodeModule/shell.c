@@ -70,6 +70,8 @@ void initializeShell() {
               exec(initProdCons, 0, 0);
           } else if (strcmp("necesitoquemeapapachen", arg2) == 0) {
               exec(showBurro, 0, 0);
+          } else if (strcmp("Drake&Josh", arg2) == 0){
+            exec(startProcessCommunication,0,0);
           }
           else{
               printf("\nUnknown command, type help\n");
@@ -113,8 +115,10 @@ void initializeShell() {
               // free(b);
           } else if (strcmp("sushi", arg1) == 0) {
               initProdCons();
-          } else if (strcmp("necesito que me apapachen", arg1) == 0) {
+          } else if (strcmp("necesitoquemeapapachen", arg1) == 0) {
               showBurro();
+          } else if (strcmp("Drake&Josh", arg1) == 0){
+            startProcessCommunication();
           }
           else{
               printf("\nUnknown command, type help\n");

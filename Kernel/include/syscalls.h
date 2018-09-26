@@ -38,5 +38,6 @@ void _pipe(uint64_t name, uint64_t p);
 void _unlinkPipe(uint64_t name);
 void _readPipe(uint64_t pipe, uint64_t a, uint64_t resp, uint64_t amount);
 void _writePipe(uint64_t pipe, uint64_t a, uint64_t msg, uint64_t amount);
+void _processComunication();
 
 #endif

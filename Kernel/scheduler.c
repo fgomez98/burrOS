@@ -150,7 +150,7 @@ int cmpProcess(tProcess * p1, tProcess * p2) {
 void init_(void * startingPoint) {
     ready = newQueue(sizeof(tProcess), cmpProcess);
     blocked = newQueue(sizeof(tProcess), cmpProcess);
-    running = createProcess("theGodFather", startingPoint, 0, 0, NULL);
+    running = createProcess("theGodFather", justTurnAround, 0, 0, NULL);
     running->state = RUNNING;
     contextSwitch(running->stackPointer);
 }
@@ -314,6 +314,81 @@ void sprintProcesses(char* buffer, int buffSize){
    freeMemory(mem);
  }
 
+
+ void Drake(){
+
+   tMessage * bropid;
+   bropid = getMessage(getRunningProcess());
+
+   tMessage * talk = createMessage(bropid->source,sizeof(char),"Josh: Ehm, no, i want to find a spot closer to the door...");
+
+   putStr(getMessage(getRunningProcess())->text,colour);
+   putChar('\n', colour);
+   sendMessage(bropid->source, talk, getRunningProcess());
+   putStr(getMessage(getRunningProcess())->text,colour);
+   putChar('\n', colour);
+   talk->text = "Josh: Cause', if we park far away then we might have to walk too far, and i could get sweaty, and i will NOT meet Oprah with pit stains";
+   sendMessage(bropid->source, talk, getRunningProcess());
+   putStr(getMessage(getRunningProcess())->text,colour);
+   putChar('\n', colour);
+   talk->text = "Josh: Will you let go of my wheel";
+   sendMessage(bropid->source, talk, getRunningProcess());
+   putStr(getMessage(getRunningProcess())->text,colour);
+   putChar('\n', colour);
+   talk->text = "Josh: HEY COME ON!!";
+   sendMessage(bropid->source, talk, getRunningProcess());
+   putStr(getMessage(getRunningProcess())->text,colour);
+   putChar('\n', colour);
+   talk->text = "Josh: OHHHH...OHHHH...I RAN OVER OPRAH";
+   sendMessage(bropid->source, talk, getRunningProcess());
+
+ }
+
+ void Josh(){
+
+   tMessage * bropid;
+   bropid = getMessage(getRunningProcess());
+
+   tMessage * talk = createMessage(bropid->source,sizeof(char),"Drake: There,park there");
+   sendMessage(bropid->source, talk, getRunningProcess());
+   putStr(getMessage(getRunningProcess())->text,colour);
+   putChar('\n', colour);
+   talk->text = "Drake: Why?";
+   sendMessage(bropid->source, talk, getRunningProcess());
+   putStr(getMessage(getRunningProcess())->text,colour);
+   putChar('\n', colour);
+   talk->text = "Drake: Park the car already...";
+   sendMessage(bropid->source, talk, getRunningProcess());
+   putStr(getMessage(getRunningProcess())->text,colour);
+   putChar('\n', colour);
+   talk->text = "Drake: NO,just...park the car already";
+   sendMessage(bropid->source, talk, getRunningProcess());
+   putStr(getMessage(getRunningProcess())->text,colour);
+   putChar('\n', colour);
+   talk->text = "Drake: HEY WATCH IT, WATCH IT!";
+   sendMessage(bropid->source, talk, getRunningProcess());
+ }
+
+ void justTurnAround(){
+   tProcess * drake = createProcess("Drake",Drake,0,0,NULL);
+   tProcess * josh = createProcess("Josh",Josh,0,0,NULL);
+
+   push(ready, drake);
+   push(ready, josh);
+
+   char * pidarino[2];
+   pidarino[1] = '\0';
+
+   pidarino[0] = drake->pid+'0';
+   tMessage * drakePID = createMessage(josh->pid,sizeof(char), pidarino);
+   sendMessage(josh->pid,drakePID,getRunningProcess());
+
+   pidarino[0] =josh->pid+'0';
+   tMessage * joshPID = createMessage(drake->pid,sizeof(char), pidarino);
+   sendMessage(drake->pid,joshPID,getRunningProcess());
+
+   return;
+ }
 //.........................................TESTS.........................................
 
 void probandoEscribirEnKernel2() {
