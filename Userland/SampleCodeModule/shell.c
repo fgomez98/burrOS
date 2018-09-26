@@ -70,9 +70,9 @@ void initializeShell() {
               exec(initProdCons, 0, 0);
           } else if (strcmp("necesitoquemeapapachen", arg2) == 0) {
               exec(showBurro, 0, 0);
-          } else if (strcmp("Drake&Josh", arg2) == 0){
-            exec(startProcessCommunication,0,0);
-          }
+          // } else if (strcmp("Drake&Josh", arg2) == 0){
+          //   exec(startProcessCommunication,0,0);
+          // }
           else if(strcmp("m",arg2) == 0){
             exec(startMessagesDemo,0,0);
           }
@@ -120,9 +120,10 @@ void initializeShell() {
               initProdCons();
           } else if (strcmp("necesitoquemeapapachen", arg1) == 0) {
               showBurro();
-          } else if (strcmp("Drake&Josh", arg1) == 0){
-            startProcessCommunication();
-          }else if (strcmp("m", arg1) == 0){
+          // } else if (strcmp("Drake&Josh", arg1) == 0){
+          //   startProcessCommunication();
+          // }
+          else if (strcmp("m", arg1) == 0){
             startMessagesDemo();
           }
           else{

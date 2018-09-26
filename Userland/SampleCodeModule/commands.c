@@ -27,7 +27,7 @@ void help(){
   printf("memory - shows bock index in buddy allocation system with it's base adress and final address(exclusive)\n");
   printf("ps - shows information about the current processes in the system\n");
   printf("necesitoquemeapapachen - shows burro\n");
-  printf("Drake&Josh - starts a short conversation between Drake and Josh");
+  // printf("Drake&Josh - starts a short conversation between Drake and Josh");
   printf("exit - exits from shell\n");
 }
 
