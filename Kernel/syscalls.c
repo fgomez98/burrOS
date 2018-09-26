@@ -15,15 +15,13 @@
 static char buff[8];
 Colour colourM = {255,255,255};
 
-
-
 typedef uint64_t(*systemCall)();
 
 
 systemCall sysCalls[] = { 0, 0, 0,
-    (systemCall) _clearScreen,
+        (systemCall) _clearScreen,
 		(systemCall) _read,
-    (systemCall) _beep,
+        (systemCall) _beep,
 		(systemCall) _unbeep,
 		(systemCall) _ps,
 		(systemCall) _sprintMemory,
@@ -92,14 +90,13 @@ void _putString(char* string){
 	  putStr(string, colourM); //puts the string recieved by a char pointer on screen, in white
 }
 
-
 void _malloc(uint64_t bytes, uint64_t address){
 	void** pp;
 	pp = (void **)address;
 	*pp =  mallocMemoryInProcess(bytes, getRunningProcess());
 }
 
-void _calloc(uint64_t bytes, uint64_t address){
+void _calloc(uint64_t bytes, uint64_t address) {
 	void** pp;
 	pp = (void **)address;
 	*pp =  callocMemoryInProcess(bytes, getRunningProcess());
@@ -121,7 +118,6 @@ void _exec(uint64_t pName,uint64_t startingPoint, uint64_t pid, int argc, void* 
 //	*pid = process->pid;
 }
 
-
 void _kill(uint64_t pid, uint64_t message){
 	switch(message){
 		case 0:
@@ -140,13 +136,11 @@ void _killCurrentProcess(){
 	endProcess(getRunningProcess()->pid);
 }
 
-
 void _createMutex(uint64_t mutexName, uint64_t mutex){
 	uint64_t* ui;
 	ui = (uint64_t*)mutex;
 	*ui = getMutex(mutexName);
 }
-
 
 void _destroyMutex(uint64_t mu){
 	mutex* m ;
@@ -166,7 +160,6 @@ void _releaseMutex(uint64_t mu){
   release(m);
 }
 
-
 void _createSem(uint64_t semName, uint64_t semaph ){
 	uint64_t* ui;
 	ui = (uint64_t*)semaph;
@@ -179,14 +172,11 @@ void _destroySem(uint64_t semaph){
 	destroySem(s);
 }
 
-
-
 void _semWait(uint64_t semaph){
 	sem* s;
 	s = (sem*) semaph;
 	wait(s);
 }
-
 
 void _semPost(uint64_t semaph){
 	sem* s;
@@ -194,25 +184,20 @@ void _semPost(uint64_t semaph){
 	post(s);
 }
 
-
 void _getHour(uint64_t arg){
 	int * p = (int *) arg;
-  *(p) = getHour();
+    *(p) = getHour();
 }
-
-
 
 void _getMin(uint64_t arg){
 	int * p = (int *) arg;
-  *(p) = getMin();
+    *(p) = getMin();
 }
 
 void _getSec(uint64_t arg){
 	int * p = (int *) arg;
-	*(p) = getSec();
+    *(p) = getSec();
 }
-
-
 
 void _drawPixel(uint64_t x, uint64_t y, uint64_t rgb){
 	Colour colour2 = intToRGB(rgb); // changes colour to GRB format

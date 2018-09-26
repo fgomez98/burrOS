@@ -143,7 +143,7 @@ void sushiMan() {
         release(buffMutex);
     }
     post(finish);
-    killCurrentProcess();
+    //killCurrentProcess();
 }
 
 void monster() {
@@ -169,5 +169,5 @@ void monster() {
 
     }
     post(finish);
-    killCurrentProcess();
+    //killCurrentProcess();
 }

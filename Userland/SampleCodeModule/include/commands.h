@@ -34,6 +34,7 @@ int div100(int n);
 void delay(int i);
 void ls();
 void ps();
+void memory();
 void showBurro();
 
 #endif

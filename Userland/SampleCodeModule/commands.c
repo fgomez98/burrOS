@@ -42,6 +42,8 @@ void showTime() {
 void showDigitalHour(){
     Colour myColours[5] = {colour1, colour2, colour3, colour4, colour5};
     cleanScreen();
+    printf("C - to change colour\n");
+    printf("Q - to quit");
     char key;
     int j = 0;
     while (1) {
