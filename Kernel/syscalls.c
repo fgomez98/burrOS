@@ -214,10 +214,8 @@ void _drawPixel(uint64_t x, uint64_t y, uint64_t rgb){
 
 
 
-void _pipe(uint64_t name, uint64_t p){
-	uint64_t* ui;
-	ui = (uint64_t*)p;
-	*ui = pipe(name);
+void _pipe(uint64_t name, uint64_t ** p){
+	*p = pipe(name);
 }
 
 void _unlinkPipe(uint64_t name){
@@ -226,13 +224,12 @@ void _unlinkPipe(uint64_t name){
 
 void _readPipe(uint64_t pipe, uint64_t a, uint64_t resp, uint64_t amount){
 	int* b = (int*) a;
-	*(b) = readPipe(pipe, resp, amount);
+	readPipe(pipe, resp, amount);
 }
 
-void _writePipe(uint64_t pipe, uint64_t a, uint64_t msg, uint64_t amount){
+void _writePipe(uint64_t * pipe, uint64_t * a, uint64_t msg, uint64_t amount){
     Colour y = {255,255,255};
-	int* b = (int*) a;
-	*(b) = writePipe(pipe, msg, amount);
+    writePipe(pipe, msg, amount);
 }
 
 void _processComunication(){
