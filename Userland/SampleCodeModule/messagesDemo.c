@@ -9,8 +9,13 @@ char * pipeName = "thisIsADemoPipe";
 void startMessagesDemo() {
     writeWelcomeMessage();
     tPipe myPipe = pipe(pipeName);
+    printf("%d\n", myPipe);
     char * string = "Hello";
     writePipe( myPipe, string, 5);
+    char asd[50];
+    readPipe(myPipe, asd, 5);
+    myPipe[5] = '\0';
+    printf("%s",myPipe);
 }
 
 void readAndPrint10() {
