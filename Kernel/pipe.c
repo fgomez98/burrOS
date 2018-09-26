@@ -87,14 +87,15 @@ void unlinkPipe(char * name) {
 }
 
 pipeNode * unlinkPipeR(pipeNode * node, char * name) {
-    if(node->pipe == NULL)
+    if(node == NULL)
         return NULL;
+
     if(strcmp(node->pipe->name, name) == 0) {
         pipeNode * aux = node->next;
-        freeMemory(node->pipe->name);
         destroyMutex(node->pipe->useMutex);
         destroyMutex(node->pipe->readMutex);
         destroyMutex(node->pipe->writeMutex);
+        freeMemory(node->pipe->name);
         freeMemory(node->pipe);
         return aux;
     }
