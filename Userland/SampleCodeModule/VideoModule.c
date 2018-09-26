@@ -1,5 +1,5 @@
 #include "VideoModule.h"
-#include "systemCall.h"
+#include "syscall.h"
 #define XRESOLUTION 1024
 #define YRESOLUTION 768
 #define STDOUT 1
@@ -9,7 +9,8 @@ void drawPixel(int x, int y, Colour colour) {
     int rgb = colour.Red;
     rgb = (rgb << 8) + colour.Green;
     rgb = (rgb << 8) + colour.Blue;
-    systemCall(WRITE, STDOUT, 5, x, y, rgb);
+    _syscall(_drawPixel, x, y, rgb);
+
 }
 
 void drawDigitalColon(Colour colour, int x, int y) {

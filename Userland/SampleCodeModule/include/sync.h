@@ -2,7 +2,7 @@
 #define sync_h
 #include <stdint.h>
 #include "stdio.h"
-#include "systemCall.h"
+#include "syscall.h"
 
 typedef uint64_t* tMutex;
 typedef uint64_t* tSem;
