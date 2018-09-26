@@ -8,9 +8,9 @@ char * pipeName = "thisIsADemoPipe";
 
 void startMessagesDemo() {
     writeWelcomeMessage();
-    tPipe pipe = _syscall(_pipe, pipeName);
+    tPipe myPipe = pipe(pipeName);
     char * string = "Hello";
-    writePipe( pipe, string, 5);
+    writePipe( myPipe, string, 5);
 }
 
 void readAndPrint10() {
