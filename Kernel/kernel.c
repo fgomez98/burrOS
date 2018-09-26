@@ -65,7 +65,7 @@ static char buff[8];
 int main() {
     Colour colour = {255, 255, 255};
     stack = getStack();
-      rip = (uint64_t)sampleCodeModuleAddress;
+    rip = (uint64_t)sampleCodeModuleAddress;
 //   putStr("Base adress: ", colour);
 //    uintToBase(&endOfKernel, buff, 10);
 //    putStr(buff, colour);

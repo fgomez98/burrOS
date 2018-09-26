@@ -29,7 +29,7 @@ void scanAndPrint(char* buffer) {
   	}
     buffer[i]=0;
 
-  }
+}
 void deleteChar() {
     systemCall(WRITE, STDOUT,3,0,0,0);
 }
@@ -115,7 +115,7 @@ int scanf(const char* fmt, ...){
         fmt++;
         str++;
       }
-    }else{
+    } else{
       fmt++;
       switch(*fmt){
         case 'd': str = getInt(str, va_arg(args, int));
