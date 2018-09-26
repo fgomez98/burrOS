@@ -67,7 +67,7 @@ void initializeShell() {
               // free(b);
           } else if (strcmp("sushi", arg2) == 0) {
               exec(initProdCons, 0, 0);
-          } else if (strcmp("necesito que me apapachen", arg2) == 0) {
+          } else if (strcmp("necesitoquemeapapachen", arg2) == 0) {
               exec(showBurro, 0, 0);
           }
           else{

@@ -25,7 +25,7 @@ void help(){
   printf("sushi - interactive producer vs consumer problem with sushi\n");
   printf("memory - shows bock index in buddy allocation system with it's base adress and final address(exclusive)\n");
   printf("ps - shows information about the current processes in the system\n");
-  printf("necesito que me apapachen - shows burro\n");
+  printf("necesitoquemeapapachen - shows burro\n");
   printf("exit - exits from shell\n");
 }
 
