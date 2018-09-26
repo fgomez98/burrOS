@@ -246,7 +246,7 @@ void sprintProcesses(char* buffer, int buffSize){
            buffSize -= occ;
 
 
-            occ = strcpy2(buffer+index,running->name,buffSize);
+            occ = strcpy2(buffer+index,p->name,buffSize);
             index += occ;
             buffSize -= occ;
 
@@ -300,7 +300,7 @@ void sprintProcesses(char* buffer, int buffSize){
             buffSize -= occ;
 
 
-             occ = strcpy2(buffer+index,running->name,buffSize);
+             occ = strcpy2(buffer+index,p->name,buffSize);
              index += occ;
              buffSize -= occ;
 
