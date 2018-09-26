@@ -2,6 +2,7 @@
 #include "commands.h"
 #include "stdio.h"
 #include "stdlib.h"
+#include "messagesDemo.h"
 #include "VideoModule.h"
 #include "prodCons.h"
 

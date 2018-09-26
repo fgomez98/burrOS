@@ -38,3 +38,26 @@ void wait(tSem sem) {
 void post(tSem sem) {
     _syscall(_semPost, sem);
 }
+
+//esta bien este nombre?
+tPipe pipe(char* name){
+  tPipe p;
+  _syscall(_pipe, name, &p);
+  return p;
+}
+
+void unlinkPipe(char* name){
+  _syscall(_unlinkPipe, name);
+}
+
+int readPipe(tPipe pipe, char* resp, int amount){
+  int a;
+  _syscall(_readPipe, &a, pipe, resp, amount);
+  return a;
+}
+
+int writePipe(tPipe pipe, char * msg, int cant){
+  int a;
+  _syscall(_writePipe, &a, pipe, msg, cant);
+  return a;
+}

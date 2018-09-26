@@ -10,6 +10,7 @@
 #include "mutex.h"
 #include "semaphore.h"
 #include "syscalls.h"
+#include "pipe.h"
 
 
 static char buff[8];
@@ -47,6 +48,11 @@ systemCall sysCalls[] = { 0, 0, 0,
 		(systemCall) _getMin,
 		(systemCall) _getSec,
 		(systemCall) _drawPixel,
+		(systemCall) _pipe,
+		(systemCall) _unlinkPipe,
+		(systemCall) _readPipe,
+		(systemCall) _writePipe
+
 };
 
 void syscall_handler(uint64_t index, uint64_t a, uint64_t b, uint64_t c, uint64_t d, uint64_t e) {
@@ -202,4 +208,28 @@ void _getSec(uint64_t arg){
 void _drawPixel(uint64_t x, uint64_t y, uint64_t rgb){
 	Colour colour2 = intToRGB(rgb); // changes colour to GRB format
 	putPixel(x, y, colour2); //puts pixel on screen in arg4 (x) and arg5 (y) positions, in selected colour
+}
+
+
+
+
+void _pipe(uint64_t name, uint64_t p){
+	uint64_t* ui;
+	ui = (uint64_t*)p;
+	*ui = pipe(name);
+}
+
+void _unlinkPipe(uint64_t name){
+	unlinkPipe(name);
+}
+
+void _readPipe(uint64_t pipe, uint64_t a, uint64_t resp, uint64_t amount){
+	int* b = (int*) a;
+	*(b) = readPipe(pipe, resp, amount);
+}
+
+void _writePipe(uint64_t pipe, uint64_t a, uint64_t msg, uint64_t amount){
+    Colour y = {255,255,255};
+	int* b = (int*) a;
+	*(b) = writePipe(pipe, msg, amount);
 }
