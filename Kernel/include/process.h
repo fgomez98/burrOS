@@ -10,6 +10,7 @@
 #define PROCESS_SIZE 2*BLOCK_SIZE
 typedef enum {READY, RUNNING, WAITING, DEAD} pState; //estados de un proceso
 
+
 typedef struct{
     int pid; //process ID
     int parentPid; //parent's ID
@@ -18,6 +19,7 @@ typedef struct{
     void * stackPointer;
     void * processMemoryLowerAddress;
     queueADT heap;
+    uint64_t memoryAllocated;
 } tProcess;
 
 //typedef struct {

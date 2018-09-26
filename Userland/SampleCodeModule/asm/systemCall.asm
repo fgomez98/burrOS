@@ -1,9 +1,9 @@
-GLOBAL systemCall
+GLOBAL _syscall
 
 section .text
 
-systemCall:
-  push rbp
+_syscall:
+push rbp
   mov rbp, rsp
 
 

@@ -1,6 +1,6 @@
 #include "stdio.h"
 #include "lib.h"
-#include "systemCall.h"
+#include "syscall.h"
 #define WRITE 1
 #define READ 0
 #define STDOUT 1
@@ -17,12 +17,12 @@ void scanAndPrint(char* buffer) {
   while(((k = getChar()) != '\n')  && i< MAXLENGTH - 1){
     if(k == '\b'){
         if (i > 0) {
-            systemCall(WRITE, STDOUT,3,0,0,0);
+            _syscall(_deleteChar);
             i--;
         }
     }
     else if (k > 0 && k < 127) {
-      systemCall(WRITE, STDOUT, 1, k,0,0);
+      _syscall(_putChar, k);
       buffer[i++] = k;
     }
 
@@ -31,26 +31,29 @@ void scanAndPrint(char* buffer) {
 
 }
 void deleteChar() {
-    systemCall(WRITE, STDOUT,3,0,0,0);
+    _syscall(_deleteChar);
 }
 
 void putChar(char c) {
-    systemCall(WRITE, STDOUT, 1,c,0,0);
+    _syscall(_putChar, c);
 }
 
 void putString(char * str) {
-    systemCall(WRITE, STDOUT, 0,str,0,0);
+    _syscall(_putString, str);
 }
+
+
 char getChar(){
   char c=0;
 	while(1) {
-        systemCall(READ, STDIN, &c,1, 1,0);
+        _syscall(_read, &c);
         if ( c > 0 && c <128) {
             return c;
         }
 	}
   return 0;
 }
+
 
 void printf(char* fmt, ...) {
 

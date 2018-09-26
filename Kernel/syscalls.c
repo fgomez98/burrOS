@@ -9,180 +9,120 @@
 #include "String.h"
 #include "mutex.h"
 #include "semaphore.h"
+#include "syscalls.h"
 
-#define WRITE 1
-#define READ 0
-#define STDOUT 1
-#define STDIN 0
-#define CLEAR 0
-#define CLOCK 2
-#define BEEP 3
+
 static char buff[8];
+Colour colourM = {255,255,255};
 
-/*For more information visit systemCall.h*/
 
-void write(uint64_t arg2, uint64_t arg3, uint64_t arg4,  uint64_t arg5,  uint64_t arg6);
-void read(uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5 , uint64_t arg6);
-void sysKill(int pid, int message);
-void syscall_handler(uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t arg6);
 
-/*First function called, it defines if the systemCall will be READ or WRITE, using arg1 decide*/
-void syscall_handler(uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t arg6) {
-	void** pp;
-	void* p;
-	uint64_t* ui;
-	tProcess* process;
-	mutex* m ;
-    sem* s;
-	Colour colour;
-  colour.Red = 255;
-  colour.Green = 255;
-  colour.Blue = 255;
-	switch(arg1) {
-    case READ:
-			read(arg2, arg3, arg4, arg5, arg6);
-			 break;
-		case WRITE:
-      write(arg2, arg3, arg4, arg5, arg6);
-	 	break;
-		case 3:
-			pp = (void **)arg3;
-		  *pp =  mallocMemoryInProcess(arg2, getRunningProcess());
-		break;
-		case 4:
-		 		freeMemoryInProcess(arg2, getRunningProcess());
-		break;
-		case 5:
-		 	 process = createProcess("default", arg2, 0, arg3, NULL);//despues ver bien lo del primer parametro q es el process name
-    																													 //volar tamb lo de parent pid
-			addProcess(process);
-		break;
-		case 6:
-			sysKill(arg2, arg3);
-		break;
-		case 7:
-			endProcess(getRunningProcess()->pid);
-		break;
-		case 8:
-			sprintProcesses(arg2, arg3);
-		break;
-		case 9:
-			sprintMemory(arg2, arg3);
-		break;
-		case 10:
-			ui = (uint64_t*)arg3;
-			*ui = getMutex(arg2);
-		break;
-		case 11:
-			m = (mutex*) arg2;
-			destroyMutex(m);
-		break;
-		case 12:
-			m = (mutex*) arg2;
-			adquire(m);
-		break;
-		case 13:
-			m = (mutex*) arg2;
-			release(m);
-		break;
-        case 14:
-            ui = (uint64_t*)arg3;
-            *ui = getSem(arg2);
-            break;
-        case 15:
-            s = (sem*) arg2;
-            destroySem(s);
-            break;
-        case 16:
-            s = (sem*) arg2;
-            wait(s);
-            break;
-        case 17:
-            s = (sem*) arg2;
-            post(s);
-            break;
-		case 18:
-			pp = (void **)arg3;
-			*pp =  callocMemoryInProcess(arg2, getRunningProcess());
-		break;
-		case 19:
-            pp = (void **)arg3;
-            *pp =  reallocMemoryInProcess(arg2, getRunningProcess(), arg3);
-		break;
+typedef uint64_t(*systemCall)();
 
-	}
+
+systemCall sysCalls[] = { 0, 0, 0,
+    (systemCall) _clearScreen,
+		(systemCall) _read,
+    (systemCall) _beep,
+		(systemCall) _unbeep,
+		(systemCall) _ps,
+		(systemCall) _sprintMemory,
+		(systemCall) _deleteChar,
+		(systemCall) _putChar,
+		(systemCall) _putString,
+		(systemCall) _malloc,
+		(systemCall) _calloc,
+		(systemCall) _realloc,
+		(systemCall) _free,
+		(systemCall) _exec,
+		(systemCall) _kill,
+		(systemCall) _killCurrentProcess,
+		(systemCall) _createMutex,
+		(systemCall) _destroyMutex,
+		(systemCall) _adquireMutex,
+		(systemCall) _releaseMutex,
+		(systemCall) _createSem,
+		(systemCall) _destroySem,
+		(systemCall) _semWait,
+		(systemCall) _semPost,
+		(systemCall) _getHour,
+		(systemCall) _getMin,
+		(systemCall) _getSec,
+		(systemCall) _drawPixel,
+};
+
+void syscall_handler(uint64_t index, uint64_t a, uint64_t b, uint64_t c, uint64_t d, uint64_t e) {
+	sysCalls[index](a, b, c, d , e);
 }
 
-/*Prints on screen a character, string or pixel in colour white(structure defined below), depending on the parameters recieved by arguments*/
-void write(uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t arg6){
-  Colour colour;
-  colour.Red = 255;
-  colour.Green = 255;
-  colour.Blue = 255;
-
-	/*Funnels the second argument to call the function belonging to said argument, depending on what is sent from Userland*/
-  switch(arg2){
-    case CLEAR: //deletes everything from screen
-			modeScreen();
-    	break;
-    case STDOUT:
-        switch(arg3){
-            case 0:
-                putStr(arg4, colour); //puts the string recieved by a char pointer on screen, in white
-                break;
-            case 1:
-                putChar(arg4, colour);//puts the char recieved by a char pointer on screen, in white
-                break;
-            case 3:
-						deleteChar(); //deletes the next available character
-                break;
-            case 4:
-                newLine(); //goes to the next line on screen
-                break;
-            case 5:
-                ; // Nothing
-                Colour colour2 = intToRGB(arg6); // changes colour to GRB format
-                putPixel(arg4, arg5, colour2); //puts pixel on screen in arg4 (x) and arg5 (y) positions, in selected colour
-                break;
-            case 6:
-                ; //Nothing
-                int * p = (int *) arg5;
-                switch(arg4){ //based on the int in arg4, it returns the hour, minute, and second the command was callede in a pointer in arg 5
-                    case 0:
-                        *(p) = getHour();
-                        break;
-                    case 1:
-                        *(p) = getMin();
-                        break;
-                    case 2:
-                        *(p) = getSec();
-                        break;
-                }
-                break;
-        }
-        break;
-
-    case BEEP: //calls an assembly code to execute a sound by speaker
-        switch (arg3) {
-            case 0:
-                beep();
-                break;
-            case 1:
-                unBeep();
-                break;
-        }
-        break;
-  }
+void _clearScreen(){
+	modeScreen();
 }
 
-/*Used to get the next available character from the keyboard buffer and returns it in arg3*/
-void read(uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5 , uint64_t arg6){
-	char * p =(char *) arg3;
+void _read(uint64_t key){
+	char * p =(char *) key;
 	*(p) =  getKeyInput();
 }
 
+void _beep(){
+	beep();
+}
 
-void sysKill(int pid, int message){
+void _unbeep(){
+	unBeep();
+}
+
+void _ps(char* buffer, uint64_t size){
+	sprintProcesses(buffer, size);
+}
+
+void _sprintMemory(char* buffer, uint64_t size){
+	sprintMemory(buffer, size);
+}
+
+void _deleteChar(){
+	deleteChar(); //deletes the next available character
+}
+
+void _putChar(int c){
+	  putChar(c, colourM);//puts the char recieved by a char pointer on screen, in white
+}
+
+void _putString(char* string){
+	  putStr(string, colourM); //puts the string recieved by a char pointer on screen, in white
+}
+
+
+void _malloc(uint64_t bytes, uint64_t address){
+	void** pp;
+	pp = (void **)address;
+	*pp =  mallocMemoryInProcess(bytes, getRunningProcess());
+}
+
+void _calloc(uint64_t bytes, uint64_t address){
+	void** pp;
+	pp = (void **)address;
+	*pp =  callocMemoryInProcess(bytes, getRunningProcess());
+}
+
+void _realloc(uint64_t bytes, uint64_t address){
+	void** pp;
+	pp = (void **)address;
+	*pp =  reallocMemoryInProcess(bytes, getRunningProcess(), address);
+}
+
+void _free(uint64_t ad){
+	freeMemoryInProcess(ad, getRunningProcess());
+}
+
+void _exec(uint64_t pName,uint64_t startingPoint, uint64_t pid, int argc, void* argv[]){
+	tProcess* process = createProcess(pName, startingPoint, 0, argc, argv);
+  addProcess(process);
+//	*pid = process->pid;
+}
+
+
+void _kill(uint64_t pid, uint64_t message){
 	switch(message){
 		case 0:
 			endProcess(pid);
@@ -194,4 +134,87 @@ void sysKill(int pid, int message){
 			unblockProcess(pid);
 		break;
 	}
+}
+
+void _killCurrentProcess(){
+	endProcess(getRunningProcess()->pid);
+}
+
+
+void _createMutex(uint64_t mutexName, uint64_t mutex){
+	uint64_t* ui;
+	ui = (uint64_t*)mutex;
+	*ui = getMutex(mutexName);
+}
+
+
+void _destroyMutex(uint64_t mu){
+	mutex* m ;
+	m = (mutex*) mu;
+	destroyMutex(m);
+}
+
+void _adquireMutex(uint64_t mu){
+	mutex* m ;
+	m = (mutex*) mu;
+	adquire(m);
+}
+
+void _releaseMutex(uint64_t mu){
+	mutex* m ;
+	m = (mutex*) mu;
+  release(m);
+}
+
+
+void _createSem(uint64_t semName, uint64_t semaph ){
+	uint64_t* ui;
+	ui = (uint64_t*)semaph;
+	*ui = getSem(semName);
+}
+
+void _destroySem(uint64_t semaph){
+	sem* s;
+	s = (sem*) semaph;
+	destroySem(s);
+}
+
+
+
+void _semWait(uint64_t semaph){
+	sem* s;
+	s = (sem*) semaph;
+	wait(s);
+}
+
+
+void _semPost(uint64_t semaph){
+	sem* s;
+	s = (sem*) semaph;
+	post(s);
+}
+
+
+void _getHour(uint64_t arg){
+	int * p = (int *) arg;
+  *(p) = getHour();
+}
+
+
+
+void _getMin(uint64_t arg){
+	int * p = (int *) arg;
+  *(p) = getMin();
+}
+
+void _getSec(uint64_t arg){
+	int * p = (int *) arg;
+	*(p) = getSec();
+}
+
+
+
+void _drawPixel(uint64_t x, uint64_t y, uint64_t rgb){
+	Colour colour2 = intToRGB(rgb); // changes colour to GRB format
+	putPixel(x, y, colour2); //puts pixel on screen in arg4 (x) and arg5 (y) positions, in selected colour
 }

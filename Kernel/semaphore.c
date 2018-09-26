@@ -1,5 +1,5 @@
 #include "semaphore.h"
-#include "videoDriver.h"
+#include "VideoDriver.h"
 #include "lib.h"
 
 Colour colour6 = {255, 255, 255};
@@ -81,4 +81,3 @@ void post(sem * s) {
     release(s->lock);
     //_sti();
 }
-

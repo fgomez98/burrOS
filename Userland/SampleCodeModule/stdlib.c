@@ -1,5 +1,5 @@
 #include "stdlib.h"
-void killCurrentProcess();
+#include "syscall.h"
 
 int atoi(char * str){
   int res = 0;
@@ -37,29 +37,29 @@ int isSuper(char c){
 
 void* malloc(int bytes){
     void* address;
-    systemCall(3, bytes, &address, 0,0,0 );
+    _syscall(_malloc, bytes, &address);
     return address;
 }
 
 void* calloc(int bytes){
     void* address;
-    systemCall(18, bytes, &address, 0,0,0 );
+    _syscall(_calloc, bytes, &address);
     return address;
 }
 
 void* realloc(void* ptr, int bytes){
     void* address;
-    systemCall(19, bytes, &address, ptr,0,0 );
+    _syscall(_realloc, bytes, &address, ptr);
     return address;
 }
 
 void free(void* ad){
-  systemCall(4, ad,0,0,0,0);
+  _syscall(_free, ad);
 }
 
 int exec(void* startingPoint, int argc, void* argv[]) { // los parametros no se bien todavia
   int pid;
-  systemCall(5, startingPoint, &pid, argc, argv, 0);
+  _syscall(_exec, "default", startingPoint, &pid, argc, argv);
   return pid;
 }
 
@@ -70,10 +70,10 @@ int exec(void* startingPoint, int argc, void* argv[]) { // los parametros no se 
     2: unblocks process
 */
 void kill(int pid, int msg) {
-  systemCall(6, pid, msg, 0,0,0);
+  _syscall(_kill, pid, msg);
 }
 
 //kill q mata al current process
 void killCurrentProcess() {
-  systemCall(7, 0, 0, 0,0,0);
+  _syscall(_killCurrentProcess);
 }
