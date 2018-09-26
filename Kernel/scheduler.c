@@ -150,7 +150,7 @@ int cmpProcess(tProcess * p1, tProcess * p2) {
 void init_(void * startingPoint) {
     ready = newQueue(sizeof(tProcess), cmpProcess);
     blocked = newQueue(sizeof(tProcess), cmpProcess);
-    running = createProcess("theGodFather", justTurnAround, 0, 0, NULL);
+    running = createProcess("theGodFather", startingPoint , 0, 0, NULL);
     running->state = RUNNING;
     contextSwitch(running->stackPointer);
 }

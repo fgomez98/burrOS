@@ -73,6 +73,9 @@ void initializeShell() {
           } else if (strcmp("Drake&Josh", arg2) == 0){
             exec(startProcessCommunication,0,0);
           }
+          else if(strcmp("m",arg2) == 0){
+            exec(startMessagesDemo,0,0);
+          }
           else{
               printf("\nUnknown command, type help\n");
               continue;
@@ -119,6 +122,8 @@ void initializeShell() {
               showBurro();
           } else if (strcmp("Drake&Josh", arg1) == 0){
             startProcessCommunication();
+          }else if (strcmp("m", arg1) == 0){
+            startMessagesDemo();
           }
           else{
               printf("\nUnknown command, type help\n");
