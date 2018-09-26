@@ -14,7 +14,7 @@ struct pipe_t{
     mutex * readMutex;
     mutex * writeMutex;
     int waitingForRead;
-    queueADT waitWriteQueue;
+    int waitingForWrite;
     char buffer[BUFFERSIZE];
     unsigned int readPosition;
     unsigned int writePosition;
@@ -27,6 +27,8 @@ struct pipeNode{
 
 pipeNode * pipeList = NULL;
 
+
+/*BORRAR*/
 Colour yellows = {100, 1000, 255};
 
 pipe_t * pipe(char * name) {
@@ -56,7 +58,7 @@ pipe_t * pipe(char * name) {
     newPipe->readPosition = 0;
     newPipe->writePosition = 0;
     newPipe->waitingForRead = -1;
-    newPipe->waitWriteQueue = newQueue(sizeof(int),cmp);
+    newPipe->waitingForWrite = -1;
 
     pipeNode * newNode = mallocMemory(sizeof(pipeNode));
 
@@ -68,6 +70,16 @@ pipe_t * pipe(char * name) {
     pipeList = newNode;
 
     return newPipe;
+}
+
+int exists(pipe_t * pipe) {
+    pipeNode * aux = pipeList;
+    while(aux != NULL) {
+        if(strcmp(aux->pipe->name, pipe->name) == 0)
+            return 1;
+        aux = aux->next;
+    }
+    return 0;
 }
 
 void unlinkPipe(char * name) {
@@ -91,7 +103,9 @@ pipeNode * unlinkPipeR(pipeNode * node, char * name) {
 }
 
 int readPipe(pipe_t * pipe, char * resp, size_t ammount) {
-
+  /*  if(!exists(pipe))
+        return -1;
+*/
     if(ammount > BUFFERSIZE)
         ammount = BUFFERSIZE;
 
@@ -119,41 +133,41 @@ int readPipe(pipe_t * pipe, char * resp, size_t ammount) {
         resp[i] = (pipe->buffer)[pipe->readPosition];
     }
 
-    if(getSize(pipe->waitWriteQueue) > 0) {
-        int pid = pop(pipe->waitWriteQueue);
-        unblockProcess(pid);
-    }
+    if(pipe->waitingForWrite != -1)
+        unblockProcess(pipe->waitingForWrite);
 
     release(pipe->useMutex);
     release(pipe->readMutex);
-
 
     return i;
 }
 
 int writePipe(pipe_t * pipe, char * msg, size_t ammount){
-
+    /*if(!exists(pipe))
+        return -1;
+*/
     if(ammount > BUFFERSIZE)
         ammount = BUFFERSIZE;
 
     adquire(pipe->writeMutex);
-
     int blocked = 0;
     int hasSpaceToWrite = 0;
+
     while(!hasSpaceToWrite) {
         adquire(pipe->useMutex);
-        if (getAvailableToWrite(pipe->readPosition, pipe->writePosition, BUFFERSIZE) >= ammount)
+        if (getAvailableToWrite(pipe->readPosition, pipe->writePosition, BUFFERSIZE) >= ammount) {
             hasSpaceToWrite = 1;
+        }
 
         if(!hasSpaceToWrite){
-            int runningPid = getRunningPid();
-            push(pipe->waitWriteQueue, runningPid);
+            pipe->waitingForWrite = getRunningPid();
             blocked = 1;
             putStr("me bloqueo\n", yellows);
             release(pipe->useMutex);
-            blockProcess(runningPid);
+            blockProcess(pipe->waitingForWrite);
         }
     }
+    pipe->waitingForWrite = -1;
 
     for(int i = 0; i < ammount; i++, (pipe->writePosition)++) {
         if(pipe->writePosition == 1024)
@@ -161,7 +175,7 @@ int writePipe(pipe_t * pipe, char * msg, size_t ammount){
         (pipe->buffer)[pipe->writePosition] = msg[i];
     }
 
-    if(pipe->waitingForRead >= 0)
+    if(pipe->waitingForRead != -1)
         unblockProcess(pipe->waitingForRead);
 
 

@@ -2,6 +2,7 @@
 #include "commands.h"
 #include "stdio.h"
 #include "stdlib.h"
+#include "messagesDemo.h"
 #include "VideoModule.h"
 #include "prodCons.h"
 
@@ -16,7 +17,7 @@ void initializeShell(){
     showBurro();
     printf("Welcome to the shell!! Please type help to get a list of our commands\n");
 
-  static char command[MAXLENGTH];
+    static char command[MAXLENGTH];
   int running = 1;
   while (running){
 
@@ -58,10 +59,15 @@ void initializeShell(){
       // char *b = malloc(20);
       // free(a);
       // free(b);
-    } else if (strcmp("sushi", command) == 0) {
+    }
+    else if (strcmp("sushi", command) == 0) {
         initProdCons();
-    } else if (strcmp("necesito que me apapachen", command) == 0) {
+    }
+    else if (strcmp("necesito que me apapachen", command) == 0) {
         showBurro();
+    }
+    else if(strcmp("m", command) == 0) {
+        startMessagesDemo();
     }
     else{
       printf("\nUnknown command, type help\n");

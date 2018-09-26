@@ -51,8 +51,10 @@ systemCall sysCalls[] = { 0, 0, 0,
 		(systemCall) _getSec,
 		(systemCall) _drawPixel,
 		(systemCall) _pipe,
-	  (systemCall) _unlinkPipe,
-		(systemCall) _readPipe
+		(systemCall) _unlinkPipe,
+		(systemCall) _readPipe,
+		(systemCall) _writePipe
+
 };
 
 void syscall_handler(uint64_t index, uint64_t a, uint64_t b, uint64_t c, uint64_t d, uint64_t e) {
@@ -236,12 +238,13 @@ void _unlinkPipe(uint64_t name){
 	unlinkPipe(name);
 }
 
-void _readPipe(uint64_t name, uint64_t a, uint64_t resp, uint64_t amount){
+void _readPipe(uint64_t pipe, uint64_t a, uint64_t resp, uint64_t amount){
 	int* b = (int*) a;
-	*(b) = readPipe(name, resp, amount);
+	*(b) = readPipe(pipe, resp, amount);
 }
 
 void _writePipe(uint64_t pipe, uint64_t a, uint64_t msg, uint64_t amount){
+    Colour y = {255,255,255};
 	int* b = (int*) a;
 	*(b) = writePipe(pipe, msg, amount);
 }

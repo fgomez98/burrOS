@@ -17,6 +17,6 @@ void wait(tSem sem);
 void post(tSem sem);
 tPipe pipe(char* name);
 void unlinkPipe(char* name);
-int readPipe(char* name, char* resp, int amount);
+int readPipe(tPipe pipe, char* resp, int amount);
 int writePipe(tPipe pipe, char * msg, int ammount);
 #endif

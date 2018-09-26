@@ -50,9 +50,9 @@ void unlinkPipe(char* name){
   _syscall(_unlinkPipe, name);
 }
 
-int readPipe(char* name, char* resp, int amount){
+int readPipe(tPipe pipe, char* resp, int amount){
   int a;
-  _syscall(_readPipe, &a, name, resp, amount);
+  _syscall(_readPipe, &a, pipe, resp, amount);
   return a;
 }
 
