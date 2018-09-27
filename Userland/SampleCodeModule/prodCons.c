@@ -19,7 +19,6 @@ void initProdCons() {
     char initialized = 0;
     sushiMenCount = 1;
     monsterCount = 1;
-    buffer = malloc(500);
     bufferIndex = 0;
     buffMutex = createMutex(BUFFMUTEX);
     items = createSem(ITEMS);

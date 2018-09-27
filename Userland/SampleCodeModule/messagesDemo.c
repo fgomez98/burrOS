@@ -24,6 +24,7 @@ void readAndPrint10() {
     readPipe( pipe, resp, 10);
     resp[10] = '\0';
     printf("I read: %s", resp);
+    free(resp);
     killCurrentProcess();
 }
 
@@ -33,6 +34,7 @@ void readAndPrint5() {
     readPipe( pipe, resp, 5);
     resp[5] = '\0';
     printf("I read: %s", resp);
+    free(resp);
     killCurrentProcess();
 }
 
@@ -41,6 +43,7 @@ void writeMessage1() {
     char * string = "Hello";
     writePipe( pipe, string, strlen(string));
     printf("I wrote: %s\n", string);
+    free(string);
     killCurrentProcess();
 }
 
@@ -49,6 +52,7 @@ void writeMessage2() {
     char * string = "This is a demo";
     writePipe( pipe, string, strlen(string));
     printf("I wrote: %s", string);
+    free(string);
     killCurrentProcess();
 }
 

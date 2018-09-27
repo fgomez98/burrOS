@@ -7,8 +7,7 @@
 #include "prodCons.h"
 
 void probando(){
-  printf("Exec\n");
-  killCurrentProcess();
+    while(1);
 }
 
 Colour white = {255, 255, 255};
@@ -99,7 +98,9 @@ void initializeShell() {
          running = 0;
      }
      else if(strcmp("ps", arg1) == 0){
+         exec("probando",probando, 0, 0);
          exec("ps",ps, 0, 0);
+         //exec("probando",ps, 0, 0);
      }
      else if(strcmp("memory", arg1) == 0){
          memory();

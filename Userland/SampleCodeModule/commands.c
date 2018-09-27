@@ -89,7 +89,7 @@ void delay(int i) {
 }
 
 void ps(){
-  char* buffer = malloc(1024);
+  char* buffer = malloc(2000);
   printf("\n");
   printf("PID   STATE      MEMORYALLOCATED   PROCESSNAME");
   printf("\n");
