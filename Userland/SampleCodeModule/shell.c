@@ -19,12 +19,12 @@ void initializeShell() {
 
   static char command[MAXLENGTH];
 
-  char * arg1 = calloc(MAXLENGTH);
-  char * arg2 = calloc(MAXLENGTH);
+ 
 
   int running = 1;
   while (running){
-
+     char * arg1 = calloc(MAXLENGTH);
+    char * arg2 = calloc(MAXLENGTH);
     printf("$>");
     scanAndPrint(command);
 
@@ -126,8 +126,9 @@ void initializeShell() {
      }
  }
 
+    free(arg1);
+    free(arg2);
   }
    printf("\n\n\nSee you soon!");
-   free(arg1);
-   free(arg2);
+  
 }
