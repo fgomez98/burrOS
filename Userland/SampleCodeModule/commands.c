@@ -159,19 +159,18 @@ void maDemo(){
     printf("MEMORY ALLOCATION DEMO: \n");
     printf("Press any key in order to visualize current process Memory Status\n");
     c = getChar();
-    ps();
-
+    memory();
 
     printf("Press any key in order to allocate a block of size 128\n");
     c = getChar();
     p = malloc(128);
     printf("\nA block of 128 was allocated: \n");
-    ps();
+    memory();
 
     printf("Press any key to free the block\n");
     c = getChar();
     free(p);
 
     printf("The block was freed\n");
-    ps();
+    memory();
 }
