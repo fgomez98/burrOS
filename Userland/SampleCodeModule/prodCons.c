@@ -8,18 +8,18 @@
 static tMutex buffMutex;
 static tSem items;
 static tSem finish;
-static char * buffer;
 static int bufferIndex;
 static int running;
-static char monsterCount;
-static char sushiMenCount;
+static int monsterCount;
+static int sushiManCount;
+static int monsterState[5];
+static int sushiManState[5];
 
 void initProdCons() {
     running = 1;
     char initialized = 0;
-    sushiMenCount = 1;
-    monsterCount = 1;
-    buffer = malloc(500);
+    sushiManCount = 0;
+    monsterCount = 0;
     bufferIndex = 0;
     buffMutex = createMutex(BUFFMUTEX);
     items = createSem(ITEMS);
@@ -38,6 +38,8 @@ void initProdCons() {
     printf("\nPress q to quit - when all process finish their task it will quit\n");
     printf("Press s to add a sushiman (max 5)\n");
     printf("Press m to add an eating monster (max 5)\n");
+    printf("Press p to kill a sushiman\n");
+    printf("Press o to kill an eating monster\n");
     printf("Press i to start\n");
     printf("\n");
     printf("Sushi Status Bar:\n");
@@ -48,15 +50,15 @@ void initProdCons() {
         _syscall(_read, &key);
         switch (key) {
             case 's':
-                if ((sushiMenCount < MAXSUSHIMEN) && initialized) {
-                    sushiMenCount++;
-                    exec(sushiMan, 0, 0);
+                if ((sushiManCount < MAXSUSHIMEN) && initialized) {
+                    sushiManState[sushiManCount] = 1;
+                    exec(sushiMan, sushiManCount++, 0);
                 }
                 break;
             case 'm':
                 if ((monsterCount < MAXMONSTERS) && initialized) {
-                    monsterCount++;
-                    exec(monster, 0, 0);
+                    monsterState[monsterCount] = 1;
+                    exec(monster, monsterCount++, 0);
                 }
                 break;
             case 'q':
@@ -64,12 +66,25 @@ void initProdCons() {
                 break;
             case 'i':
                 initialized = 1;
-                exec(monster, 0, 0);
-                exec(sushiMan, 0, 0);
+                monsterState[monsterCount] = 1;
+                exec(monster, monsterCount++, 0);
+
+                sushiManState[sushiManCount] = 1;
+                exec(sushiMan, sushiManCount++, 0);
+                break;
+            case'o':
+                if (monsterCount > 1) {
+                    monsterState[--monsterCount] = 0;
+                }
+                break;
+            case'p':
+                if (sushiManCount > 1) {
+                    sushiManState[--sushiManCount] = 0;
+                }
                 break;
         }
     }
-    for (int i = 0; i < (sushiMenCount + monsterCount); i++) {
+    for (int i = 0; i < (sushiManCount + monsterCount); i++) {
         wait(finish);
     }
     printf("\nGame Over\n");
@@ -90,8 +105,7 @@ int myRandInRange (int min, int max) {
     return myRand() % (max+1-min) + min ;
 }
 
-unsigned int lfsr113_Bits (void)
-{
+unsigned int lfsr113_Bits (void){
     static unsigned int z1 = 12345, z2 = 12345, z3 = 12345, z4 = 12345;
     unsigned int b;
     b  = ((z1 << 6) ^ z1) >> 13;
@@ -120,13 +134,12 @@ void deleteSushi(int n) {
     }
 }
 
-void sushiMan() {
-    while(running) {
+void sushiMan(int index) {
+    while(running && sushiManState[index]) {
 
         adquire(buffMutex);
 
         int i = (lfsr113_Bits()%10)+1;
-        //printf("sushi %d ", i);
 
         while ((i > 0) && (bufferIndex < BUFFER_LIMIT)) {
             if (bufferIndex >= 8) {
@@ -142,18 +155,19 @@ void sushiMan() {
         post(items);
         release(buffMutex);
     }
-    post(finish);
-    //killCurrentProcess();
+    if (!running) {
+        post(finish);
+    }
 }
 
-void monster() {
-    while(running) {
+void monster(int index) {
+    while(running && monsterState[index]) {
 
         wait(items);
         adquire(buffMutex);
 
         int i = (lfsr113_Bits()%10) + 1;
-        // printf("moster %d ", i);
+
         while ((i > 0) && (bufferIndex > 0)) {
             if (bufferIndex > 8) {
                 deleteSushi(4);
@@ -168,6 +182,7 @@ void monster() {
         release(buffMutex);
 
     }
-    post(finish);
-    //killCurrentProcess();
+    if (!running) {
+        post(finish);
+    }
 }

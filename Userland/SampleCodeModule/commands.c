@@ -16,6 +16,7 @@ Colour colour5 = {46, 230, 210};
 void help(){
   printf("\nHELP:\n");
   printf("\n");
+  printf("& - use comand & comand to execute two comands at the same time\n");
   printf("help - prints a list containing all the available commands and its descriptions\n");
   printf("digitalTime - displays time in digital format. Press c to change colour and q to exit\n");
   printf("time - displays current time\n");

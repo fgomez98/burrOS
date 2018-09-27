@@ -31,19 +31,17 @@ void addProcess(tProcess * p) {
 
 void blockProcess(int pid) {
     //_cli();
-
 //    putStr("Block: ", green);
 //    uintToBase(pid, buff, 10);
 //    putStr(buff, yellow);
 //    putChar('\n', yellow);
-
+    //running->state = WAITING;
     changeProcessState(pid, WAITING);
     _hlt();
 }
 
-void unblockProcess(int pid) {
+int unblockProcess(int pid) {
     //_cli();
-//
 //    putStr("Volvi: ", green);
 //    uintToBase(pid, buff, 10);
 //    putStr(buff, yellow);
@@ -54,11 +52,16 @@ void unblockProcess(int pid) {
     tProcess * aux = removeElem(blocked, elem);
     if (aux == NULL) {
         //_sti();
-       return;
+       return 0;
     }
     freeMemory(elem);
+    if (aux->state == DEAD) {
+        deleteProcess(aux);
+        return 0;
+    }
     aux->state = READY;
     push(ready, aux);
+    return 1;
     //_sti();
 }
 
@@ -73,13 +76,36 @@ void changeProcessState(int pid, pState state) {
     if (aux == NULL) {
         aux = removeElem(blocked, elem);
         freeMemory(elem);
-        aux->state = state;
-        push(blocked, aux);
+        sort(aux, state);
+//        aux->state = state;
+//        push(blocked, aux);
         return;
     }
     freeMemory(elem);
-    aux->state = state;
-    push(ready, aux);
+    sort(aux, state);
+//    aux->state = state;
+//    push(ready, aux);
+}
+
+void sort(tProcess * p, pState state) {
+    if (p->pid == 1 || state == RUNNING) {
+        return;
+    }
+    switch (state) {
+        case WAITING:
+            p->state = WAITING;
+            push(blocked, p);
+            break;
+        case DEAD:
+            p->state = DEAD;
+            // y que dsp el scheduler se encargue de borrarlo sino running apunta a cualquier cosa y cagamo
+            push(ready, p);
+            break;
+        case READY:
+            p->state = READY;
+            push(ready, p);
+            break;
+    }
 }
 
 tProcess * getProcessState(int pid) {
@@ -98,13 +124,11 @@ tProcess * getProcessState(int pid) {
 
 void scheduler() {
     if (running->state == DEAD) {
-
 //        putChar('\n', yellow);
 //        putStr("RunningDeadPid:", yellow);
 //        uintToBase(getRunningPid(), buff, 10);
 //        putStr(buff, yellow);
 //        putChar('\n', yellow);
-
         deleteProcess(running);
     } else if (running->state == RUNNING) {
         running->state = READY;
@@ -116,13 +140,11 @@ void scheduler() {
     }
     while ((running = pop(ready))->state != READY) {
         if (running->state == DEAD) {
-
 //            putChar('\n', yellow);
 //            putStr("RunningDeadPid:", yellow);
 //            uintToBase(getRunningPid(), buff, 10);
 //            putStr(buff, yellow);
 //            putChar('\n', yellow);
-
             deleteProcess(running);
         } else if (running->state == WAITING) {
             push(blocked, running);

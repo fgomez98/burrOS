@@ -118,10 +118,10 @@ void _free(uint64_t ad){
 	freeMemoryInProcess(ad, getRunningProcess());
 }
 
-void _exec(uint64_t pName,uint64_t startingPoint, uint64_t pid, int argc, void* argv[]){
+void _exec(uint64_t pName,uint64_t startingPoint, int *  pid, int argc, void* argv[]){
 	tProcess* process = createProcess(pName, startingPoint, 0, argc, argv);
-  addProcess(process);
-//	*pid = process->pid;
+    *pid = process->pid;
+    addProcess(process);
 }
 
 void _kill(uint64_t pid, uint64_t message){
@@ -139,7 +139,7 @@ void _kill(uint64_t pid, uint64_t message){
 }
 
 void _killCurrentProcess(){
-	endProcess(getRunningProcess()->pid);
+	endProcess(getRunningPid());
 }
 
 void _createMutex(uint64_t mutexName, uint64_t mutex){
@@ -209,8 +209,6 @@ void _drawPixel(uint64_t x, uint64_t y, uint64_t rgb){
 	Colour colour2 = intToRGB(rgb); // changes colour to GRB format
 	putPixel(x, y, colour2); //puts pixel on screen in arg4 (x) and arg5 (y) positions, in selected colour
 }
-
-
 
 
 void _pipe(uint64_t name, uint64_t p){

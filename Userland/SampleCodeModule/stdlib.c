@@ -57,7 +57,7 @@ void free(void* ad){
   _syscall(_free, ad);
 }
 
-int exec(void* startingPoint, int argc, void* argv[]) { // los parametros no se bien todavia
+int exec(void* startingPoint, int argc, void* argv[]) { 
   int pid;
   _syscall(_exec, "default", startingPoint, &pid, argc, argv);
   return pid;

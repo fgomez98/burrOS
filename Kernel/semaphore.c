@@ -41,7 +41,7 @@ void destroySem(sem * s) {
     elem->name = s->name;
     sem * aux = removeElem(mySems, elem);
     if (aux != NULL) {
-        //freeQueue(aux->queue);
+        freeQueueNodes(aux->queue);
         freeMemory(aux);
     }
 }
@@ -60,6 +60,13 @@ void wait(sem * s) {
     if (s->value < 0) {
         int pid = getRunningPid();
         push(s->queue, pid);
+        
+//        putChar('\n', c);
+//        putStr("wait: ", c);
+//        uintToBase(pid, buff6, 10);
+//        putStr(buff6, c);
+//        putChar('\n', c);
+        
         release(s->lock);
         blockProcess(pid);
     } else {
@@ -72,6 +79,12 @@ void post(sem * s) {
      //_cli();
     adquire(s->lock);
     (s->value)++;
+//    putChar('\n', c);
+//    putStr("post: ", c);
+//    uintToBase(getRunningPid(), buff6, 10);
+//    putStr(buff6, c);
+//    putChar('\n', c);
+
     if (s->value <= 0) {
         int pid = pop(s->queue);
         if (pid != NULL) {

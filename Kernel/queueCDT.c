@@ -155,3 +155,16 @@ void freeQueue(queueADT q) {
     }
     freeMemory(q);
 }
+
+void freeQueueNodes(queueADT q) {
+    if (q == NULL) {
+        return;
+    }
+    TNode * queue = q->first;
+    while (queue != NULL) {
+        TNode * aux = queue;
+        queue = queue->next;
+        freeMemory(aux);
+    }
+    freeMemory(q);
+}
