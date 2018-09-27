@@ -65,7 +65,7 @@ void writeMessage(int argc, char ** argv) {
     writePipe(myPipe,argv[1], argc);
     argv[1][argc] = '\0';
     printf("I wrote %s\n", argv[1]);
-    killCurrentProcess();
+    return;
 }
 
 void readMessage(int argc, char ** argv) {
@@ -75,7 +75,7 @@ void readMessage(int argc, char ** argv) {
     int a = readPipe(myPipe, buffer,amount);
     buffer[a] = '\0';
     printf("I read %d bytes: %s\n",a, buffer);
-    killCurrentProcess();
+    return;
 }
 
 void writeWelcomeMessage() {
@@ -83,3 +83,4 @@ void writeWelcomeMessage() {
     printf("2: Read and print a number of bytes. Type the number, then press enter.\n");
     printf("q: Exit demo\n");
 }
+

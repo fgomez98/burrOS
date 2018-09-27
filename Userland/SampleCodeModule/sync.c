@@ -46,8 +46,8 @@ tPipe pipe(char* name){
   return p;
 }
 
-void unlinkPipe(char* name){
-    _syscall(_unlinkPipe, name);
+void destroyPipe(char* name){
+    _syscall(_destroyPipe, name);
 }
 
 int readPipe(tPipe pipe, char* resp, int amount){

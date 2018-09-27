@@ -82,7 +82,7 @@ int exists(pipe_t * pipe) {
     return 0;
 }
 
-void unlinkPipe(char * name) {
+void destroyPipe(char * name) {
     pipeList = unlinkPipeR(pipeList, name);
 }
 
@@ -112,22 +112,20 @@ int readPipe(pipe_t * pipe, char * resp, size_t ammount) {
 
     adquire(pipe->readMutex);
     adquire(pipe->useMutex);
-    int blocked = 0;
+
 
     int readBytes = availableToRead(pipe);
-    while(readBytes <= 0) {
+    if(readBytes <= 0) {
         int pid = getRunningPid();
         pipe->waitingForRead = pid;
-        blocked = 1;
         release(pipe->useMutex);
         putStr("me bloqueo", color);
         blockProcess(pid);
+        pipe->waitingForRead = -1;
         adquire(pipe->useMutex);
-        readBytes = availableToRead(pipe);
     }
 
-    if(blocked ==1)
-        adquire(pipe->useMutex);
+
     int i;
     for(i = 0; i < ammount && availableToRead(pipe) > 0 ; i++, (pipe->readPosition)++) {
         if(pipe->readPosition == 1024)
@@ -179,7 +177,6 @@ int writePipe(pipe_t * pipe, char * msg, size_t ammount){
     if(pipe->waitingForRead != -1)
         unblockProcess(pipe->waitingForRead);
     }
-
     release(pipe->useMutex);
     release(pipe->writeMutex);
 

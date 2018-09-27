@@ -29,6 +29,7 @@ void help(){
   printf("ps - shows information about the current processes in the system\n");
   printf("necesitoquemeapapachen - shows burro\n");
   printf("exit - exits from shell\n");
+  printf("messages - shows a pipe demostration\n");
 }
 
 void cleanScreen(){

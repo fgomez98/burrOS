@@ -31,7 +31,7 @@
 #define _getSec 29
 #define _drawPixel 30
 #define _pipe 31
-#define _unlinkPipe 32
+#define _destroyPipe 32
 #define _readPipe 33
 #define _writePipe 34
 

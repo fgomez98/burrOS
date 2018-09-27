@@ -49,7 +49,7 @@ systemCall sysCalls[] = { 0, 0, 0,
 		(systemCall) _getSec,
 		(systemCall) _drawPixel,
 		(systemCall) _pipe,
-		(systemCall) _unlinkPipe,
+		(systemCall) _destroyPipe,
 		(systemCall) _readPipe,
 		(systemCall) _writePipe
 
@@ -217,8 +217,8 @@ void _pipe(uint64_t name, uint64_t ** p){
 	*p = pipe(name);
 }
 
-void _unlinkPipe(uint64_t name){
-	unlinkPipe(name);
+void _destroyPipe(uint64_t name){
+    destroyPipe(name);
 }
 
 uint64_t _readPipe(uint64_t pipe, uint64_t a, uint64_t resp, uint64_t amount){
