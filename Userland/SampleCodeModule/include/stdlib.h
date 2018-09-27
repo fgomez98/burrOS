@@ -24,7 +24,7 @@ void free(void* ad);
 void kill(int pid, int msg);
 
 
-int exec(void* startingPoint, int argc, void* argv[]);
+int exec(char* name,void* startingPoint, int argc, void* argv[]);
 /*
  msg:
  0: ends process

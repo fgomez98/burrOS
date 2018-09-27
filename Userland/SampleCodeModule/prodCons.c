@@ -50,13 +50,13 @@ void initProdCons() {
             case 's':
                 if ((sushiMenCount < MAXSUSHIMEN) && initialized) {
                     sushiMenCount++;
-                    exec(sushiMan, 0, 0);
+                    exec("sushiMan",sushiMan, 0, 0);
                 }
                 break;
             case 'm':
                 if ((monsterCount < MAXMONSTERS) && initialized) {
                     monsterCount++;
-                    exec(monster, 0, 0);
+                    exec("monster",monster, 0, 0);
                 }
                 break;
             case 'q':
@@ -64,8 +64,8 @@ void initProdCons() {
                 break;
             case 'i':
                 initialized = 1;
-                exec(monster, 0, 0);
-                exec(sushiMan, 0, 0);
+                exec("monster",monster, 0, 0);
+                exec("sushiMan",sushiMan, 0, 0);
                 break;
         }
     }

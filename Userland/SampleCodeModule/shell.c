@@ -129,6 +129,7 @@ void initializeShell() {
       }
       free(arg1);
       free(arg2);
+
   }
    printf("\n\n\nSee you soon!");
 
