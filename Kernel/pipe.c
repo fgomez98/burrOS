@@ -165,13 +165,14 @@ int writePipe(pipe_t * pipe, char * msg, size_t ammount){
     }
 
     for(int i = 0; i < ammount; i++, (pipe->writePosition)++) {
-        if(pipe->writePosition == 1024)
+        if (pipe->writePosition == 1024)
             pipe->writePosition = 0;
         (pipe->buffer)[pipe->writePosition] = msg[i];
+    }
 
     if(pipe->waitingForRead != -1)
         unblockProcess(pipe->waitingForRead);
-    }
+
     release(pipe->useMutex);
     release(pipe->writeMutex);
 
