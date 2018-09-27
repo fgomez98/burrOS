@@ -66,7 +66,7 @@ void wait(sem * s) {
 //        uintToBase(pid, buff6, 10);
 //        putStr(buff6, c);
 //        putChar('\n', c);
-//        
+        
         release(s->lock);
         blockProcess(pid);
     } else {
@@ -79,7 +79,6 @@ void post(sem * s) {
      //_cli();
     adquire(s->lock);
     (s->value)++;
-    
 //    putChar('\n', c);
 //    putStr("post: ", c);
 //    uintToBase(getRunningPid(), buff6, 10);
@@ -89,7 +88,7 @@ void post(sem * s) {
     if (s->value <= 0) {
         int pid = pop(s->queue);
         if (pid != NULL) {
-            while(0 == unblockProcess(pid)) {
+            while(!unblockProcess(pid)) {
                 pid = pop(s->queue);
                 if (pid == NULL) {
                     break;
