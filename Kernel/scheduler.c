@@ -30,28 +30,16 @@ void addProcess(tProcess * p) {
 }
 
 void blockProcess(int pid) {
-    //_cli();
-//    putStr("Block: ", green);
-//    uintToBase(pid, buff, 10);
-//    putStr(buff, yellow);
-//    putChar('\n', yellow);
-    //running->state = WAITING;
     changeProcessState(pid, WAITING);
     _hlt();
 }
 
 int unblockProcess(int pid) {
-    //_cli();
-//    putStr("Volvi: ", green);
-//    uintToBase(pid, buff, 10);
-//    putStr(buff, yellow);
-//    putChar('\n', yellow);
 
     tProcess * elem = mallocMemory(sizeof(tProcess));
     elem->pid = pid;
     tProcess * aux = removeElem(blocked, elem);
     if (aux == NULL) {
-        //_sti();
        return -1;
     }
     freeMemory(elem);
@@ -62,7 +50,6 @@ int unblockProcess(int pid) {
     aux->state = READY;
     push(ready, aux);
     return 1;
-    //_sti();
 }
 
 void changeProcessState(int pid, pState state) {
@@ -77,14 +64,10 @@ void changeProcessState(int pid, pState state) {
         aux = removeElem(blocked, elem);
         freeMemory(elem);
         sort(aux, state);
-//        aux->state = state;
-//        push(blocked, aux);
         return;
     }
     freeMemory(elem);
     sort(aux, state);
-//    aux->state = state;
-//    push(ready, aux);
 }
 
 void sort(tProcess * p, pState state) {
@@ -124,11 +107,6 @@ tProcess * getProcessState(int pid) {
 
 void scheduler() {
     if (running->state == DEAD) {
-//        putChar('\n', yellow);
-//        putStr("RunningDeadPid:", yellow);
-//        uintToBase(getRunningPid(), buff, 10);
-//        putStr(buff, yellow);
-//        putChar('\n', yellow);
         deleteProcess(running);
     } else if (running->state == RUNNING) {
         running->state = READY;
@@ -140,11 +118,6 @@ void scheduler() {
     }
     while ((running = pop(ready))->state != READY) {
         if (running->state == DEAD) {
-//            putChar('\n', yellow);
-//            putStr("RunningDeadPid:", yellow);
-//            uintToBase(getRunningPid(), buff, 10);
-//            putStr(buff, yellow);
-//            putChar('\n', yellow);
             deleteProcess(running);
         } else if (running->state == WAITING) {
             push(blocked, running);

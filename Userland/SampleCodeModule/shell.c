@@ -110,10 +110,6 @@ void initializeShell() {
           }
           else if(strcmp("malloc", arg1) == 0){
               maDemo();
-              // char* a = malloc(10);
-              // char *b = malloc(20);
-              // free(a);
-              // free(b);
           } else if (strcmp("sushi", arg1) == 0) {
               initProdCons();
           } else if (strcmp("necesito que me apapachen", arg1) == 0) {
