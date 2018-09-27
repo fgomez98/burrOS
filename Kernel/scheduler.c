@@ -160,7 +160,8 @@ void sprintProcesses(char* buffer, int buffSize){
     int index = 0;
     int occ;
     char pid[0];
-    char* mem = mallocMemory(8);
+    char* mem[8];
+    //char* mem = mallocMemory(8);
     int s;
     char* states[4];
     states[0] = "ready";
@@ -232,7 +233,7 @@ void sprintProcesses(char* buffer, int buffSize){
            buffSize-=occ;
 
 
-           occ = strcpy2(buffer+index,"   ",buffSize);
+          occ = strcpy2(buffer+index,"     ",buffSize);
            index += occ;
            buffSize -= occ;
 
@@ -311,7 +312,7 @@ void sprintProcesses(char* buffer, int buffSize){
             aux = aux->next;
          }
    }
-   freeMemory(mem);
+   //freeMemory(mem);
  }
 
 //.........................................TESTS.........................................
