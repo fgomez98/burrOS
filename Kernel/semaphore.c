@@ -75,7 +75,7 @@ void post(sem * s) {
     if (s->value <= 0) {
         int pid = pop(s->queue);
         if (pid != NULL) {
-            while(0 == unblockProcess(pid)) {
+            while(!unblockProcess(pid)) {
                 pid = pop(s->queue);
                 if (pid == NULL) {
                     break;
