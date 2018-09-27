@@ -32,6 +32,5 @@ void mutexTest();
 void messagesTest();
 void mutexTest();
 void pipeTest();
-void justTurnAround();
 
 #endif

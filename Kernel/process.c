@@ -16,7 +16,7 @@ static int nextPid = 1; //Esta variable le asigna a cada proceso un pid distinto
 //    process->parentPid = parentPid;
 //    process->name = processName;
 //    process->processMemoryLowerAddress = mallocMemory(PROCESS_SIZE);
-//    
+//
 //    void* processMemoryUpperAddress = process->processMemoryLowerAddress + PROCESS_SIZE -1;
 //    process->stackPointer = initializeStack(processMemoryUpperAddress - sizeof(tStackFrame) +1 , argc, argv, startingPoint);
 //    process->memoryAllocated = PROCESS_SIZE;
@@ -63,24 +63,22 @@ tProcess* createProcess(char* processName,void* startingPoint, int parentPid, in
     process->parentPid = parentPid;
     process->name = processName;
     process->processMemoryLowerAddress = mallocMemory(PROCESS_SIZE);
-    
+
     process->code = startingPoint;
-    
+
     void* processMemoryUpperAddress = process->processMemoryLowerAddress + PROCESS_SIZE -1;
     process->stackPointer = processMemoryUpperAddress - sizeof(tStackFrame) + 1;
     initializeStack(process->stackPointer, argc, argv, startingPoint);
     process->memoryAllocated = PROCESS_SIZE;
     process->state = READY;
     process->heap = NULL;
-    process->mailBox = mallocMemory(sizeof(tMailBox));
-    setProcessMailBox(process);
     return process;
 }
 
 void runProcess(int argc, char * argv[], void * startingPoint) { // por orden de como se levantan los argumentos
     ((int (*)(int, void**))(startingPoint))(argc, argv);
     _killCurrentProcess();
-    
+
 }
 
 //RowDaBoat
@@ -182,7 +180,6 @@ void endProcess(int pid) {
 
 void deleteProcess(tProcess* process) {
     freeMemory(process->processMemoryLowerAddress);
-    freeProcessMailBox(process->mailBox);
     freeProcessHeap(process->heap);
     //freeQueue(process->heap);
     freeMemory(process);
@@ -192,16 +189,6 @@ void freeProcessHeap(queueADT heap){
   while(heap!=NULL && (getSize(heap) > 0)){
     freeMemory(pop(heap)); //libera lo q quedo reservado y sin liberar y tamb el pop va borrando los nodos de la cola
   }
-}
-
-void freeProcessMailBox(tMailBox * mailBox){
-  freeMemory(mailBox->buffer);
-  freeQueue(mailBox->waitQueue);
-  destroyMutex(mailBox->send);
-}
-
-void freeMessage(tMessage * message){
-  freeMemory(message->text);
 }
 
 int cmpPointers(uint64_t  p1, uint64_t  p2) {
@@ -320,57 +307,4 @@ int stateIdentifier(pState state){
   }
     return 3;
 
-}
-
-//MESSAGES
-
-tMessage * getMessage(tProcess* p){
-  tMessage * aux;
-  if(p->mailBox->messages <= 0){
-    blockProcess(p->pid);
-  }
-  aux = p->mailBox->buffer[--p->mailBox->messages];
-  while(getSize(p->mailBox->waitQueue) > 0){
-    unblockProcess(pop(p->mailBox->waitQueue));
-  }
-  return aux;
-}
-
-void sendMessage(int pid, tMessage * message, tProcess * source){
-  tProcess * destination = getProcessState(pid);
-  adquire(destination->mailBox->send);
-  if(destination->mailBox->messages == MAX_MESSAGES){
-    release(destination->mailBox->send);
-    push(destination->mailBox->waitQueue, source->pid);
-    blockProcess(source->pid);
-    adquire(destination->mailBox->send);
-  }
-  destination->mailBox->buffer[destination->mailBox->messages++] = message;
-  if(destination->state == WAITING){
-    unblockProcess(destination->pid);
-  }
-  release(destination->mailBox->send);
-}
-
-void setProcessMailBox(tProcess * process){
-  process->mailBox = mallocMemory(sizeof(tMailBox));
-  process->mailBox->messages = 0;
-  process->mailBox->waitQueue = newQueue(sizeof(int), NULL);
-
-
-  char*buffer = mallocMemory(10);
-  int length1 = strlenght("sendMutex");
-  char * sendMutex = mallocMemory(length1 + uintToBase(process->pid,buffer,10)+1);
-  sendMutex = strcpy(sendMutex,"sendMutex");
-  sendMutex = mystrcat(sendMutex,buffer);
-  process->mailBox->send = getMutex(sendMutex);
-}
-
-tMessage * createMessage(int process, long type, char * text){
-  tMessage * message = mallocMemory(sizeof(tMessage));
-  message->source = process;
-  message->type = type;
-  message->text = mallocMemory(strlenght(text));
-  strcpy(message->text,text);
-  return message;
 }

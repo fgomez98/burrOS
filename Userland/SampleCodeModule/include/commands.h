@@ -36,6 +36,5 @@ void ls();
 void ps();
 void memory();
 void showBurro();
-void startProcessCommunication();
 
 #endif
