@@ -167,7 +167,7 @@ void * dispatcher(int rsp) {
  */
 int cmpProcess(tProcess * p1, tProcess * p2) {
     return (p1->pid) - (p2->pid);
-}\
+}
 
 void init_(void * startingPoint) {
     ready = newQueue(sizeof(tProcess), cmpProcess);

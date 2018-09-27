@@ -211,10 +211,10 @@ void _drawPixel(uint64_t x, uint64_t y, uint64_t rgb){
 }
 
 
-void _pipe(uint64_t name, uint64_t p){
-	uint64_t* ui;
-	ui = (uint64_t*)p;
-	*ui = pipe(name);
+
+
+void _pipe(uint64_t name, uint64_t ** p){
+	*p = pipe(name);
 }
 
 void _unlinkPipe(uint64_t name){
