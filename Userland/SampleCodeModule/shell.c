@@ -19,14 +19,16 @@ void initializeShell() {
 
   static char command[MAXLENGTH];
 
+  char * arg1 = calloc(MAXLENGTH);
+  char * arg2 = calloc(MAXLENGTH);
+
   int running = 1;
   while (running){
 
     printf("$>");
     scanAndPrint(command);
 
-      char * arg1 = calloc(MAXLENGTH);
-      char * arg2 = calloc(MAXLENGTH);
+
       sscanf("%s & %s", command, arg1, arg2);
       //TODO: Un semaforo para que se ejecute uno despues del otro??
       if (*arg2) {
@@ -98,9 +100,8 @@ void initializeShell() {
          running = 0;
      }
      else if(strcmp("ps", arg1) == 0){
-         exec("probando",probando, 0, 0);
+        // exec("probando",probando, 0, 0);
          exec("ps",ps, 0, 0);
-         //exec("probando",ps, 0, 0);
      }
      else if(strcmp("memory", arg1) == 0){
          memory();
@@ -124,9 +125,9 @@ void initializeShell() {
          continue;
      }
  }
- free(arg1);
- free(arg2);
+
   }
    printf("\n\n\nSee you soon!");
-
+   free(arg1);
+   free(arg2);
 }
