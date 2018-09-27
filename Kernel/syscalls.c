@@ -51,8 +51,7 @@ systemCall sysCalls[] = { 0, 0, 0,
 		(systemCall) _pipe,
 		(systemCall) _unlinkPipe,
 		(systemCall) _readPipe,
-		(systemCall) _writePipe,
-    (systemCall) _processComunication
+		(systemCall) _writePipe
 
 };
 
@@ -230,8 +229,4 @@ void _readPipe(uint64_t pipe, uint64_t a, uint64_t resp, uint64_t amount){
 void _writePipe(uint64_t * pipe, uint64_t * a, uint64_t msg, uint64_t amount){
     Colour y = {255,255,255};
     writePipe(pipe, msg, amount);
-}
-
-void _processComunication(){
-  justTurnAround();
 }

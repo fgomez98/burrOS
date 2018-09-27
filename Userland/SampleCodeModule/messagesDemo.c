@@ -14,8 +14,8 @@ void startMessagesDemo() {
     writePipe( myPipe, string, 5);
     char asd[50];
     readPipe(myPipe, asd, 5);
-    myPipe[5] = '\0';
-    printf("%s",myPipe);
+    asd[5] = '\0';
+    printf("%s",asd);
 }
 
 void readAndPrint10() {
