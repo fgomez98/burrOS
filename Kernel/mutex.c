@@ -1,6 +1,7 @@
 #include "mutex.h"
 #include "VideoDriver.h"
 #include "lib.h"
+#include "String.h"
 Colour colour5 = {255, 255, 255};
 Colour red2 = {100, 100, 255};
 char buff5[8];
@@ -47,7 +48,7 @@ void destroyMutex(mutex * m) {
     elem->name = m->name;
     mutex * aux = removeElem(myMutexs, elem);
     if (aux != NULL) {
-        //freeQueue(aux->queue);
+        freeQueueNodes(aux->queue);
         freeMemory(aux);
     }
 }
@@ -64,11 +65,13 @@ void adquire(mutex * m) {
         blockProcess(pid);
     }
     //m->mutex_holder = getRunningPid();
-//    putChar('\n', red2);
-//    putStr("adquire by: ", red2);
-//    uintToBase(getRunningPid(), buff5, 10);
-//    putStr(buff5, red2);
-//    putChar('\n', red2);
+//    if (strcmp("prodConsBufferMutex", m->name) == 0) {
+//        putChar('\n', red2);
+//        putStr("adquire by: ", red2);
+//        uintToBase(getRunningPid(), buff5, 10);
+//        putStr(buff5, red2);
+//        putChar('\n', red2);
+//    }
 }
 
 /**
@@ -78,15 +81,19 @@ void adquire(mutex * m) {
  */
 void release(mutex * m) {
     //if (m->mutex_holder == getRunningPid()) {
-//        putChar('\n', red2);
-//        putStr("released by: ", red2);
-//        uintToBase(getRunningPid(), buff5, 10);
-//        putStr(buff5, red2);
-//        putChar('\n', red2);
+//     if (strcmp("prodConsBufferMutex", m->name) == 0) {
+//         putChar('\n', red2);
+//         putStr("released by: ", red2);
+//         uintToBase(getRunningPid(), buff5, 10);
+//         putStr(buff5, red2);
+//         putChar('\n', red2);
+//     }
         int pid = pop(m->queue);
         if (pid != NULL) {
             //m->mutex_holder = pid;
-            unblockProcess(pid);
+            if (!unblockProcess(pid)) {
+                release(m);
+            }
         } else {
             swapUnLock(&(m->value));
         }

@@ -19,7 +19,7 @@ void _malloc(uint64_t bytes, uint64_t address);
 void _calloc(uint64_t bytes, uint64_t address);
 void _realloc(uint64_t bytes, uint64_t address);
 void _free(uint64_t ad);
-void _exec(uint64_t pName,uint64_t startingPoint, uint64_t pid, int argc, void* argv[]);
+void _exec(uint64_t pName,uint64_t startingPoint, int *pid, int argc, void* argv[]);
 void _kill(uint64_t pid, uint64_t message);
 void _killCurrentProcess();
 void _createMutex(uint64_t mutexName, uint64_t mutex);

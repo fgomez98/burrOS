@@ -18,7 +18,7 @@ int getRunningPid();
 void addProcess(tProcess * p);
 void getFromWaiting();
 void blockProcess(int pid);
-void unblockProcess(int pid);
+int unblockProcess(int pid);
 void runNextProcess();
 //tProcess * removeProcess(tProcess * p);
 void scheduler();

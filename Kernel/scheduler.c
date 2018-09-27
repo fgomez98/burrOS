@@ -30,36 +30,39 @@ void addProcess(tProcess * p) {
 }
 
 void blockProcess(int pid) {
-    _cli();
-
-  //  putStr("Block: ", green);
-  //  uintToBase(pid, buff, 10);
-  //  putStr(buff, yellow);
-  //  putChar('\n', yellow);
-
+    //_cli();
+//    putStr("Block: ", green);
+//    uintToBase(pid, buff, 10);
+//    putStr(buff, yellow);
+//    putChar('\n', yellow);
+    //running->state = WAITING;
     changeProcessState(pid, WAITING);
     _hlt();
 }
 
-void unblockProcess(int pid) {
-    _cli();
-//
-  //  putStr("Volvi: ", green);
-  //  uintToBase(pid, buff, 10);
-  //  putStr(buff, yellow);
-  //  putChar('\n', yellow);
+int unblockProcess(int pid) {
+    //_cli();
+//    putStr("Volvi: ", green);
+//    uintToBase(pid, buff, 10);
+//    putStr(buff, yellow);
+//    putChar('\n', yellow);
 
     tProcess * elem = mallocMemory(sizeof(tProcess));
     elem->pid = pid;
     tProcess * aux = removeElem(blocked, elem);
     if (aux == NULL) {
-        _sti();
-       return;
+        //_sti();
+       return 0;
     }
     freeMemory(elem);
+    if (aux->state == DEAD) {
+        deleteProcess(aux);
+        return 0;
+    }
     aux->state = READY;
     push(ready, aux);
-    _sti();
+    return 1;
+    //_sti();
 }
 
 void changeProcessState(int pid, pState state) {
@@ -73,13 +76,36 @@ void changeProcessState(int pid, pState state) {
     if (aux == NULL) {
         aux = removeElem(blocked, elem);
         freeMemory(elem);
-        aux->state = state;
-        push(blocked, aux);
+        sort(aux, state);
+//        aux->state = state;
+//        push(blocked, aux);
         return;
     }
     freeMemory(elem);
-    aux->state = state;
-    push(ready, aux);
+    sort(aux, state);
+//    aux->state = state;
+//    push(ready, aux);
+}
+
+void sort(tProcess * p, pState state) {
+    if (p->pid == 1 || state == RUNNING) {
+        return;
+    }
+    switch (state) {
+        case WAITING:
+            p->state = WAITING;
+            push(blocked, p);
+            break;
+        case DEAD:
+            p->state = DEAD;
+            // y que dsp el scheduler se encargue de borrarlo sino running apunta a cualquier cosa y cagamo
+            push(ready, p);
+            break;
+        case READY:
+            p->state = READY;
+            push(ready, p);
+            break;
+    }
 }
 
 tProcess * getProcessState(int pid) {
@@ -98,13 +124,11 @@ tProcess * getProcessState(int pid) {
 
 void scheduler() {
     if (running->state == DEAD) {
-
 //        putChar('\n', yellow);
 //        putStr("RunningDeadPid:", yellow);
 //        uintToBase(getRunningPid(), buff, 10);
 //        putStr(buff, yellow);
 //        putChar('\n', yellow);
-
         deleteProcess(running);
     } else if (running->state == RUNNING) {
         running->state = READY;
@@ -116,13 +140,11 @@ void scheduler() {
     }
     while ((running = pop(ready))->state != READY) {
         if (running->state == DEAD) {
-
 //            putChar('\n', yellow);
 //            putStr("RunningDeadPid:", yellow);
 //            uintToBase(getRunningPid(), buff, 10);
 //            putStr(buff, yellow);
 //            putChar('\n', yellow);
-
             deleteProcess(running);
         } else if (running->state == WAITING) {
             push(blocked, running);
@@ -145,7 +167,7 @@ void * dispatcher(int rsp) {
  */
 int cmpProcess(tProcess * p1, tProcess * p2) {
     return (p1->pid) - (p2->pid);
-}\
+}
 
 void init_(void * startingPoint) {
     ready = newQueue(sizeof(tProcess), cmpProcess);
@@ -160,7 +182,8 @@ void sprintProcesses(char* buffer, int buffSize){
     int index = 0;
     int occ;
     char pid[0];
-    char* mem = mallocMemory(8);
+    char* mem[8];
+    //char* mem = mallocMemory(8);
     int s;
     char* states[4];
     states[0] = "ready";
@@ -232,7 +255,7 @@ void sprintProcesses(char* buffer, int buffSize){
            buffSize-=occ;
 
 
-           occ = strcpy2(buffer+index,"   ",buffSize);
+          occ = strcpy2(buffer+index,"     ",buffSize);
            index += occ;
            buffSize -= occ;
 
@@ -311,7 +334,7 @@ void sprintProcesses(char* buffer, int buffSize){
             aux = aux->next;
          }
    }
-   freeMemory(mem);
+   //freeMemory(mem);
  }
 
 //.........................................TESTS.........................................
