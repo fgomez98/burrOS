@@ -27,8 +27,6 @@ struct pipeNode{
 
 pipeNode * pipeList = NULL;
 
-Colour color = {255,0,0};
-
 pipe_t * pipe(char * name) {
     if (name == NULL)
         return NULL;
@@ -36,7 +34,6 @@ pipe_t * pipe(char * name) {
     pipeNode * aux = pipeList;
     while(aux != NULL) {
         if(strcmp(aux->pipe->name, name)) {
-            putStr("Ya existia", color);
             return aux->pipe;
         }
         aux = aux->next;
@@ -68,7 +65,6 @@ pipe_t * pipe(char * name) {
     newNode->pipe = newPipe;
     newNode->next = pipeList;
     pipeList = newNode;
-    putStr("Cree el pipe", color);
     return newPipe;
 }
 
@@ -119,7 +115,6 @@ int readPipe(pipe_t * pipe, char * resp, size_t ammount) {
         int pid = getRunningPid();
         pipe->waitingForRead = pid;
         release(pipe->useMutex);
-        putStr("me bloqueo", color);
         blockProcess(pid);
         pipe->waitingForRead = -1;
         adquire(pipe->useMutex);
