@@ -111,7 +111,7 @@ int scanf(const char* fmt, ...){
   int i = 0;
   char* c;
 
-  while(*fmt){
+  while(*fmt!='\0'){
     if(*fmt != '%'){
       if((*fmt) != (*str)){
         return i;
@@ -133,6 +133,7 @@ int scanf(const char* fmt, ...){
                   i++;
                   break;
       }
+      ++fmt; //este no se si lo rompe
     }
   }
   return i;

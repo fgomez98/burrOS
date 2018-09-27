@@ -54,7 +54,7 @@ int strcmp(char string1[], char string2[] ){
         {
             return string1[i] < string2[i] ? -1 : 1;
         }
-        
+
         if (string1[i] == '\0')
         {
             return 0;
@@ -117,4 +117,14 @@ int numLength(int num) {
 		num /= 10;
 	}
 	return length;
+}
+
+char * mystrcat(char *dest, char *src){
+  size_t i,j;
+  for (i = 0; dest[i] != '\0'; i++)
+  ;
+  for (j = 0; src[j] != '\0'; j++)
+  dest[i+j] = src[j];
+  dest[i+j] = '\0';
+  return dest;
 }

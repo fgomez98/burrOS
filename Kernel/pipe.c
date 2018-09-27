@@ -110,7 +110,6 @@ int readPipe(pipe_t * pipe, char * resp, size_t ammount) {
     if(ammount > BUFFERSIZE)
         ammount = BUFFERSIZE;
 
-
     adquire(pipe->readMutex);
     adquire(pipe->useMutex);
     int blocked = 0;
@@ -149,6 +148,9 @@ int writePipe(pipe_t * pipe, char * msg, size_t ammount){
 */
     if(ammount > BUFFERSIZE)
         ammount = BUFFERSIZE;
+    char *buf = mallocMemory(40);
+    uintToBase(pipe,buf,10);
+    putStr(buf, yellows);
 
     adquire(pipe->writeMutex);
     int blocked = 0;

@@ -52,12 +52,12 @@ void unlinkPipe(char* name){
 
 int readPipe(tPipe pipe, char* resp, int amount){
   int a;
-  _syscall(_readPipe, &a, pipe, resp, amount);
+  _syscall(_readPipe, pipe, &a, resp, amount);
   return a;
 }
 
 int writePipe(tPipe pipe, char * msg, int cant){
   int a;
-  _syscall(_writePipe, &a, pipe, msg, cant);
+  _syscall(_writePipe, pipe, &a, msg, cant);
   return a;
 }

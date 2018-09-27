@@ -13,6 +13,7 @@ Colour colour2 = {180, 40, 18};
 Colour colour3 = {200, 156, 12};
 Colour colour4 = {233, 80, 167};
 Colour colour5 = {46, 230, 210};
+
 void help(){
   printf("\nHELP:\n");
   printf("\n");
@@ -88,7 +89,7 @@ void delay(int i) {
 }
 
 void ps(){
-  char* buffer = malloc(1024);
+  char* buffer = malloc(2000);
   printf("\n");
   printf("PID   STATE      MEMORYALLOCATED   PROCESSNAME");
   printf("\n");
@@ -148,4 +149,33 @@ void showBurro() {
     printf("    /___|          /____|     ,:__| \n");
     printf("   /    /         /    |     /    ) \n");
     printf("   `---'          '----'      `---' \n");
+}
+
+
+
+void maDemo(){
+    int c;
+    void* p;
+    printf("\n");
+    printf("MEMORY ALLOCATION DEMO: \n");
+    printf("Press any key in order to visualize current process Memory Status\n");
+    c = getChar();
+    //ps();
+    memory();
+
+
+    printf("Press any key in order to allocate a block of size 128\n");
+    c = getChar();
+    p = malloc(128);
+    printf("\nA block of 128 was allocated: \n");
+    //ps();
+    memory();
+
+    printf("Press any key to free the block\n");
+    c = getChar();
+    free(p);
+
+    printf("The block was freed\n");
+    //ps();
+    memory();
 }

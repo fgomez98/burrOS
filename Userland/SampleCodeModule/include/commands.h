@@ -37,4 +37,7 @@ void ps();
 void memory();
 void showBurro();
 
+void startProcessCommunication();
+void maDemo();
+
 #endif

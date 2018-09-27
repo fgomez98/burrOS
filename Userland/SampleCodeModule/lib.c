@@ -32,6 +32,6 @@ uint64_t uintToBase(uint64_t value, char * buffer, uint64_t base) {
         p1++;
         p2--;
     }
+    
     return digits;
 }
-

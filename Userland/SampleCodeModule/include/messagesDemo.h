@@ -1,9 +1,6 @@
-void readAndPrint10();
-
-void readAndPrint5();
-
-void writeMessage1();
-
-void writeMessage2();
+void writeMessage(int argc, char ** argv);
+void readMessage(int argc, char ** argv);
 
 void writeWelcomeMessage();
+
+void startMessagesDemo();

@@ -167,12 +167,12 @@ void * dispatcher(int rsp) {
  */
 int cmpProcess(tProcess * p1, tProcess * p2) {
     return (p1->pid) - (p2->pid);
-}
+}\
 
 void init_(void * startingPoint) {
     ready = newQueue(sizeof(tProcess), cmpProcess);
     blocked = newQueue(sizeof(tProcess), cmpProcess);
-    running = createProcess("theGodFather", startingPoint, 0, 0, NULL);
+    running = createProcess("theGodFather", startingPoint , 0, 0, NULL);
     running->state = RUNNING;
     contextSwitch(running->stackPointer);
 }
@@ -268,7 +268,7 @@ void sprintProcesses(char* buffer, int buffSize){
            buffSize -= occ;
 
 
-            occ = strcpy2(buffer+index,running->name,buffSize);
+            occ = strcpy2(buffer+index,p->name,buffSize);
             index += occ;
             buffSize -= occ;
 
@@ -322,7 +322,7 @@ void sprintProcesses(char* buffer, int buffSize){
             buffSize -= occ;
 
 
-             occ = strcpy2(buffer+index,running->name,buffSize);
+             occ = strcpy2(buffer+index,p->name,buffSize);
              index += occ;
              buffSize -= occ;
 
@@ -706,4 +706,5 @@ void pipeTest() {
     //push(ready, anotherP2);
     while (1);
     endProcess(getRunningPid());
+
 }

@@ -16,7 +16,7 @@ static int nextPid = 1; //Esta variable le asigna a cada proceso un pid distinto
 //    process->parentPid = parentPid;
 //    process->name = processName;
 //    process->processMemoryLowerAddress = mallocMemory(PROCESS_SIZE);
-//    
+//
 //    void* processMemoryUpperAddress = process->processMemoryLowerAddress + PROCESS_SIZE -1;
 //    process->stackPointer = initializeStack(processMemoryUpperAddress - sizeof(tStackFrame) +1 , argc, argv, startingPoint);
 //    process->memoryAllocated = PROCESS_SIZE;
@@ -63,9 +63,9 @@ tProcess* createProcess(char* processName,void* startingPoint, int parentPid, in
     process->parentPid = parentPid;
     process->name = processName;
     process->processMemoryLowerAddress = mallocMemory(PROCESS_SIZE);
-    
+
     process->code = startingPoint;
-    
+
     void* processMemoryUpperAddress = process->processMemoryLowerAddress + PROCESS_SIZE -1;
     process->stackPointer = processMemoryUpperAddress - sizeof(tStackFrame) + 1;
     initializeStack(process->stackPointer, argc, argv, startingPoint);
@@ -78,7 +78,7 @@ tProcess* createProcess(char* processName,void* startingPoint, int parentPid, in
 void runProcess(int argc, char * argv[], void * startingPoint) { // por orden de como se levantan los argumentos
     ((int (*)(int, void**))(startingPoint))(argc, argv);
     _killCurrentProcess();
-    
+
 }
 
 //RowDaBoat
@@ -191,7 +191,6 @@ void freeProcessHeap(queueADT heap){
   }
 }
 
-
 int cmpPointers(uint64_t  p1, uint64_t  p2) {
     return p1 - p2;
 }
@@ -209,7 +208,7 @@ void* mallocMemoryInProcess(size_t request, tProcess* process){
 
 
   push(process->heap, p);
-  process->memoryAllocated += request;
+  process->memoryAllocated +=size_of_level(findLevel(p));
   //putStr("\nno la quedo en push", colour2);
 
   //TNode* aux = (process->heap)->first;

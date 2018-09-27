@@ -7,24 +7,24 @@
 #include "prodCons.h"
 
 void probando(){
-  printf("Exec\n");
-  killCurrentProcess();
+    while(1);
 }
 
 Colour white = {255, 255, 255};
+
 void initializeShell() {
-    
+
     showBurro();
     printf("Welcome to the shell!! Please type help to get a list of our commands\n");
 
   static char command[MAXLENGTH];
-  
+
   int running = 1;
   while (running){
 
     printf("$>");
     scanAndPrint(command);
-    
+
       char * arg1 = calloc(MAXLENGTH);
       char * arg2 = calloc(MAXLENGTH);
       sscanf("%s & %s", command, arg1, arg2);
@@ -124,5 +124,5 @@ void initializeShell() {
       free(arg2);
   }
    printf("\n\n\nSee you soon!");
-    
+
 }

@@ -4,53 +4,67 @@
 #include <messagesDemo.h>
 #include <sync.h>
 
-char * pipeName = "thisIsADemoPipe";
 
 void startMessagesDemo() {
     writeWelcomeMessage();
-    tPipe pipe = _syscall(_pipe, pipeName);
-    char * string = "Hello";
-    writePipe( pipe, string, 5);
+    char * pipeName = "thisIsADemoPipe";
+    char c;
+    while((c=getChar()) != 'q') {
+        switch(c) {
+            case '1': {
+                printf("Your input below: \n");
+                char input[50];
+                int i = 0;
+                while((c=getChar()) != '\n') {
+                    input[i] = c;
+                    printf("%c",c);
+                    i++;
+                }
+                if(i == 0){
+                    printf("Nothing to write\n");
+                    break;
+                }
+                printf("\n");
+                i++;
+                char * argv[2];
+                argv[0] = pipeName;
+                argv[1] = input;
+                exec("escribe1",writeMessage,i,argv);
+                break;
+            }
+            case '2': {
+                int numberToRead = 0;
+                for(int pot= 1;(c=getChar()) >= '0' && c <= '9'; pot*=10) {
+                    numberToRead = (numberToRead * pot) + (c - '0');
+                }
+                char * argv[1];
+                argv[0] = pipeName;
+                exec("lee1",readMessage,numberToRead,argv);
+                break;
+            }
+        }
+    }
 }
 
-void readAndPrint10() {
-    tPipe pipe = _syscall(_pipe, pipeName);
-    char * resp = malloc(11);
-    readPipe( pipe, resp, 10);
-    resp[10] = '\0';
-    printf("I read: %s", resp);
-    killCurrentProcess();
+void writeMessage(int argc, char ** argv) {
+    tPipe myPipe = pipe(argv[0]);
+    writePipe(myPipe,argv[1], argc);
+    argv[1][argc] = '\0';
+    printf("I wrote %s\n", argv[1]);
+    return;
 }
 
-void readAndPrint5() {
-    tPipe pipe = _syscall(_pipe, pipeName);
-    char * resp = malloc(6);
-    readPipe( pipe, resp, 5);
-    resp[5] = '\0';
-    printf("I read: %s", resp);
-    killCurrentProcess();
-}
-
-void writeMessage1() {
-    tPipe * pipe = _syscall(_pipe, pipeName);
-    char * string = "Hello";
-    writePipe( pipe, string, strlen(string));
-    printf("I wrote: %s\n", string);
-    killCurrentProcess();
-}
-
-void writeMessage2() {
-    tPipe pipe = _syscall(_pipe, pipeName);
-    char * string = "This is a demo";
-    writePipe( pipe, string, strlen(string));
-    printf("I wrote: %s", string);
-    killCurrentProcess();
+void readMessage(int argc, char ** argv) {
+    tPipe myPipe = pipe(argv[0]);
+    char buffer[argc];
+    readPipe(myPipe, buffer,argc);
+    buffer[argc] = '\0';
+    printf("I read: %s", buffer);
+    return;
 }
 
 void writeWelcomeMessage() {
-    printf("\n1: Write 'Hello' on the pipe\n");
-    printf("2: Read and print 5 chars from the pipe\n");
-    printf("3: Write 'This is a demo' on the pipe\n");
-    printf("4: Read and print 10 chars from the pipe\n");
+    printf("\n1: Write whatever you write until you press enter.(MAX 50 chars)\n");
+    printf("2: Read and print a number of bytes.\n");
     printf("q: Exit demo\n");
 }

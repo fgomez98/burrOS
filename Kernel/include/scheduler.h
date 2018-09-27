@@ -27,8 +27,9 @@ void init_Process();
 void init_(void * startingPoint);
 int cmpProcess(tProcess * p1, tProcess * p2);
 tProcess* getRunningProcess();
+tProcess * getProcessState(int pid);
 void mutexTest();
-
+void messagesTest();
 void mutexTest();
 void pipeTest();
 

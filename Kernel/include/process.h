@@ -5,10 +5,13 @@
 #include "BuddyAllocationSystem.h"
 #include "lib.h"
 #include "queueADT.h"
+#include "String.h"
 
 #define BLOCK_SIZE 4096
 #define PROCESS_SIZE 2*BLOCK_SIZE
+
 typedef enum {READY, RUNNING, WAITING, DEAD} pState; //estados de un proceso
+
 
 
 //typedef struct{
@@ -32,6 +35,7 @@ typedef struct {
     void * code;
     queueADT heap;
     uint64_t memoryAllocated;
+
 } tProcess;
 
 //RowDaBoat
@@ -75,5 +79,6 @@ void endProcess(int pid);
 int stateIdentifier(pState state);
 void* callocMemoryInProcess(size_t request, tProcess* process);
 void* reallocMemoryInProcess(size_t request, tProcess* process, uint64_t oldPtr);
+
 
 #endif
