@@ -276,18 +276,20 @@ void* callocMemoryInProcess(size_t request, tProcess* process){
   if(process->heap == NULL){
       process->heap = newQueue(sizeof(uint64_t), cmpPointers);
   }
-
+  process->memoryAllocated +=size_of_level(findLevel(p));
   push(process->heap, p);
 
 return p;
 }
 
 void* reallocMemoryInProcess(size_t request, tProcess* process, uint64_t oldPtr){
+  process->memoryAllocated -= size_of_level(findLevel(oldPtr));
   removeElem(process->heap, oldPtr);
   void* p = reallocMemoryAlreadyFreed(oldPtr, request);
   if(process->heap == NULL){
       process->heap = newQueue(sizeof(uint64_t), cmpPointers);
   }
+  process->memoryAllocated +=size_of_level(findLevel(p));
 
   push(process->heap, p);
 
