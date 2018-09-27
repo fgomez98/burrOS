@@ -71,6 +71,9 @@ void initializeShell() {
      } else if (strcmp("necesitoquemeapapachen", arg2) == 0) {
          exec("burro",showBurro, 0, 0);
      }
+     else if (strcmp("m", arg2) == 0) {
+          exec("messagesDemo",startMessagesDemo, 0, 0);
+     }
      else{
          printf("\nUnknown command, type help\n");
          continue;
@@ -118,6 +121,9 @@ void initializeShell() {
          initProdCons();
      } else if (strcmp("necesito que me apapachen", arg1) == 0) {
          showBurro();
+     }
+     else if(strcmp("m", arg1) == 0) {
+         startMessagesDemo();
      }
      else{
          printf("\nUnknown command, type help\n");

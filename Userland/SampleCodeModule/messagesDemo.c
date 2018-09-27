@@ -16,16 +16,23 @@ void startMessagesDemo() {
                 char input[50];
                 int i = 0;
                 while((c=getChar()) != '\n') {
-                    input[i] = c;
-                    printf("%c",c);
-                    i++;
+                    if(c == '\b') {
+                        if(i > 0) {
+                            i--;
+                            printf("%c", c);
+                        }
+                    }
+                    else {
+                        input[i] = c;
+                        printf("%c", c);
+                        i++;
+                    }
                 }
                 if(i == 0){
                     printf("Nothing to write\n");
                     break;
                 }
                 printf("\n");
-                i++;
                 char * argv[2];
                 argv[0] = pipeName;
                 argv[1] = input;
@@ -34,9 +41,16 @@ void startMessagesDemo() {
             }
             case '2': {
                 int numberToRead = 0;
+                printf("Your input below: \n");
                 for(int pot= 1;(c=getChar()) >= '0' && c <= '9'; pot*=10) {
                     numberToRead = (numberToRead * pot) + (c - '0');
+                    printf("%c",c);
                 }
+                if(numberToRead == 0){
+                    printf("Nothing to read\n");
+                    break;
+                }
+                printf("\n");
                 char * argv[1];
                 argv[0] = pipeName;
                 exec("lee1",readMessage,numberToRead,argv);
@@ -51,20 +65,21 @@ void writeMessage(int argc, char ** argv) {
     writePipe(myPipe,argv[1], argc);
     argv[1][argc] = '\0';
     printf("I wrote %s\n", argv[1]);
-    return;
+    killCurrentProcess();
 }
 
 void readMessage(int argc, char ** argv) {
     tPipe myPipe = pipe(argv[0]);
-    char buffer[argc];
-    readPipe(myPipe, buffer,argc);
-    buffer[argc] = '\0';
-    printf("I read: %s", buffer);
-    return;
+    int amount = argc;
+    char buffer[amount];
+    int a = readPipe(myPipe, buffer,amount);
+    buffer[a] = '\0';
+    printf("I read %d bytes: %s\n",a, buffer);
+    killCurrentProcess();
 }
 
 void writeWelcomeMessage() {
-    printf("\n1: Write whatever you write until you press enter.(MAX 50 chars)\n");
-    printf("2: Read and print a number of bytes.\n");
+    printf("\n1: Write in the pipe whatever you write. Press enter to finish your message.(MAX 50 chars)\n");
+    printf("2: Read and print a number of bytes. Type the number, then press enter.\n");
     printf("q: Exit demo\n");
 }

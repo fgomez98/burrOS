@@ -27,9 +27,7 @@ struct pipeNode{
 
 pipeNode * pipeList = NULL;
 
-
-/*BORRAR*/
-Colour yellows = {100, 1000, 255};
+Colour color = {255,0,0};
 
 pipe_t * pipe(char * name) {
     if (name == NULL)
@@ -37,8 +35,10 @@ pipe_t * pipe(char * name) {
 
     pipeNode * aux = pipeList;
     while(aux != NULL) {
-        if(strcmp(aux->pipe->name, name))
+        if(strcmp(aux->pipe->name, name)) {
+            putStr("Ya existia", color);
             return aux->pipe;
+        }
         aux = aux->next;
     }
 
@@ -68,7 +68,7 @@ pipe_t * pipe(char * name) {
     newNode->pipe = newPipe;
     newNode->next = pipeList;
     pipeList = newNode;
-
+    putStr("Cree el pipe", color);
     return newPipe;
 }
 
@@ -104,30 +104,32 @@ pipeNode * unlinkPipeR(pipeNode * node, char * name) {
 }
 
 int readPipe(pipe_t * pipe, char * resp, size_t ammount) {
-  /*  if(!exists(pipe))
+    if(!exists(pipe))
         return -1;
-*/
+
     if(ammount > BUFFERSIZE)
         ammount = BUFFERSIZE;
 
     adquire(pipe->readMutex);
     adquire(pipe->useMutex);
     int blocked = 0;
-    int readBytes = BUFFERSIZE - getAvailableToWrite(pipe->readPosition, pipe->writePosition, BUFFERSIZE);
-    if(readBytes <= 0) {
-        pipe->waitingForRead = getRunningPid();
+
+    int readBytes = availableToRead(pipe);
+    while(readBytes <= 0) {
+        int pid = getRunningPid();
+        pipe->waitingForRead = pid;
         blocked = 1;
-        putStr("me bloqueo leyendo\n", yellows);
         release(pipe->useMutex);
-        blockProcess(pipe->waitingForRead);
-        putStr("Me desbloquearon\n", yellows);
-        pipe->waitingForRead = -1;
+        putStr("me bloqueo", color);
+        blockProcess(pid);
+        adquire(pipe->useMutex);
+        readBytes = availableToRead(pipe);
     }
 
     if(blocked ==1)
         adquire(pipe->useMutex);
     int i;
-    for(i = 0; i < ammount ; i++, (pipe->readPosition)++) {
+    for(i = 0; i < ammount && availableToRead(pipe) > 0 ; i++, (pipe->readPosition)++) {
         if(pipe->readPosition == 1024)
             pipe->readPosition = 0;
         resp[i] = (pipe->buffer)[pipe->readPosition];
@@ -143,14 +145,11 @@ int readPipe(pipe_t * pipe, char * resp, size_t ammount) {
 }
 
 int writePipe(pipe_t * pipe, char * msg, size_t ammount){
-    /*if(!exists(pipe))
+    if(!exists(pipe))
         return -1;
-*/
+
     if(ammount > BUFFERSIZE)
         ammount = BUFFERSIZE;
-    char *buf = mallocMemory(40);
-    uintToBase(pipe,buf,10);
-    putStr(buf, yellows);
 
     adquire(pipe->writeMutex);
     int blocked = 0;
@@ -158,29 +157,28 @@ int writePipe(pipe_t * pipe, char * msg, size_t ammount){
 
     while(!hasSpaceToWrite) {
         adquire(pipe->useMutex);
-        if (getAvailableToWrite(pipe->readPosition, pipe->writePosition, BUFFERSIZE) >= ammount) {
+        if (availableToWrite(pipe) >= ammount) {
             hasSpaceToWrite = 1;
         }
 
         if(!hasSpaceToWrite){
-            pipe->waitingForWrite = getRunningPid();
+            int pid = getRunningPid();
+            pipe->waitingForWrite = pid;
             blocked = 1;
-            putStr("me bloqueo\n", yellows);
             release(pipe->useMutex);
-            blockProcess(pipe->waitingForWrite);
+            blockProcess(pid);
+            pipe->waitingForWrite = -1;
         }
     }
-    pipe->waitingForWrite = -1;
 
     for(int i = 0; i < ammount; i++, (pipe->writePosition)++) {
         if(pipe->writePosition == 1024)
             pipe->writePosition = 0;
         (pipe->buffer)[pipe->writePosition] = msg[i];
-    }
 
     if(pipe->waitingForRead != -1)
         unblockProcess(pipe->waitingForRead);
-
+    }
 
     release(pipe->useMutex);
     release(pipe->writeMutex);
@@ -188,18 +186,16 @@ int writePipe(pipe_t * pipe, char * msg, size_t ammount){
     return ammount;
 }
 
-int getAvailableToWrite(int start, int final, int size) {
-    if(final >= start)
-        return size - (final - start);
+int availableToWrite(pipe_t * pipe) {
+    if(pipe->writePosition >= pipe->readPosition)
+        return BUFFERSIZE - (pipe->writePosition - pipe->readPosition);
     else {
-        return start - final;
+        return BUFFERSIZE - (pipe->readPosition - pipe->writePosition);
     }
 }
 
-int readAvailable(pipe_t * pipe){
-    if(BUFFERSIZE - getAvailableToWrite(pipe->readPosition, pipe->writePosition, BUFFERSIZE) > 0)
-        return 1;
-    return 0;
+int availableToRead(pipe_t * pipe){
+    return BUFFERSIZE - availableToWrite(pipe);
 }
 
 int cmp(int * pid1, int * pid2) {

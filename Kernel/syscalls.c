@@ -221,12 +221,10 @@ void _unlinkPipe(uint64_t name){
 	unlinkPipe(name);
 }
 
-void _readPipe(uint64_t pipe, uint64_t a, uint64_t resp, uint64_t amount){
-	int* b = (int*) a;
-	readPipe(pipe, resp, amount);
+uint64_t _readPipe(uint64_t pipe, uint64_t a, uint64_t resp, uint64_t amount){
+	return readPipe(pipe, resp, amount);
 }
 
-void _writePipe(uint64_t * pipe, uint64_t * a, uint64_t msg, uint64_t amount){
-    Colour y = {255,255,255};
-    writePipe(pipe, msg, amount);
+uint64_t _writePipe(uint64_t * pipe, uint64_t * a, uint64_t msg, uint64_t amount){
+    return writePipe(pipe, msg, amount);
 }
