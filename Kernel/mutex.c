@@ -64,14 +64,6 @@ void adquire(mutex * m) {
         push(m->queue, pid);
         blockProcess(pid);
     }
-    //m->mutex_holder = getRunningPid();
-//    if (strcmp("prodConsBufferMutex", m->name) == 0) {
-//        putChar('\n', red2);
-//        putStr("adquire by: ", red2);
-//        uintToBase(getRunningPid(), buff5, 10);
-//        putStr(buff5, red2);
-//        putChar('\n', red2);
-//    }
 }
 
 /**
@@ -80,18 +72,9 @@ void adquire(mutex * m) {
  funcion atomica
  */
 void release(mutex * m) {
-    //if (m->mutex_holder == getRunningPid()) {
-//     if (strcmp("prodConsBufferMutex", m->name) == 0) {
-//         putChar('\n', red2);
-//         putStr("released by: ", red2);
-//         uintToBase(getRunningPid(), buff5, 10);
-//         putStr(buff5, red2);
-//         putChar('\n', red2);
-//     }
         int pid = pop(m->queue);
         if (pid != NULL) {
-            //m->mutex_holder = pid;
-            if (!unblockProcess(pid)) {
+            if (0 == unblockProcess(pid)) {
                 release(m);
             }
         } else {
