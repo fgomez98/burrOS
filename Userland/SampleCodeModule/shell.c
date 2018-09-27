@@ -120,7 +120,7 @@ void initializeShell() {
          showBurro();
      }
      else if (strcmp("messages", arg1) == 0) {
-         exec("messages",startMessagesDemo, 0, 0);
+         startMessagesDemo();
      }
      else{
          printf("\nUnknown command, type help\n");
