@@ -52,7 +52,7 @@ int unblockProcess(int pid) {
     tProcess * aux = removeElem(blocked, elem);
     if (aux == NULL) {
         //_sti();
-       return 0;
+       return -1;
     }
     freeMemory(elem);
     if (aux->state == DEAD) {

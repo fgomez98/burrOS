@@ -91,7 +91,7 @@ void release(mutex * m) {
         int pid = pop(m->queue);
         if (pid != NULL) {
             //m->mutex_holder = pid;
-            if (!unblockProcess(pid)) {
+            if (0 == unblockProcess(pid)) {
                 release(m);
             }
         } else {
