@@ -18,7 +18,8 @@ tProcess* createProcess(char* processName,void* startingPoint, int parentPid, in
     process->processMemoryLowerAddress = mallocMemory(PROCESS_SIZE);
 
     process->code = startingPoint;
-
+    
+    //esto tiene q ser uint64_t y no void*!!!!!!!!!! CAMBIARLO
     void* processMemoryUpperAddress = process->processMemoryLowerAddress + PROCESS_SIZE -1;
     process->stackPointer = processMemoryUpperAddress - sizeof(tStackFrame) + 1;
     initializeStack(process->stackPointer, argc, argv, startingPoint);
