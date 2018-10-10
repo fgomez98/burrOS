@@ -199,13 +199,13 @@ char * getInt(const char * str, int * n){
   return str;
 }
 
-char* getString(const char * str, char* source){
+char* getString(const char * str, char*  dest){
+  int i = 0;
   while(*str && *(str) != ' '){
-    *source = *str;
-    *source++;
-    *str++;
+    dest[i]=str[i];
+    i++;
   }
-  return str;
+  return dest;
 }
 
 void getInput(char * string){
