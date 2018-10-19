@@ -46,18 +46,16 @@ tPipe pipe(char* name){
   return p;
 }
 
-void unlinkPipe(char* name){
-  _syscall(_unlinkPipe, name);
+void destroyPipe(char* name){
+    _syscall(_destroyPipe, name);
 }
 
 int readPipe(tPipe pipe, char* resp, int amount){
-  int a;
-  _syscall(_readPipe, pipe, &a, resp, amount);
-  return a;
+    int a;
+    return _syscall(_readPipe, pipe, &a, resp, amount);
 }
 
 int writePipe(tPipe pipe, char * msg, int cant){
-  int a;
-  _syscall(_writePipe, pipe, &a, msg, cant);
-  return a;
+    int a;
+    return _syscall(_writePipe, pipe, &a, msg, cant);
 }
