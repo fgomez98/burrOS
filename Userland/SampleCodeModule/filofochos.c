@@ -2,6 +2,14 @@
 #define MIDX XRESOLUTION/2
 #define MIDY YRESOLUTION/2
 #define abs(x) (((x)<0) ? -(x) : (x))
+#define MAX_FILOSOPHERS 5
+#define THINKING 2
+#define HUNGRY 1
+#define EATING 0
+#define FILOMUTEX "philosophersMutex"
+char * semNames[] = {"philosophersSem1", "philosophersSem2", "philosophersSem3", "philosophersSem4", "philosophersSem5"};
+static tMutex mutex;
+static tSem sem[MAX_FILOSOPHERS];
 static int running;
 static int filofochosAmount;
 
@@ -12,25 +20,33 @@ static Colour filofochoColours[] = {
     {180, 40, 18},
     {100, 1000, 255},
     {50, 50, 280},
-    {180, 180, 180}
+    {70, 0, 94}
 };
+int philState[MAX_FILOSOPHERS];
+
 static Colour forks[] = {
-//    {255, 255, 255},
-//    {255, 255, 255},
-//    {255, 255, 255},
-//    {255, 255, 255},
-//    {255, 255, 255}
-    {100, 100, 255},
-    {180, 40, 18},
-    {100, 1000, 255},
-    {50, 50, 280},
-    {180, 180, 180}
+    {255, 255, 255},
+    {255, 255, 255},
+    {255, 255, 255},
+    {255, 255, 255},
+    {255, 255, 255}
+//    {100, 100, 255},
+//    {180, 40, 18},
+//    {100, 1000, 255},
+//    {50, 50, 280},
+//    {180, 180, 180}
 };
+
+void philospher(int id);
 
 void initFilofochos() {
     running = 1;
-    filofochosAmount = 2;
+    filofochosAmount = 0;
     char initialized = 0;
+    mutex = createMutex(FILOMUTEX);
+    for (int i = 0; i < MAX_FILOSOPHERS; i++) {
+        sem[i] = createSem(semNames[i]);
+    }
     cleanScreen();
     printf("Welcome to Dinning Philosofers\n");
     printf("Initially there are 2 philosofers\n");
@@ -48,6 +64,8 @@ void initFilofochos() {
                 break;
             case 'i':
                 initialized = 1;
+                exec("philosopher", philospher, filofochosAmount++, 0);
+                exec("philosopher", philospher, filofochosAmount++, 0);
                 break;
         }
 
@@ -58,23 +76,83 @@ void initFilofochos() {
         _syscall(_read, &key);
         switch (key) {
             case 'z':
-                if (filofochosAmount < 5) {
+                if (filofochosAmount < MAX_FILOSOPHERS) {
                     clearTable();
-                    filofochosAmount++;
+                    exec("philosopher", philospher, filofochosAmount++, 0);
                 }
                 break;
             case 'x':
-                if (filofochosAmount > 2) {
-                    clearTable();
-                    filofochosAmount--;
-                }
+//                if (filofochosAmount > 2) {
+//                    clearTable();
+//                    filofochosAmount--;
+//                }
                 break;
             case 'q':
                 running = 0;
                 break;
             }
     }
-    clearTable();
+    //cleanScreen();
+}
+
+int left(int i) {
+    return (i + filofochosAmount - 1) % filofochosAmount;
+}
+
+int right(int i) {
+    return (i + 1) % filofochosAmount;
+}
+
+void think() {
+    delay(9000);
+}
+
+void eat() {
+    delay(9000);
+}
+
+void markForks(int id) {
+    forks[left(id)] = filofochoColours[id];
+    forks[id] = filofochoColours[id];
+}
+
+void unMarkForks(int id) {
+    forks[left(id)] = white;
+    forks[id] = white;
+}
+
+void test(int id) {
+    if (philState[id] == HUNGRY && philState[left(id)] != EATING && philState[right(id)] != EATING) {
+        philState[id] = EATING;
+        markForks(id);
+        post(sem[id]);
+    } 
+}
+
+void take_fork(int id) {
+    adquire(mutex);
+    philState[id] = HUNGRY;
+    test(id);
+    release(mutex);
+    wait(sem[id]);
+}
+
+void put_fork(int id) {
+    adquire(mutex);
+    philState[id] = THINKING;
+    unMarkForks(id);
+    test(left(id));
+    test(right(id));
+    release(mutex);
+}
+
+void philospher(int id) {
+    while (running) {
+        think();
+        take_fork(id);
+        eat();
+        put_fork(id);
+    } 
 }
 
 void drawFilofocho(Colour colour, int x, int y) {
@@ -83,10 +161,6 @@ void drawFilofocho(Colour colour, int x, int y) {
 
 void drawFork(Colour colour ,int x1, int y1, int x2, int y2) {
     line_fast(x1, x2, y1, y2, colour);
-}
-
-float slope(int x1, int y1, int x2, int y2) {
-    abs((y2 - y1)/(x2 - x1));
 }
 
 void drawFilofochos() {
@@ -198,7 +272,6 @@ void clearForks() {
     }
     
 }
-
 
 void drawTable() {
     drawCircle(MIDX, MIDY, 300, white);
