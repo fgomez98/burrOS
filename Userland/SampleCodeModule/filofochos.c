@@ -155,8 +155,11 @@ void philospher(int id) {
     } 
 }
 
-void drawFilofocho(Colour colour, int x, int y) {
+void drawFilofocho(Colour colour, int x, int y, int state) {
     DrawFilledCircle(x, y, 35, colour);
+    if (state == EATING) {
+        DrawFilledCircle(x, y, 15, white);
+    }
 }
 
 void drawFork(Colour colour ,int x1, int y1, int x2, int y2) {
@@ -166,26 +169,26 @@ void drawFork(Colour colour ,int x1, int y1, int x2, int y2) {
 void drawFilofochos() {
     switch (filofochosAmount) {
         case 2:
-            drawFilofocho(filofochoColours[0], MIDX, MIDY + 215);
-            drawFilofocho(filofochoColours[1], MIDX, MIDY - 215);
+            drawFilofocho(filofochoColours[0], MIDX, MIDY + 215, philState[0]);
+            drawFilofocho(filofochoColours[1], MIDX, MIDY - 215, philState[1]);
             break;
         case 3:
-            drawFilofocho(filofochoColours[0], MIDX - 150, MIDY + 150);
-            drawFilofocho(filofochoColours[1], MIDX + 150, MIDY + 150);
-            drawFilofocho(filofochoColours[2], MIDX, MIDY - 215);
+            drawFilofocho(filofochoColours[0], MIDX - 150, MIDY + 150, philState[0]);
+            drawFilofocho(filofochoColours[1], MIDX + 150, MIDY + 150, philState[1]);
+            drawFilofocho(filofochoColours[2], MIDX, MIDY - 215, philState[2]);
             break;
         case 4:
-            drawFilofocho(filofochoColours[0], MIDX - 150, MIDY + 150);
-            drawFilofocho(filofochoColours[1], MIDX + 150, MIDY + 150);
-            drawFilofocho(filofochoColours[2], MIDX + 150, MIDY - 150);
-            drawFilofocho(filofochoColours[3], MIDX - 150, MIDY - 150);
+            drawFilofocho(filofochoColours[0], MIDX - 150, MIDY + 150, philState[0]);
+            drawFilofocho(filofochoColours[1], MIDX + 150, MIDY + 150, philState[1]);
+            drawFilofocho(filofochoColours[2], MIDX + 150, MIDY - 150, philState[2]);
+            drawFilofocho(filofochoColours[3], MIDX - 150, MIDY - 150, philState[3]);
             break;
         case 5:
-            drawFilofocho(filofochoColours[0], MIDX - 160, MIDY + 170);
-            drawFilofocho(filofochoColours[1], MIDX + 160, MIDY + 170);
-            drawFilofocho(filofochoColours[2], MIDX + 180, MIDY - 80);
-            drawFilofocho(filofochoColours[3], MIDX - 180, MIDY - 80);
-            drawFilofocho(filofochoColours[4], MIDX, MIDY - 215);
+            drawFilofocho(filofochoColours[0], MIDX - 160, MIDY + 170, philState[0]);
+            drawFilofocho(filofochoColours[1], MIDX + 160, MIDY + 170, philState[1]);
+            drawFilofocho(filofochoColours[2], MIDX + 180, MIDY - 80, philState[2]);
+            drawFilofocho(filofochoColours[3], MIDX - 180, MIDY - 80, philState[3]);
+            drawFilofocho(filofochoColours[4], MIDX, MIDY - 215, philState[4]);
             break;
     }
 }
@@ -193,26 +196,26 @@ void drawFilofochos() {
 void clearFilofochos() {
     switch (filofochosAmount) {
         case 2:
-            drawFilofocho(black, MIDX, MIDY + 215);
-            drawFilofocho(black, MIDX, MIDY - 215);
+            drawFilofocho(black, MIDX, MIDY + 215, -1);
+            drawFilofocho(black, MIDX, MIDY - 215, -1);
             break;
         case 3:
-            drawFilofocho(black, MIDX - 150, MIDY + 150);
-            drawFilofocho(black, MIDX + 150, MIDY + 150);
-            drawFilofocho(black, MIDX, MIDY -215);
+            drawFilofocho(black, MIDX - 150, MIDY + 150, -1);
+            drawFilofocho(black, MIDX + 150, MIDY + 150, -1);
+            drawFilofocho(black, MIDX, MIDY -215, -1);
             break;
         case 4:
-            drawFilofocho(black, MIDX - 150, MIDY + 150);
-            drawFilofocho(black, MIDX + 150, MIDY + 150);
-            drawFilofocho(black, MIDX - 150, MIDY - 150);
-            drawFilofocho(black, MIDX + 150, MIDY - 150);
+            drawFilofocho(black, MIDX - 150, MIDY + 150, -1);
+            drawFilofocho(black, MIDX + 150, MIDY + 150, -1);
+            drawFilofocho(black, MIDX - 150, MIDY - 150, -1);
+            drawFilofocho(black, MIDX + 150, MIDY - 150, -1);
             break;
         case 5:
-            drawFilofocho(black, MIDX, MIDY - 215);
-            drawFilofocho(black, MIDX - 160, MIDY + 170);
-            drawFilofocho(black, MIDX + 160, MIDY + 170);
-            drawFilofocho(black, MIDX - 180, MIDY - 80);
-            drawFilofocho(black, MIDX + 180, MIDY - 80);
+            drawFilofocho(black, MIDX, MIDY - 215, -1);
+            drawFilofocho(black, MIDX - 160, MIDY + 170, -1);
+            drawFilofocho(black, MIDX + 160, MIDY + 170, -1);
+            drawFilofocho(black, MIDX - 180, MIDY - 80, -1);
+            drawFilofocho(black, MIDX + 180, MIDY - 80, -1);
             break;
     }
 }
