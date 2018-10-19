@@ -74,6 +74,8 @@ void initializeShell() {
          exec("burro",showBurro, 0, 0);
      } else if (strcmp("backgroundTest", arg2) == 0) {
          exec("backgroundTest", stayAlive, 0, 0);
+     } else if (strcmp("messages", arg2) == 0) {
+         exec("message",startMessagesDemo, 0, 0);
      } else{
          printf("\nUnknown command, type help\n");
          continue;
@@ -119,6 +121,8 @@ void initializeShell() {
          showBurro();
      } else if (strcmp("backgroundTest", arg1) == 0) {
          exec("backgroundTest", stayAlive, 0, 0);
+     } else if (strcmp("messages", arg1) == 0) {
+         startMessagesDemo();
      } else{
          printf("\nUnknown command, type help\n");
          continue;

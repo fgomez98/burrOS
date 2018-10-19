@@ -30,6 +30,7 @@ void help(){
     printf("necesitoquemeapapachen - shows burro\n");
     printf("exit - exits from shell\n");
     printf("backgroundTest - executes a process in background for a limited time. The process will notify when alive and dead\n");
+    printf("messages - shows a pipe demostration\n");
 }
 
 void cleanScreen(){
