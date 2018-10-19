@@ -5,7 +5,7 @@
 char buff2[8];
 Colour colour2 = {255, 255, 255};
 Colour yellow2 = {100, 1000, 255};
-static int nextPid = 1; //Esta variable le asigna a cada proceso un pid distinto
+static int nextPid = 0; //Esta variable le asigna a cada proceso un pid distinto
 
 tProcess* createProcess(char* processName,void* startingPoint, int parentPid, int argc, char* argv[]){
     /*Se reserva espacio para la estructura del proceso*/

@@ -5,6 +5,7 @@
 #include "messagesDemo.h"
 #include "VideoModule.h"
 #include "prodCons.h"
+#include "filofochos.h"
 
 void probando(){
     while(1);
@@ -121,9 +122,19 @@ void initializeShell() {
          showBurro();
      } else if (strcmp("backgroundTest", arg1) == 0) {
          exec("backgroundTest", stayAlive, 0, 0);
+         printf("\n");
      } else if (strcmp("messages", arg1) == 0) {
          startMessagesDemo();
-     } else{
+     } else if (strcmp("circle", arg1) == 0) {
+         DrawFilledCircle(200, 200, 80, white);
+         //drawCircle(200, 200, 80, white);
+         printf("\n");
+     } else if (strcmp("line", arg1) == 0) {
+         line_fast(200, 200, 540, 800, white);
+             printf("\n");
+     } else if (strcmp("filofochos", arg1) == 0) {
+         initFilofochos();
+     }else{
          printf("\nUnknown command, type help\n");
          continue;
      }

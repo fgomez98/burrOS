@@ -1,9 +1,9 @@
 #include "VideoModule.h"
 #include "syscall.h"
-#define XRESOLUTION 1024
-#define YRESOLUTION 768
 #define STDOUT 1
 #define WRITE 1
+#define sgn(x) ((x<0)?-1:((x>0)?1:0))
+#define abs(x) (((x)<0) ? -(x) : (x))
 
 void drawPixel(int x, int y, Colour colour) {
     int rgb = colour.Red;
@@ -81,3 +81,114 @@ void clearSushiState(int sushiManAmount, int monsterAmount) {
     drawSushiStateAux(black, sushiManAmount, monsterAmount);
     
 }
+
+void drawCircle(int x, int y, int radius, Colour colour) {
+    int deltax = radius;
+    int deltay = 0;
+    int err = 0;
+    
+    while (deltax >= deltay)
+    {
+        drawPixel(x + deltax, y + deltay, colour);
+        drawPixel(x + deltay, y + deltax, colour);
+        drawPixel(x - deltay, y + deltax, colour);
+        drawPixel(x - deltax, y + deltay, colour);
+        drawPixel(x - deltax, y - deltay, colour);
+        drawPixel(x - deltay, y - deltax, colour);
+        drawPixel(x + deltay, y - deltax, colour);
+        drawPixel(x + deltax, y - deltay, colour);
+        
+        deltay += 1;
+        err += 1 + 2*deltay;
+        if (2*(err-deltax) + 1 > 0)
+        {
+            deltax -= 1;
+            err += 1 - 2*deltax;
+        }
+    }
+}
+
+void DrawFilledCircle(int x0, int y0, int radius, Colour colour) {
+    int x = radius;
+    int y = 0;
+    int xChange = 1 - (radius << 1);
+    int yChange = 0;
+    int radiusError = 0;
+    
+    while (x >= y)
+    {
+        for (int i = x0 - x; i <= x0 + x; i++)
+        {
+            drawPixel(i, y0 + y, colour);
+            drawPixel(i, y0 - y, colour);
+        }
+        for (int i = x0 - y; i <= x0 + y; i++)
+        {
+            drawPixel(i, y0 + x, colour);
+            drawPixel(i, y0 - x, colour);
+        }
+        
+        y++;
+        radiusError += yChange;
+        yChange += 2;
+        if (((radiusError << 1) + xChange) > 0)
+        {
+            x--;
+            radiusError += xChange;
+            xChange += 2;
+        }
+    }
+}
+
+/**************************************************************************
+ *  line_fast                                                             *
+ *    draws a line using Bresenham's line-drawing algorithm, which uses   *
+ *    no multiplication or division.                                      *
+ **************************************************************************/
+
+void line_fast(int x1, int y1, int x2, int y2, Colour colour) {
+    int i,dx,dy,sdx,sdy,dxabs,dyabs,x,y,px,py;
+    
+    dx=x2-x1;      /* the horizontal distance of the line */
+    dy=y2-y1;      /* the vertical distance of the line */
+    dxabs=abs(dx);
+    dyabs=abs(dy);
+    sdx=sgn(dx);
+    sdy=sgn(dy);
+    x=dyabs>>1;
+    y=dxabs>>1;
+    px=x1;
+    py=y1;
+    
+    //VGA[(py<<8)+(py<<6)+px]=color;
+    
+    if (dxabs>=dyabs) /* the line is more horizontal than vertical */
+    {
+        for(i=0;i<dxabs;i++)
+        {
+            y+=dyabs;
+            if (y>=dxabs)
+            {
+                y-=dxabs;
+                py+=sdy;
+            }
+            px+=sdx;
+            drawPixel(px,py,colour);
+        }
+    }
+    else /* the line is more vertical than horizontal */
+    {
+        for(i=0;i<dyabs;i++)
+        {
+            x+=dxabs;
+            if (x>=dyabs)
+            {
+                x-=dyabs;
+                px+=sdx;
+            }
+            py+=sdy;
+            drawPixel(px,py,colour);
+        }
+    }
+}
+

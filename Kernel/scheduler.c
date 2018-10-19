@@ -42,12 +42,16 @@ void changeToNormalMode() {
 }
 
 void addProcess(tProcess * p) {
+    _cli();
     p->state = READY; // es necesario??
     if (mode == NO_PRIORITY) {
         push(ready, p);
     } else {
         insertInOrder(ready, p, cmpPriority);
+//        _sti();
+       // yield();
     }
+    _sti();
 }
 
 // void resetPriorities();
@@ -70,6 +74,7 @@ void nice(int pid, int priority) {
     _cli();
     if (mode == PRIORITY) {
         tProcess * proc = removeProcess(pid); // lo quitamos de la cola para luego insertarlo de nuevo y mantener el orden de la cola
+        proc->priority = priority;
         if (proc != NULL) {
             switch (proc->state) {
                 case READY:
@@ -90,7 +95,7 @@ void nice(int pid, int priority) {
     }
     _sti();
     //TODO: si queremos desalojar al proceso que esta corriendo ahora para correr uno de prioridad superior entoces
-    //yield();
+   // yield();
 }
 
 void ageRunningProcess() {// TODO: ver que onda con el proceso padre aka shell
@@ -133,6 +138,7 @@ int unblockProcess(int pid) {
 //    push(ready, aux);
     addProcess(aux);
     _sti();
+      yield();
     return 1;
 }
 
@@ -199,10 +205,10 @@ tProcess * getProcessState(int pid) { //TODO: esta mal el nombre de la funcion, 
 
 void scheduler() {
     if (running->state == DEAD) {
-//        putStr("Dead ", red);
-//        uintToBase(getRunningPid(), buff, 10);
-//        putStr(buff, red);
-//        putChar('\n', red);
+        putStr("Dead ", red);
+        uintToBase(getRunningPid(), buff, 10);
+        putStr(buff, red);
+        putChar('\n', red);
         deleteProcess(running);
     } else if (running->state == RUNNING) {
         addProcess(running);
@@ -230,6 +236,7 @@ void * dispatcher(int rsp) {
         return rsp;
     }
     running->stackPointer = rsp;
+    ageRunningProcess();
     scheduler();
     return running->stackPointer;
 }
@@ -416,6 +423,88 @@ void sprintProcesses(char* buffer, int buffSize){
 }
 
 //.........................................TESTS.........................................
+
+
+void priority1() {
+    int pid = getRunningPid();
+    int priority;
+    int i = 0;
+    while (i < 300) {
+        priority = (getRunningProcess())->priority;
+        putStr("My Pid:", red);
+        uintToBase(pid, buff, 10);
+        putStr(buff, red);
+        putStr("priority:", yellow);
+        uintToBase(priority, buff, 10);
+        putStr(buff, yellow);
+        putChar('\n', red);
+    }
+}
+
+void priority2() {
+    int pid = getRunningPid();
+    int priority;
+    while (1) {
+        priority = (getRunningProcess())->priority;
+        putStr("My Pid:", red);
+        uintToBase(pid, buff, 10);
+        putStr(buff, red);
+        putStr("priority:", yellow);
+        uintToBase(priority, buff, 10);
+        putStr(buff, yellow);
+        putChar('\n', red);
+    }
+}
+
+void priority3() {
+    int pid = getRunningPid();
+    int priority;
+    while (1) {
+        priority = (getRunningProcess())->priority;
+        putStr("My Pid:", red);
+        uintToBase(pid, buff, 10);
+        putStr(buff, red);
+        putStr("priority:", yellow);
+        uintToBase(priority, buff, 10);
+        putStr(buff, yellow);
+        putChar('\n', red);
+    }
+}
+
+void priorityTest() {
+    tProcess * proc = createProcess("maite capa", priority1, 0, 0, NULL);
+    printProcess(proc);
+    
+    tProcess * anotherP = createProcess("fer0", priority1, 0, 0, NULL);
+    printProcess(anotherP);
+    
+    tProcess * anotherP1 = createProcess("fer1", priority1, 0, 0, NULL);
+    printProcess(anotherP1);
+    
+    dumpMemory();
+    
+    //    push(ready, proc);
+    //    push(ready, anotherP);
+    //    push(ready, anotherP1);
+    
+    addProcess(proc);
+    addProcess(anotherP);
+    addProcess(anotherP1);
+    
+    int i;
+    
+    i = 0;
+    while (i < 90000000) {
+        i++;
+    }
+
+    
+    nice(1, 10);
+    nice(2, 20);
+    nice(3, 50);
+    
+    endProcess(getRunningPid());
+}
 
 void probandoEscribirEnKernel2() {
     int i = 0;
