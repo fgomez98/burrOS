@@ -132,7 +132,7 @@ void initializeShell() {
      } else if (strcmp("line", arg1) == 0) {
          line_fast(200, 200, 540, 800, white);
              printf("\n");
-     } else if (strcmp("filofochos", arg1) == 0) {
+     } else if (strcmp("f", arg1) == 0) {
          initFilofochos();
      }else{
          printf("\nUnknown command, type help\n");
