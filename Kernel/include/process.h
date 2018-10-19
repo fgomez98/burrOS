@@ -28,12 +28,15 @@ typedef enum {READY, RUNNING, WAITING, DEAD} pState; //estados de un proceso
 typedef struct {
     int pid; //process ID
     int parentPid; //parent's ID
+    int priority;
     char * name; //process name
     pState state; //process status
     void * stackPointer;
     void * processMemoryLowerAddress;
     void * code;
     queueADT heap;
+//    queueADT mutexs; // la idea es que si tiene algun ipc adquirido aumentarle la prioridad a este asi libera el recurso mas rapido
+//    queueADT semaphores;
     uint64_t memoryAllocated;
 
 } tProcess;

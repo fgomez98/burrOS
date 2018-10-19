@@ -17,4 +17,7 @@ void drawTime(char * time, Colour colour);
 /*Given a position on the grid that makes the shell, and a colour(using the colour structure), it prints a pixel of that colour in said position */
 void drawPixel(int x, int y, Colour colour);
 
+void drawSushiState(int sushiManAmount, int monsterAmount);
+
+void clearSushiState(int sushiManAmount, int monsterAmount);
 #endif

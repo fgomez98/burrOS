@@ -15,24 +15,25 @@ Colour colour4 = {233, 80, 167};
 Colour colour5 = {46, 230, 210};
 
 void help(){
-  printf("\nHELP:\n");
-  printf("\n");
-  printf("& - use comand & comand to execute two comands at the same time\n");
-  printf("help - prints a list containing all the available commands and its descriptions\n");
-  printf("digitalTime - displays time in digital format. Press c to change colour and q to exit\n");
-  printf("time - displays current time\n");
-  printf("clear - clears screen\n");
-  printf("zero division - shows how the cero division exception is handled\n");
-  printf("invalid opcode - shows how the cero division exception is handled\n");
-  printf("sushi - interactive producer vs consumer problem with sushi\n");
-  printf("memory - shows bock index in buddy allocation system with it's base adress and final address(exclusive)\n");
-  printf("ps - shows information about the current processes in the system\n");
-  printf("necesitoquemeapapachen - shows burro\n");
-  printf("exit - exits from shell\n");
+    printf("\nHELP:\n");
+    printf("\n");
+    printf("& - use comand & comand to execute two comands at the same time\n");
+    printf("help - prints a list containing all the available commands and its descriptions\n");
+    printf("digitalTime - displays time in digital format. Press c to change colour and q to exit\n");
+    printf("time - displays current time\n");
+    printf("clear - clears screen\n");
+    printf("zero division - shows how the cero division exception is handled\n");
+    printf("invalid opcode - shows how the cero division exception is handled\n");
+    printf("sushi - interactive producer vs consumer problem with sushi\n");
+    printf("memory - shows bock index in buddy allocation system with it's base adress and final address(exclusive)\n");
+    printf("ps - shows information about the current processes in the system\n");
+    printf("necesitoquemeapapachen - shows burro\n");
+    printf("exit - exits from shell\n");
+    printf("backgroundTest - executes a process in background for a limited time. The process will notify when alive and dead\n");
 }
 
 void cleanScreen(){
-  _syscall(_clearScreen);
+    _syscall(_clearScreen);
 }
 
 void showTime() {
@@ -68,17 +69,17 @@ void showDigitalHour(){
 }
 
 int div100(int n) {
-  return 100 / n;
+    return 100 / n;
 }
 
 
 void divi(){
-  div100(0);
+    div100(0);
 }
 
 
 void showOpcodeExc(){
-  opcodeExc();
+    opcodeExc();
 }
 
 void delay(int i) {
@@ -89,15 +90,15 @@ void delay(int i) {
 }
 
 void ps(){
-  char* buffer = malloc(2000);
-  printf("\n");
-  printf("PID   STATE      MEMORYALLOCATED   PROCESSNAME");
-  printf("\n");
-  _syscall(_ps, buffer, 2000);
-  printf(buffer);
-
-  printf("\n");
-  free(buffer);
+    char* buffer = malloc(2000);
+    printf("\n");
+    printf("PID   STATE      MEMORYALLOCATED   PROCESSNAME");
+    printf("\n");
+    _syscall(_ps, buffer, 2000);
+    printf(buffer);
+    
+    printf("\n");
+    free(buffer);
 }
 
 void memory(){
@@ -151,7 +152,15 @@ void showBurro() {
     printf("   `---'          '----'      `---' \n");
 }
 
-
+void stayAlive() {
+    int i = 0;
+    while (i < 20) {
+        delay(15000);
+        printf("still alive\n");
+        i++;
+    }
+    printf("i am dead\n");
+}
 
 void maDemo(){
     int c;
@@ -161,17 +170,17 @@ void maDemo(){
     printf("Press any key in order to visualize current process Memory Status\n");
     c = getChar();
     memory();
-
+    
     printf("Press any key in order to allocate a block of size 128\n");
     c = getChar();
     p = malloc(128);
     printf("\nA block of 128 was allocated: \n");
     memory();
-
+    
     printf("Press any key to free the block\n");
     c = getChar();
     free(p);
-
+    
     printf("The block was freed\n");
     memory();
 }

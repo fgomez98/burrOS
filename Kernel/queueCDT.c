@@ -15,24 +15,26 @@ queueADT newQueue(size_t bytes, int (*cmp)(void *, void *)) {
 }
 
 static
-TNode * insertInOrderRec(TNode * current, queueADT q, void * elem) {
+TNode * insertInOrderRec(TNode * current, queueADT q, void * elem, int (*cmp)(void *, void *)) {
     if (current == NULL) {
         TNode * new = mallocMemory(sizeof(*new));
-        memcpy(new->elem, elem, q->bytes);
+        new->elem = elem;
+        new->next = NULL;
         q->last = new;
         return new;
-    } if ((*q->cmp)(current->elem, elem) < 0) {
+    } if ((*cmp)(current->elem, elem) < 0) {
         TNode * new = mallocMemory(q->bytes);
-        memcpy(current->elem, elem, q->bytes);
+        new->elem = elem;
+        new->next = NULL;
         new->next = current;
         return new;
     }
-    current->next = insertInOrderRec(current->next, q, elem);
+    current->next = insertInOrderRec(current->next, q, elem, cmp);
     return current;
 }
 
-void insertInOrder(queueADT q, void * elem) {
-    q->first = insertInOrderRec(q->first, q, elem);
+void insertInOrder(queueADT q, void * elem, int (*cmp)(void *, void *)) {
+    q->first = insertInOrderRec(q->first, q, elem, cmp);
 }
 
 void push(queueADT q, void * elem) {

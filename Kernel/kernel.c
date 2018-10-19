@@ -72,7 +72,6 @@ int main() {
 //    putChar('\n', colour);
 //    put();
 //    dumpMemory();
-
     load_idt();
     init_(sampleCodeModuleAddress);
     //    ((EntryPoint)sampleCodeModuleAddress)();

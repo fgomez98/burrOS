@@ -62,6 +62,8 @@ int getSize(queueADT q);
  */
 void * getElem(queueADT q, void * elem);
 
+void insertInOrder(queueADT q, void * elem, int (*cmp)(void *, void *));
+
 void freeQueueNodes(queueADT q);
 
 #endif

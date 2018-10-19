@@ -9,6 +9,8 @@ unsigned char * clock_map(int number);
 /*returns the font to be able to print ':'*/
 unsigned char * colon_map();
 
+unsigned char * letterM_map();
+
 #define BIG_NUMBER_WIDTH 64
 #define BIG_NUMBER_HEIGHT 36
 

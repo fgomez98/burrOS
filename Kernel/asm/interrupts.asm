@@ -11,6 +11,7 @@ GLOBAL rip
 GLOBAL stack
 GLOBAL getStack
 GLOBAL contextSwitch
+GLOBAL _yield
 
 GLOBAL _irq00Handler
 GLOBAL _irq01Handler
@@ -242,6 +243,10 @@ contextSwitch:
     popaq
     sti
     iretq
+
+_yield:
+    int 20h
+    ret
 
 SECTION .bss
 	aux resq 1

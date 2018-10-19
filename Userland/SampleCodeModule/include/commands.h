@@ -36,6 +36,7 @@ void ls();
 void ps();
 void memory();
 void showBurro();
+void stayAlive();
 
 void startProcessCommunication();
 void maDemo();

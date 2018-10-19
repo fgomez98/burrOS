@@ -1,8 +1,4 @@
 #include "BuddyAllocationSystem.h"
-
-
-
-
 typedef struct list_t {
     struct list_t * next, * prev;
 } list_t;

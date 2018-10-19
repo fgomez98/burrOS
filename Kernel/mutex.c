@@ -64,6 +64,13 @@ void adquire(mutex * m) {
         push(m->queue, pid);
         blockProcess(pid);
     }
+//        if (strcmp("prodConsBufferMutex", m->name) == 0) {
+//            putChar('\n', red2);
+//            putStr("adquire by: ", red2);
+//            uintToBase(getRunningPid(), buff5, 10);
+//            putStr(buff5, red2);
+//            putChar('\n', red2);
+//        }
 }
 
 /**
@@ -72,9 +79,18 @@ void adquire(mutex * m) {
  funcion atomica
  */
 void release(mutex * m) {
+//         if (strcmp("prodConsBufferMutex", m->name) == 0) {
+//             putChar('\n', red2);
+//             putStr("released by: ", red2);
+//             uintToBase(getRunningPid(), buff5, 10);
+//             putStr(buff5, red2);
+//             putChar('\n', red2);
+//         }
+
         int pid = pop(m->queue);
         if (pid != NULL) {
             if (0 == unblockProcess(pid)) {
+                putStr("desbloque un proceso muerto", red2);
                 release(m);
             }
         } else {

@@ -5,6 +5,7 @@
 #include "sync.h"
 #include "stdlib.h"
 #include "commands.h"
+#include "videoModule.h"
 void initProdCons();
 int myRand();
 int myRandInRange(int min, int max);

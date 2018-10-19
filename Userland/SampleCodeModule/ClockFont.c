@@ -415,8 +415,51 @@ unsigned char colon[]  = {
     
 };
 
+unsigned char letterM[]  = {
+    X,X,X,X,X,X,X,X,
+    X,X,X,X,X,X,X,X,
+    X,X,X,X,X,X,X,X,
+    X,X,X,X,X,X,X,X,//2
+    X,X,_,X,X,_,X,X,
+    X,X,_,X,X,_,X,X,
+    X,X,_,X,X,_,X,X,
+    X,X,_,X,X,_,X,X,//2
+    X,X,_,X,X,_,X,X,
+    X,X,_,X,X,_,X,X,
+    X,X,_,X,X,_,X,X,
+    X,X,_,X,X,_,X,X,//3
+    X,X,_,X,X,_,X,X,
+    X,X,_,X,X,_,X,X,
+    X,X,_,X,X,_,X,X,
+    X,X,_,X,X,_,X,X,//4
+    X,X,_,X,X,_,X,X,
+    X,X,_,X,X,_,X,X,
+    X,X,_,_,_,_,X,X,
+    X,X,_,_,_,_,X,X,//5
+    X,X,_,_,_,_,X,X,
+    X,X,_,_,_,_,X,X,
+    X,X,_,_,_,_,X,X,
+    X,X,_,_,_,_,X,X,//2
+    X,X,_,_,_,_,X,X,
+    X,X,_,_,_,_,X,X,
+    X,X,_,_,_,_,X,X,
+    X,X,_,_,_,_,X,X,//3
+    X,X,_,_,_,_,X,X,
+    X,X,_,_,_,_,X,X,
+    X,X,_,_,_,_,X,X,
+    X,X,_,_,_,_,X,X,//4
+    X,X,_,_,_,_,X,X,
+    X,X,_,_,_,_,X,X,
+    X,X,_,_,_,_,X,X,
+    X,X,_,_,_,_,X,X,//9
+};
+
 unsigned char * clock_map(int number) {
     return digitalClockNumbers + BIG_NUMBER_HEIGHT * 8 * number;
+}
+
+unsigned char * letterM_map() {
+    return letterM;
 }
 
 unsigned char * colon_map() {

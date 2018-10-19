@@ -23,7 +23,7 @@ void initializeShell() {
 
   int running = 1;
   while (running){
-     char * arg1 = calloc(MAXLENGTH);
+    char * arg1 = calloc(MAXLENGTH);
     char * arg2 = calloc(MAXLENGTH);
     printf("$>");
     scanAndPrint(command);
@@ -72,8 +72,9 @@ void initializeShell() {
          exec("initProdCons",initProdCons, 0, 0);
      } else if (strcmp("necesitoquemeapapachen", arg2) == 0) {
          exec("burro",showBurro, 0, 0);
-     }
-     else{
+     } else if (strcmp("backgroundTest", arg2) == 0) {
+         exec("backgroundTest", stayAlive, 0, 0);
+     } else{
          printf("\nUnknown command, type help\n");
          continue;
      }
@@ -101,7 +102,8 @@ void initializeShell() {
      }
      else if(strcmp("ps", arg1) == 0){
         // exec("probando",probando, 0, 0);
-         exec("ps",ps, 0, 0);
+        exec("ps",ps, 0, 0);
+         //ps();
      }
      else if(strcmp("memory", arg1) == 0){
          memory();
@@ -113,10 +115,11 @@ void initializeShell() {
          maDemo();
      } else if (strcmp("sushi", arg1) == 0) {
          initProdCons();
-     } else if (strcmp("necesito que me apapachen", arg1) == 0) {
+     } else if (strcmp("necesitoquemeapapachen", arg1) == 0) {
          showBurro();
-     }
-     else{
+     } else if (strcmp("backgroundTest", arg1) == 0) {
+         exec("backgroundTest", stayAlive, 0, 0);
+     } else{
          printf("\nUnknown command, type help\n");
          continue;
      }

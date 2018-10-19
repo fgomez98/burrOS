@@ -60,6 +60,12 @@ void wait(sem * s) {
         int pid = getRunningPid();
         push(s->queue, pid);
         
+//        putChar('\n', c);
+//        putStr("wait: ", c);
+//        uintToBase(pid, buff6, 10);
+//        putStr(buff6, c);
+//        putChar('\n', c);
+        
         release(s->lock);
         blockProcess(pid);
     } else {
@@ -70,12 +76,18 @@ void wait(sem * s) {
 void post(sem * s) {
     adquire(s->lock);
     (s->value)++;
-
+//
+//    putChar('\n', c);
+//    putStr("post: ", c);
+//    uintToBase(getRunningPid(), buff6, 10);
+//    putStr(buff6, c);
+//    putChar('\n', c);
 
     if (s->value <= 0) {
         int pid = pop(s->queue);
         if (pid != NULL) {
             while(0 == unblockProcess(pid)) {
+                putStr("desbloque un proceso muerto", red3);
                 pid = pop(s->queue);
                 if (pid == NULL) {
                     break;

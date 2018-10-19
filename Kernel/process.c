@@ -25,13 +25,15 @@ tProcess* createProcess(char* processName,void* startingPoint, int parentPid, in
     process->memoryAllocated = PROCESS_SIZE;
     process->state = READY;
     process->heap = NULL;
+//    process->mutexs = NULL;
+//    process->semaphores = NULL;
+    process->priority = 0;
     return process;
 }
 
 void runProcess(int argc, char * argv[], void * startingPoint) { // por orden de como se levantan los argumentos
     ((int (*)(int, void**))(startingPoint))(argc, argv);
     _killCurrentProcess();
-
 }
 
 //RowDaBoat
@@ -126,7 +128,8 @@ void printProcess(tProcess * p) {
 
 void endProcess(int pid) {
     changeProcessState(pid, DEAD);
-    _hlt();
+    yield();
+    //_hlt();
 }
 
 void deleteProcess(tProcess* process) {

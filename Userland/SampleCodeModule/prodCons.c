@@ -15,7 +15,7 @@ static int sushiManCount;
 static int monsterState[5];
 static int sushiManState[5];
 
-void initProdCons() {
+void initProdCons() { //TODO:matar procesos no esta funcionando bien
     running = 1;
     char initialized = 0;
     sushiManCount = 0;
@@ -46,6 +46,7 @@ void initProdCons() {
     printf("empty                                                                                                       full\n");
     printf(" 1  2  3  4  5  6  7  8  9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30\n");
     while (running) {
+        drawSushiState(sushiManCount, monsterCount);
         char key;
         _syscall(_read, &key);
         switch (key) {
@@ -84,6 +85,7 @@ void initProdCons() {
                 break;
         }
     }
+    clearSushiState(sushiManCount, monsterCount);
     for (int i = 0; i < (sushiManCount + monsterCount); i++) {
         wait(finish);
     }
@@ -140,6 +142,7 @@ void sushiMan(int index) {
         adquire(buffMutex);
 
         int i = (lfsr113_Bits()%10)+1;
+//         printf("sushi: %d", i);
 
         while ((i > 0) && (bufferIndex < BUFFER_LIMIT)) {
             if (bufferIndex >= 8) {
@@ -167,6 +170,7 @@ void monster(int index) {
         adquire(buffMutex);
 
         int i = (lfsr113_Bits()%10) + 1;
+//        printf("eat: %d\n", i);
 
         while ((i > 0) && (bufferIndex > 0)) {
             if (bufferIndex > 8) {

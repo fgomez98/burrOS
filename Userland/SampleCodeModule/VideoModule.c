@@ -54,3 +54,30 @@ void drawTime(char * time, Colour colour) {
         xPosition += (64 + 10); // 10 es la distancia entre digitos
     }
 }
+
+void drawSushiStateAux(Colour colour, int sushiManAmount, int monsterAmount) {
+    int xPosition = (XRESOLUTION/2) - (195+120);
+    int yPosition = (YRESOLUTION/2) + 150;
+    drawDigitalClockExp(colour, clock_map(5), xPosition, yPosition);
+    xPosition += (64);
+    drawDigitalColon(colour, xPosition, yPosition);
+    xPosition += (64);
+    drawDigitalClockExp(colour, clock_map(sushiManAmount), xPosition, yPosition);
+    xPosition += (64 + 120);
+    drawDigitalClockExp(colour, letterM_map(), xPosition, yPosition);
+    xPosition += (64);
+    drawDigitalColon(colour, xPosition, yPosition);
+    xPosition += (64);
+    drawDigitalClockExp(colour, clock_map(monsterAmount), xPosition, yPosition);
+}
+
+void drawSushiState(int sushiManAmount, int monsterAmount) {
+    Colour white1 = {255, 255, 255};
+    drawSushiStateAux(white1, sushiManAmount, monsterAmount);
+}
+
+void clearSushiState(int sushiManAmount, int monsterAmount) {
+    Colour black = {0,0,0};
+    drawSushiStateAux(black, sushiManAmount, monsterAmount);
+    
+}
