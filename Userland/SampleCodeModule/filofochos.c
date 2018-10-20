@@ -7,11 +7,14 @@
 #define HUNGRY 1
 #define EATING 0
 #define FILOMUTEX "philosophersMutex"
+#define FINISH "philosophersFinishSem"
 char * semNames[] = {"philosophersSem1", "philosophersSem2", "philosophersSem3", "philosophersSem4", "philosophersSem5"};
 static tMutex mutex;
 static tSem sem[MAX_FILOSOPHERS];
+static tSem finish;
 static int running;
 static int filofochosAmount;
+static int goToSleep;
 
 static Colour white = {255, 255, 255};
 static Colour black = {0,0,0};
@@ -43,10 +46,19 @@ void philospher(int id);
 void initFilofochos() {
     running = 1;
     filofochosAmount = 0;
+    goToSleep = 0;
     char initialized = 0;
     mutex = createMutex(FILOMUTEX);
+    //finish = createSem(FINISH);
+    //char waitCant = 0;
+    for (int i = 0; i < MAX_FILOSOPHERS; i++) {
+        forks[i] = white;
+    }
     for (int i = 0; i < MAX_FILOSOPHERS; i++) {
         sem[i] = createSem(semNames[i]);
+    }
+    for (int i = 0; i < MAX_FILOSOPHERS; i++) {
+        philState[i] = THINKING;
     }
     cleanScreen();
     printf("Welcome to Dinning Philosofers\n");
@@ -89,17 +101,20 @@ void initFilofochos() {
                 }
                 break;
             case 'x':
-//                if (filofochosAmount > 2) {
-//                    clearTable();
-//                    filofochosAmount--;
-//                }
+                if (filofochosAmount > 2) {
+                    goToSleep = 1;
+                }
                 break;
             case 'q':
+               // waitCant = filofochosAmount;
                 running = 0;
                 break;
             }
     }
-    //cleanScreen();
+//    for (int i = 0; i < waitCant; i++) {
+//        wait(finish);
+//    }
+    cleanScreen();
 }
 
 int left(int i) {
@@ -159,12 +174,23 @@ void put_fork(int id) {
 
 void philospher(int id) {
     drawTable();
-    while (running) {
+    while (running && !(goToSleep && id == (filofochosAmount-1))) {
         think();
         take_fork(id);
         eat();
         put_fork(id);
-    } 
+    }
+        // al hacer put fork tmb lo marca en thinking y el fork en blanco
+    adquire(mutex);
+    goToSleep = 0;
+    clearTable();
+    filofochosAmount--;
+    drawTable();
+    release(mutex);
+   if (!running) {
+//        post(finish);
+       clearTable();
+    }
 }
 
 void drawFilofocho(Colour colour, int x, int y, int state) {

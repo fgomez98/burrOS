@@ -205,10 +205,10 @@ tProcess * getProcessState(int pid) { //TODO: esta mal el nombre de la funcion, 
 
 void scheduler() {
     if (running->state == DEAD) {
-        putStr("Dead ", red);
-        uintToBase(getRunningPid(), buff, 10);
-        putStr(buff, red);
-        putChar('\n', red);
+//        putStr("Dead ", red);
+//        uintToBase(getRunningPid(), buff, 10);
+//        putStr(buff, red);
+//        putChar('\n', red);
         deleteProcess(running);
     } else if (running->state == RUNNING) {
         addProcess(running);
