@@ -59,7 +59,7 @@ void destroyMutex(mutex * m) {
  funcion atomica
  */
 void adquire(mutex * m) {
-    _cli();
+  //  _cli();
     if(swapLock(&(m->value))) {
         int pid = getRunningPid();
         push(m->queue, pid);
@@ -73,7 +73,7 @@ void adquire(mutex * m) {
 //            putStr(buff5, red2);
 //            putChar('\n', red2);
 //        }
-    _sti();
+ //   _sti();
 }
 
 /**
@@ -82,7 +82,7 @@ void adquire(mutex * m) {
  funcion atomica
  */
 void release(mutex * m) {
-    _cli();
+ //   _cli();
 //         if (strcmp("prodConsBufferMutex", m->name) == 0) {
 //             putChar('\n', red2);
 //             putStr("released by: ", red2);
@@ -100,7 +100,7 @@ void release(mutex * m) {
         } else {
             swapUnLock(&(m->value));
         }
-    _sti();
+//    _sti();
     //}
 }
 

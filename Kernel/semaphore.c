@@ -54,7 +54,7 @@ void destroyAllSem() {
 }
 
 void wait(sem * s) {
-    _cli();
+    //_cli();
     adquire(s->lock);
     (s->value)--;
     if (s->value < 0) {
@@ -72,11 +72,11 @@ void wait(sem * s) {
     } else {
         release(s->lock);
     }
-    _sti();
+  //  _sti();
 }
 
 void post(sem * s) {
-    _cli();
+   // _cli();
     adquire(s->lock);
     (s->value)++;
 //
@@ -99,5 +99,5 @@ void post(sem * s) {
         }
     }
     release(s->lock);
-    _sti();
+   // _sti();
 }

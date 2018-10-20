@@ -28,21 +28,21 @@ tProcess* getRunningProcess(){
 }
 
 void changeToPriorityMode() {
-    _cli();
+//    _cli();
     mode = PRIORITY;
     //orederQueue
-    _sti();
+//    _sti();
 }
 
 void changeToNormalMode() {
-    _cli();
+//    _cli();
     // TODO: hay que seterar en 0 las prioridades de todos los procesos asi cuando vuelve a modo prioridad no hay problema o se re ordenan todos los procesos con la prioridades que estaban
     mode = NO_PRIORITY;
-    _sti();
+//    _sti();
 }
 
 void addProcess(tProcess * p) {
-    _cli();
+//    _cli();
     p->state = READY; // es necesario??
     if (mode == NO_PRIORITY) {
         push(ready, p);
@@ -51,7 +51,7 @@ void addProcess(tProcess * p) {
 //        _sti();
        // yield();
     }
-    _sti();
+//    _sti();
 }
 
 // void resetPriorities();
@@ -71,7 +71,7 @@ tProcess * removeProcess(int pid) {
 }
 
 void nice(int pid, int priority) {
-    _cli();
+//    _cli();
     if (mode == PRIORITY) {
         tProcess * proc = removeProcess(pid); // lo quitamos de la cola para luego insertarlo de nuevo y mantener el orden de la cola
         proc->priority = priority;
@@ -93,7 +93,7 @@ void nice(int pid, int priority) {
             }
         }
     }
-    _sti();
+//    _sti();
     //TODO: si queremos desalojar al proceso que esta corriendo ahora para correr uno de prioridad superior entoces
    // yield();
 }
@@ -105,18 +105,18 @@ void ageRunningProcess() {// TODO: ver que onda con el proceso padre aka shell
 }
 
 void blockProcess(int pid) { //solamente se bloquean los procesos que estan correindo
-    _cli();
+//    _cli();
 //        putStr("Block: ", green);
 //        uintToBase(pid, buff, 10);
 //        putStr(buff, yellow);
 //        putChar('\n', yellow);
     running->state = WAITING;
-    _sti();
+//    _sti();
     yield();
 }
 
 int unblockProcess(int pid) {
-    _cli();
+//    _cli();
 //        putStr("Volvi: ", green);
 //        uintToBase(pid, buff, 10);
 //        putStr(buff, yellow);
@@ -126,24 +126,24 @@ int unblockProcess(int pid) {
     tProcess * aux = removeElem(blocked, elem);
     freeMemory(elem);
     if (aux == NULL) {
-        _sti();
+//        _sti();
         return -1;
     }
     if (aux->state == DEAD) {
         deleteProcess(aux);
-        _sti();
+//        _sti();
         return 0;
     }
 //    aux->state = READY;
 //    push(ready, aux);
     addProcess(aux);
-    _sti();
-      yield();
+//    _sti();
+    yield();
     return 1;
 }
 
 void changeProcessState(int pid, pState state) {
-    _cli();
+//    _cli();
     if (running->pid == pid) {
         running->state = state;
         //TODO: hago yield()?? o que la haga la funcion que llama a esto
@@ -161,7 +161,7 @@ void changeProcessState(int pid, pState state) {
     }
     freeMemory(elem);
     sort(aux, state);
-    _sti();
+//    _sti();
 }
 
 void sort(tProcess * p, pState state) {
