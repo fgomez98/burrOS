@@ -214,19 +214,19 @@ void _drawPixel(uint64_t x, uint64_t y, uint64_t rgb){
 
 
 void _pipe(uint64_t name, uint64_t ** p){
-	//*p = pipe(name);
+	*p = namedPipe(name);
 }
 
 void _destroyPipe(uint64_t name){
-   // destroyPipe(name);
+   destroyPipe(name);
 }
 
 uint64_t _readPipe(uint64_t pipe, uint64_t a, uint64_t resp, uint64_t amount){
-	//return readPipe(pipe, resp, amount);
-	return 1;
+	return readPipe(pipe, resp, amount);
+
 }
 
 uint64_t _writePipe(uint64_t * pipe, uint64_t * a, uint64_t msg, uint64_t amount){
-   // return writePipe(pipe, msg, amount);
-	return 1;
+    return writePipe(pipe, msg, amount);
+
 }

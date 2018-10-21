@@ -1,4 +1,4 @@
-/*
+
 
 typedef struct pipe_t pipe_t;
 typedef struct pipeNode pipeNode;
@@ -11,4 +11,4 @@ int writePipe(pipe_t * pipe, char * msg, size_t ammount);
 int cmp(int * pid1, int * pid2);
 int exists(pipe_t * pipe);
 int availableToWrite(pipe_t * pipe);
-int availableToRead(pipe_t * pipe);*/
+int availableToRead(pipe_t * pipe);

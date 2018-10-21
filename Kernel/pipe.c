@@ -1,4 +1,4 @@
-/*
+
 #include <mutex.h>
 #include <stdint.h>
 #include <scheduler.h>
@@ -195,4 +195,4 @@ int availableToRead(pipe_t * pipe){
 int cmp(int * pid1, int * pid2) {
     return *pid1-*pid2;
 }
-*/
+
