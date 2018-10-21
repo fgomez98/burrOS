@@ -257,6 +257,7 @@ void init_(void * startingPoint) {
     mode = PRIORITY;
     ready = newQueue(sizeof(tProcess), cmpProcess);
     blocked = newQueue(sizeof(tProcess), cmpProcess);
+    initializeFileDecryptors();
     running = createProcess("theGodFather", startingPoint, 0, 0, NULL);
     running->state = RUNNING;
     contextSwitch(running->stackPointer);
@@ -815,6 +816,7 @@ void mutexTest() {
     endProcess(getRunningPid());
 }
 
+/*
 void pipeTestWrite() {
     pipe_t * pipeT = pipe("test");
     putStr("escribo",yellow);
@@ -883,4 +885,4 @@ void pipeTest() {
     while (1);
     endProcess(getRunningPid());
     
-}
+}*/

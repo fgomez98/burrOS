@@ -1,3 +1,4 @@
+/*
 #include <mutex.h>
 #include <stdint.h>
 #include <scheduler.h>
@@ -27,7 +28,7 @@ struct pipeNode{
 
 pipeNode * pipeList = NULL;
 
-pipe_t * pipe(char * name) {
+pipe_t * namedPipe(char * name) {
     if (name == NULL)
         return NULL;
 
@@ -194,3 +195,4 @@ int availableToRead(pipe_t * pipe){
 int cmp(int * pid1, int * pid2) {
     return *pid1-*pid2;
 }
+*/

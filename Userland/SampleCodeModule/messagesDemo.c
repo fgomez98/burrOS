@@ -61,7 +61,7 @@ void startMessagesDemo() {
 }
 
 void writeMessage(int argc, char ** argv) {
-    tPipe myPipe = pipe(argv[0]);
+    tPipe myPipe = namedPipe(argv[0]);
     writePipe(myPipe,argv[1], argc);
     argv[1][argc] = '\0';
     printf("I wrote %s\n", argv[1]);
@@ -69,7 +69,7 @@ void writeMessage(int argc, char ** argv) {
 }
 
 void readMessage(int argc, char ** argv) {
-    tPipe myPipe = pipe(argv[0]);
+    tPipe myPipe = namedPipe(argv[0]);
     int amount = argc;
     char buffer[amount];
     int a = readPipe(myPipe, buffer,amount);

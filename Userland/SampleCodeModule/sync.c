@@ -40,7 +40,7 @@ void post(tSem sem) {
 }
 
 //esta bien este nombre?
-tPipe pipe(char* name){
+tPipe namedPipe(char* name){
   tPipe p;
   _syscall(_pipe, name, &p);
   return p;

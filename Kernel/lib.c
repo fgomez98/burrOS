@@ -98,3 +98,8 @@ int abs(int num) {
         return num;
     }
 }
+
+
+int pidcmp(int pid1, int pid2){
+    return pid1-pid2;
+}
