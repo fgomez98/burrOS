@@ -3,11 +3,10 @@
 #include <scheduler.h>
 #include <BuddyAllocationSystem.h>
 #include <String.h>
-#include <pipe.h>
 #include <VideoDriver.h>
 #include <lib.h>
 
-#define BUFFERSIZE 8192
+#define BUFFERSIZE 1024
 
 typedef struct fileDecryptor {
     int fd;
@@ -29,6 +28,7 @@ typedef struct fileDecryptor {
 }fileDecryptor;
 
 linkedList fdList = NULL;
+Colour somecolor = {255, 255, 255};
 
 static
 int fdcmp(fileDecryptor * f1, fileDecryptor * f2){
@@ -95,7 +95,7 @@ void createPipeLink(int fd1, int fd2){
 
 //ESTO LO LLAMARIA EL KERNEL ANTES CUANDO CREA LOS BUFFERS DE OUTPUT, ETC
 void initializeFileDecryptors() {
-    fdList = newList(sizeof(struct fileDecryptor), fdcmp);
+    fdList = newList(sizeof(fileDecryptor), fdcmp);
 }
 
 int pipe(int fd[]) {
@@ -116,45 +116,48 @@ int pipe(int fd[]) {
 }
 
 int open(int fd){
-
+    putStr("hola",somecolor);
     // Si ya existe solo agrego el pid
-    fileDecryptor * myfd = getFd(fdList, fd);
-    if(myfd != NULL){
+    fileDecryptor * newfd = getFd(fdList, fd);
+    if(newfd != NULL){
         int runningPid = getRunningPid();
-        if(!containsList(myfd->users, runningPid)) {
-            addToList(myfd->users, runningPid);
+        if(!containsList(newfd->users, runningPid)) {
+            addToList(newfd->users, runningPid);
+            addFdToProcess(getRunningProcess(), fd);
             return 1;
         }
         return 0;
     }
 
-    fileDecryptor * newfd = mallocMemory(sizeof(newfd));
+    newfd = mallocMemory(sizeof(fileDecryptor));
     if(newfd == NULL)
         return -1;
+
+
+    char * name = mallocMemory(19);
+    intToString(name, fd);
+
+    char readMutexName = mallocMemory(strlenght(name) + 6);
+    char writeMutexName = mallocMemory(strlenght(name) + 6);
+    char useMutexName = mallocMemory(strlenght(name) + 6);
+
+    newfd->useMutex = initMutex(strconcat(name, " use",useMutexName));
+    newfd->readMutex = initMutex(strconcat(name, " read",readMutexName));
+    newfd->writeMutex = initMutex(strconcat(name, " write",writeMutexName));
+
     newfd->fd = fd;
     newfd->buffer = mallocMemory(BUFFERSIZE);
     newfd->pipefd = -1;
-    addToList(newfd->users, getRunningPid());
-
-
-    char name[19];
-    intToString(name, fd);
-
-    char readMutexName[strlenght(name) + 6];
-    char writeMutexName[strlenght(name) + 6];
-    char useMutexName[strlenght(name) + 6];
-
-    newfd->readMutex = initMutex(strconcat(name, " read",readMutexName));
-    newfd->writeMutex = initMutex(strconcat(name, " write",writeMutexName));
-    newfd->useMutex = initMutex(strconcat(name, " use",useMutexName));
     newfd->readPosition = 0;
     newfd->writePosition = 0;
     newfd->waitingForRead = -1;
     newfd->waitingForWrite = -1;
+
     newfd->users = newList(sizeof(int), pidcmp);
     addToList(newfd->users, getRunningPid());
 
     addToList(fdList, newfd);
+    addFdToProcess(getRunningProcess(), fd);
     return 1;
 }
 
@@ -171,7 +174,7 @@ int close(int fd) {
 
 }
 
-int read(int fd, char * msg, int ammount) {
+int read(int fd, char * msg, int amount) {
     fileDecryptor * myfd = getFd(fdList, fd);
     if(myfd == NULL)
         return -1;
@@ -181,8 +184,8 @@ int read(int fd, char * msg, int ammount) {
         writerFd = getElemFromList(fdList, myfd->pipefd);
     }
 
-    if(ammount > BUFFERSIZE)
-        ammount = BUFFERSIZE;
+    if(amount > BUFFERSIZE)
+        amount = BUFFERSIZE;
 
     adquire(myfd->readMutex);
     /* Si no hay nada para escribir y no hay nadie que escriba, o hay alguien y soy yo no me bloqueo*/
@@ -203,7 +206,7 @@ int read(int fd, char * msg, int ammount) {
     }
 
     int i;
-    for(i = 0; i < ammount && availableToRead(myfd) > 0 ; i++, (myfd->readPosition)++) {
+    for(i = 0; i < amount && availableToRead(myfd) > 0 ; i++, (myfd->readPosition)++) {
         if(myfd->readPosition == 1024)
             myfd->readPosition = 0;
         msg[i] = (myfd->buffer)[myfd->readPosition];
@@ -218,7 +221,7 @@ int read(int fd, char * msg, int ammount) {
     return i;
 }
 
-int write(int fd, char * msg, int ammount) {
+int write(int fd, char * msg, int amount) {
 
     fileDecryptor * myfd = getFd(fdList, fd);
     if(myfd == NULL)
@@ -233,15 +236,15 @@ int write(int fd, char * msg, int ammount) {
             return -1;
     }
 
-    if(ammount > BUFFERSIZE)
-        ammount = BUFFERSIZE;
+    if(amount > BUFFERSIZE)
+        amount = BUFFERSIZE;
 
     adquire(myfd->writeMutex);
     int hasSpaceToWrite = 0;
 
     while(!hasSpaceToWrite) {
         adquire(myfd->useMutex);
-        if (availableToWrite(myfd) >= ammount) {
+        if (availableToWrite(myfd) >= amount) {
             hasSpaceToWrite = 1;
         }
 
@@ -254,7 +257,7 @@ int write(int fd, char * msg, int ammount) {
         }
     }
 
-    for(int i = 0; i < ammount; i++, (myfd->writePosition)++) {
+    for(int i = 0; i < amount; i++, (myfd->writePosition)++) {
         if (myfd->writePosition == 1024)
             myfd->writePosition = 0;
         (myfd->buffer)[myfd->writePosition] = msg[i];
@@ -266,6 +269,6 @@ int write(int fd, char * msg, int ammount) {
     release(myfd->useMutex);
     release(myfd->writeMutex);
 
-    return ammount;
+    return amount;
 }
 

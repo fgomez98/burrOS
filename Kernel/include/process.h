@@ -84,6 +84,6 @@ void endProcess(int pid);
 int stateIdentifier(pState state);
 void* callocMemoryInProcess(size_t request, tProcess* process);
 void* reallocMemoryInProcess(size_t request, tProcess* process, uint64_t oldPtr);
-
+void addFdToProcess(tProcess * process, int fd);
 
 #endif

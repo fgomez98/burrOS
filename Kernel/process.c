@@ -22,10 +22,10 @@ tProcess* createProcess(char* processName,void* startingPoint, int parentPid, in
     process->code = startingPoint;
 
     process->fdList = newList(sizeof(int), pidcmp);
-    for(int i = 0; i < 3; i++) {
-        if (open(i) >= 0)
+    /*for(int i = 0; i < 3; i++) {
+        open(i);
             addToList(process->fdList, i);
-    }
+    }*/
 
     //esto tiene q ser uint64_t y no void*!!!!!!!!!! CAMBIARLO
     void* processMemoryUpperAddress = process->processMemoryLowerAddress + PROCESS_SIZE -1;
@@ -217,3 +217,12 @@ int stateIdentifier(pState state){
 
 }
 
+void addFdToProcess(tProcess * process, int fd){
+    if(!containsList(process->fdList, fd))
+        addToList(process->fdList, fd);
+}
+
+void dup2(int newFd, int fdToReplace) {
+    open(newFd);
+    replaceElem(getRunningProcess()->fdList, newFd,fdToReplace);
+}

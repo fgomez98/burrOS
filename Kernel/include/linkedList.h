@@ -24,6 +24,10 @@ void * getElemAtFromList(linkedList l, int i);
 
 void * getElemFromList(linkedList l, void * elem);
 
+void replaceElemAt(linkedList l, void * elem, int i);
+
+void replaceElem(linkedList l, void * newElem, void * oldElem);
+
 int getListSize(linkedList l);
 
 void * removeElemList(linkedList l, void * elem);

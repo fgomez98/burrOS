@@ -100,12 +100,12 @@ pipeNode * unlinkPipeR(pipeNode * node, char * name) {
     return node;
 }
 
-int readPipe(pipe_t * pipe, char * resp, size_t ammount) {
+int readPipe(pipe_t * pipe, char * resp, size_t amount) {
     if(!exists(pipe))
         return -1;
 
-    if(ammount > BUFFERSIZE)
-        ammount = BUFFERSIZE;
+    if(amount > BUFFERSIZE)
+        amount = BUFFERSIZE;
 
     adquire(pipe->readMutex);
     adquire(pipe->useMutex);
@@ -123,7 +123,7 @@ int readPipe(pipe_t * pipe, char * resp, size_t ammount) {
 
 
     int i;
-    for(i = 0; i < ammount && availableToRead(pipe) > 0 ; i++, (pipe->readPosition)++) {
+    for(i = 0; i < amount && availableToRead(pipe) > 0 ; i++, (pipe->readPosition)++) {
         if(pipe->readPosition == 1024)
             pipe->readPosition = 0;
         resp[i] = (pipe->buffer)[pipe->readPosition];
@@ -138,12 +138,12 @@ int readPipe(pipe_t * pipe, char * resp, size_t ammount) {
     return i;
 }
 
-int writePipe(pipe_t * pipe, char * msg, size_t ammount){
+int writePipe(pipe_t * pipe, char * msg, size_t amount){
     if(!exists(pipe))
         return -1;
 
-    if(ammount > BUFFERSIZE)
-        ammount = BUFFERSIZE;
+    if(amount > BUFFERSIZE)
+        amount = BUFFERSIZE;
 
     adquire(pipe->writeMutex);
     int blocked = 0;
@@ -151,7 +151,7 @@ int writePipe(pipe_t * pipe, char * msg, size_t ammount){
 
     while(!hasSpaceToWrite) {
         adquire(pipe->useMutex);
-        if (availableToWrite(pipe) >= ammount) {
+        if (availableToWrite(pipe) >= amount) {
             hasSpaceToWrite = 1;
         }
 
@@ -165,7 +165,7 @@ int writePipe(pipe_t * pipe, char * msg, size_t ammount){
         }
     }
 
-    for(int i = 0; i < ammount; i++, (pipe->writePosition)++) {
+    for(int i = 0; i < amount; i++, (pipe->writePosition)++) {
         if (pipe->writePosition == 1024)
             pipe->writePosition = 0;
         (pipe->buffer)[pipe->writePosition] = msg[i];
@@ -177,7 +177,7 @@ int writePipe(pipe_t * pipe, char * msg, size_t ammount){
     release(pipe->useMutex);
     release(pipe->writeMutex);
 
-    return ammount;
+    return amount;
 }
 
 int availableToWrite(pipe_t * pipe) {

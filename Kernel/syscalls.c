@@ -11,6 +11,7 @@
 #include "semaphore.h"
 #include "syscalls.h"
 #include "pipe.h"
+#include "readwrite.h"
 
 
 static char buff[8];
@@ -51,8 +52,11 @@ systemCall sysCalls[] = { 0, 0, 0,
 		(systemCall) _pipe,
 		(systemCall) _destroyPipe,
 		(systemCall) _readPipe,
-		(systemCall) _writePipe
-
+		(systemCall) _writePipe,
+		(systemCall) _open,
+		(systemCall) _readfd,
+		(systemCall) _write,
+		(systemCall) _close,
 };
 
 void syscall_handler(uint64_t index, uint64_t a, uint64_t b, uint64_t c, uint64_t d, uint64_t e) {
@@ -211,8 +215,6 @@ void _drawPixel(uint64_t x, uint64_t y, uint64_t rgb){
 }
 
 
-
-
 void _pipe(uint64_t name, uint64_t ** p){
 	*p = namedPipe(name);
 }
@@ -228,5 +230,20 @@ uint64_t _readPipe(uint64_t pipe, uint64_t a, uint64_t resp, uint64_t amount){
 
 uint64_t _writePipe(uint64_t * pipe, uint64_t * a, uint64_t msg, uint64_t amount){
     return writePipe(pipe, msg, amount);
+}
 
+uint64_t _open(uint64_t fd) {
+    return open(fd);
+}
+
+uint64_t _readfd(uint64_t fd, uint64_t * msg, uint64_t amount) {
+    return read(fd,msg,amount);
+}
+
+uint64_t _write(uint64_t fd, uint64_t * msg, uint64_t amount) {
+    return write(fd,msg,amount);
+}
+
+uint64_t _close(uint64_t fd) {
+    return close(fd);
 }

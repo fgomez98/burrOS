@@ -4,7 +4,17 @@
 #include <messagesDemo.h>
 #include <sync.h>
 
+void startMessagesDemo() {
+    printf("\n");
+    int fd;
+    open(fd);
+    write(fd,"hola",5);
+    char buffer[20];
+    readfd(fd,buffer,5);
+    printf("%s", buffer);
+}
 
+/*
 void startMessagesDemo() {
     writeWelcomeMessage();
     char * pipeName = "thisIsADemoPipe";
@@ -84,3 +94,4 @@ void writeWelcomeMessage() {
     printf("q: Exit demo\n");
 }
 
+*/

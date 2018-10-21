@@ -10,6 +10,50 @@ linkedList newList(size_t bytes, int (*cmp)(void *, void *)) {
     return new;
 }
 
+static
+ListNode * replaceElemAtRec(ListNode * node, void * elem, int left, linkedList l) {
+    if(node == NULL)
+        return node;
+    if(left == 0){
+        ListNode * new = mallocMemory(sizeof(*new));
+        new->elem = elem;
+        new->next = node->next;
+        if(new->next == NULL)
+            l->last = new;
+        return new;
+    }
+    node->next = replaceElemAtRec(node->next, elem, left - 1, l);
+
+}
+
+void replaceElemAt(linkedList l, void * elem, int i){
+    if(i < 0 || l == NULL)
+        return;
+    l->first = replaceElemAtRec(l->first, elem, i, l);
+}
+//qwdasasdasd
+static
+ListNode * replaceElemRec(ListNode * node, void * newElem, void * oldElem, linkedList l) {
+    if(node == NULL)
+        return node;
+    if((l->cmp)(node->elem, oldElem) == 0){
+        ListNode * new = mallocMemory(sizeof(*new));
+        new->elem = newElem;
+        new->next = node->next;
+        if(new->next == NULL)
+            l->last = new;
+        return new;
+    }
+    node->next = replaceElemRec(node->next, newElem, oldElem, l);
+
+}
+
+void replaceElem(linkedList l, void * newElem, void * oldElem){
+    if(l == NULL)
+        return;
+    l->first = replaceElemRec(l->first, newElem, oldElem,l);
+}
+
 void addToList(linkedList l, void * elem) {
     if (l == NULL) {
         return;
