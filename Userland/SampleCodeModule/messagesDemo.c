@@ -4,9 +4,11 @@
 #include <messagesDemo.h>
 #include <sync.h>
 
+int fd;
 
 void startMessagesDemo() {
     writeWelcomeMessage();
+    open(fd);
     char * pipeName = "thisIsADemoPipe";
     char c;
     while((c=getChar()) != 'q') {
@@ -61,18 +63,20 @@ void startMessagesDemo() {
 }
 
 void writeMessage(int argc, char ** argv) {
-    tPipe myPipe = pipe(argv[0]);
-    writePipe(myPipe,argv[1], argc);
+    tPipe myPipe = namedPipe(argv[0]);
+    open(fd);
+    write(fd,argv[1], argc);
     argv[1][argc] = '\0';
     printf("I wrote %s\n", argv[1]);
     killCurrentProcess();
 }
 
 void readMessage(int argc, char ** argv) {
-    tPipe myPipe = pipe(argv[0]);
+    tPipe myPipe = namedPipe(argv[0]);
+    open(fd);
     int amount = argc;
     char buffer[amount];
-    int a = readPipe(myPipe, buffer,amount);
+    int a = readfd(fd, buffer,amount);
     buffer[a] = '\0';
     printf("I read %d bytes: %s\n",a, buffer);
     killCurrentProcess();
@@ -83,4 +87,3 @@ void writeWelcomeMessage() {
     printf("2: Read and print a number of bytes. Type the number, then press enter.\n");
     printf("q: Exit demo\n");
 }
-

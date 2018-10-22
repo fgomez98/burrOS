@@ -1,6 +1,8 @@
 #include "process.h"
 #include "scheduler.h"
 #include "syscalls.h"
+#include "lib.h"
+#include "readwrite.h"
 
 char buff2[8];
 Colour colour2 = {255, 255, 255};
@@ -18,7 +20,13 @@ tProcess* createProcess(char* processName,void* startingPoint, int parentPid, in
     process->processMemoryLowerAddress = mallocMemory(PROCESS_SIZE);
 
     process->code = startingPoint;
-    
+
+    process->fdList = newList(sizeof(int), pidcmp);
+    for(int i = 0; i < 3; i++) {
+        open(i);
+        addToList(process->fdList, i);
+    }
+
     //esto tiene q ser uint64_t y no void*!!!!!!!!!! CAMBIARLO
     void* processMemoryUpperAddress = process->processMemoryLowerAddress + PROCESS_SIZE -1;
     process->stackPointer = processMemoryUpperAddress - sizeof(tStackFrame) + 1;
@@ -207,4 +215,14 @@ int stateIdentifier(pState state){
   }
     return 3;
 
+}
+
+void addFdToProcess(int fd){
+    if(!containsList((getRunningProcess())->fdList, fd))
+        addToList((getRunningProcess())->fdList, fd);
+}
+
+void dup2(int newFd, int fdToReplace) {
+    open(newFd);
+    replaceElem(getRunningProcess()->fdList, newFd,fdToReplace);
 }

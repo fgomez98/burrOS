@@ -15,8 +15,8 @@ tSem createSem(char* semName);
 void destroySemaphore(tSem sem);
 void wait(tSem sem);
 void post(tSem sem);
-tPipe pipe(char* name);
+tPipe namedPipe(char* name);
 void unlinkPipe(char* name);
 int readPipe(tPipe pipe, char* resp, int amount);
-int writePipe(tPipe pipe, char * msg, int ammount);
+int writePipe(tPipe pipe, char * msg, int amount);
 #endif
