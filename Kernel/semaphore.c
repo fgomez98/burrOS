@@ -79,7 +79,7 @@ void post(sem * s) {
    // _cli();
     adquire(s->lock);
     (s->value)++;
-//
+
 //    putChar('\n', c);
 //    putStr("post: ", c);
 //    uintToBase(getRunningPid(), buff6, 10);

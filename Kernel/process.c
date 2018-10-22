@@ -5,7 +5,7 @@
 char buff2[8];
 Colour colour2 = {255, 255, 255};
 Colour yellow2 = {100, 1000, 255};
-static int nextPid = 0; //Esta variable le asigna a cada proceso un pid distinto
+static int nextPid = 1; //Esta variable le asigna a cada proceso un pid distinto
 
 tProcess* createProcess(char* processName,void* startingPoint, int parentPid, int argc, char* argv[]){
     /*Se reserva espacio para la estructura del proceso*/
@@ -26,9 +26,8 @@ tProcess* createProcess(char* processName,void* startingPoint, int parentPid, in
     process->memoryAllocated = PROCESS_SIZE;
     process->state = READY;
     process->heap = NULL;
-//    process->mutexs = NULL;
-//    process->semaphores = NULL;
-    process->priority = 0;
+    process->priority = 1;
+    process->quantumTime = 0;
     return process;
 }
 
@@ -128,8 +127,9 @@ void printProcess(tProcess * p) {
 // implementar yield para pasar a un proceso de ruuning a ready/waiting asi darle timepo a otro sin que este sea interrumpido por el timer tick
 
 void endProcess(int pid) {
+    //_cli();
     changeProcessState(pid, DEAD);
-    yield();
+    //yield(); //TODO: si no es el que estaba corriendo es al pedo hacer _yield(); hacer el chequeo de si hacer yield o no aca o en el scheduler
     //_hlt();
 }
 

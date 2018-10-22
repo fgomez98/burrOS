@@ -37,5 +37,7 @@ void mutexTest();
 void pipeTest();
 void priorityTest();
 void yield();
+void changeProcessState(int pid, pState state);
+void kill(int pid);
 
 #endif

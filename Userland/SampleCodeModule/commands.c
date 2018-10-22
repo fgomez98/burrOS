@@ -17,6 +17,7 @@ Colour colour5 = {46, 230, 210};
 void help(){
     printf("\nHELP:\n");
     printf("\n");
+    printf("cntrl + c - to force quit a process\n");
     printf("& - use comand & comand to execute two comands at the same time\n");
     printf("help - prints a list containing all the available commands and its descriptions\n");
     printf("digitalTime - displays time in digital format. Press c to change colour and q to exit\n");
@@ -24,13 +25,14 @@ void help(){
     printf("clear - clears screen\n");
     printf("zero division - shows how the cero division exception is handled\n");
     printf("invalid opcode - shows how the cero division exception is handled\n");
-    printf("sushi - interactive producer vs consumer problem with sushi\n");
+    printf("sushi - interactive producer vs consumer problem solution with sushi\n");
     printf("memory - shows bock index in buddy allocation system with it's base adress and final address(exclusive)\n");
     printf("ps - shows information about the current processes in the system\n");
     printf("necesitoquemeapapachen - shows burro\n");
     printf("exit - exits from shell\n");
-    printf("backgroundTest - executes a process in background for a limited time. The process will notify when alive and dead\n");
+    printf("backgroundTest - executes a process in background for a limited time. The process will notify when alive and dead");
     printf("messages - shows a pipe demostration\n");
+    printf("philosophers - interactive dinning philosofers problem solution\n");
 }
 
 void cleanScreen(){

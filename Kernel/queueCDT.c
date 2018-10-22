@@ -35,6 +35,7 @@ TNode * insertInOrderRec(TNode * current, queueADT q, void * elem, int (*cmp)(vo
 
 void insertInOrder(queueADT q, void * elem, int (*cmp)(void *, void *)) {
     q->first = insertInOrderRec(q->first, q, elem, cmp);
+    q->dim++;
 }
 
 void push(queueADT q, void * elem) {
@@ -102,7 +103,7 @@ void * removeElem(queueADT q, void * elem) {
     char found = 0;
     q->first = removeREC(q->first, NULL, elem, q, aux, &found);
     if (found) {
-        (q->dim)--;
+        q->dim--;
         return aux;
     } else {
         freeMemory(aux);
