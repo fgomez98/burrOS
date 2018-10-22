@@ -36,7 +36,7 @@ typedef struct {
     void * processMemoryLowerAddress;
     void * code;
     queueADT heap;
-    linkedList fdList;
+    queueADT fdList;
 //    queueADT mutexs; // la idea es que si tiene algun ipc adquirido aumentarle la prioridad a este asi libera el recurso mas rapido
 //    queueADT semaphores;
     uint64_t memoryAllocated;
@@ -84,6 +84,7 @@ void endProcess(int pid);
 int stateIdentifier(pState state);
 void* callocMemoryInProcess(size_t request, tProcess* process);
 void* reallocMemoryInProcess(size_t request, tProcess* process, uint64_t oldPtr);
-void addFdToProcess(tProcess * process, int fd);
+void addFdToProcess(int fd);
+void dup2(int newFd, int fdToReplace);
 
 #endif

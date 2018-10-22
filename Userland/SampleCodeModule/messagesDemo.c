@@ -4,21 +4,11 @@
 #include <messagesDemo.h>
 #include <sync.h>
 
-void startMessagesDemo() {
-    printf("\n");
-    int fd;
-    open(fd);
-    write(fd,"msgd",5);
-    char buffer[20];
-    readfd(fd,buffer,5);
-    buffer[4] = '\0';
-    printf("%s", buffer);
-    return;
-}
+int fd;
 
-/*
 void startMessagesDemo() {
     writeWelcomeMessage();
+    open(fd);
     char * pipeName = "thisIsADemoPipe";
     char c;
     while((c=getChar()) != 'q') {
@@ -74,7 +64,8 @@ void startMessagesDemo() {
 
 void writeMessage(int argc, char ** argv) {
     tPipe myPipe = namedPipe(argv[0]);
-    writePipe(myPipe,argv[1], argc);
+    open(fd);
+    write(fd,argv[1], argc);
     argv[1][argc] = '\0';
     printf("I wrote %s\n", argv[1]);
     killCurrentProcess();
@@ -82,9 +73,10 @@ void writeMessage(int argc, char ** argv) {
 
 void readMessage(int argc, char ** argv) {
     tPipe myPipe = namedPipe(argv[0]);
+    open(fd);
     int amount = argc;
     char buffer[amount];
-    int a = readPipe(myPipe, buffer,amount);
+    int a = readfd(fd, buffer,amount);
     buffer[a] = '\0';
     printf("I read %d bytes: %s\n",a, buffer);
     killCurrentProcess();
@@ -95,5 +87,3 @@ void writeWelcomeMessage() {
     printf("2: Read and print a number of bytes. Type the number, then press enter.\n");
     printf("q: Exit demo\n");
 }
-
-*/

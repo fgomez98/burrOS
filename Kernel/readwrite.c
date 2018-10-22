@@ -5,6 +5,7 @@
 #include <String.h>
 #include <VideoDriver.h>
 #include <lib.h>
+#include <process.h>
 
 #define BUFFERSIZE 1024
 
@@ -122,11 +123,12 @@ int open(int fd){
         int runningPid = getRunningPid();
         if(!containsList(newfd->users, runningPid)) {
             addToList(newfd->users, runningPid);
-            addFdToProcess(getRunningProcess(), fd);
+            addFdToProcess(fd);
             return 1;
         }
         return 0;
     }
+
 
     newfd = mallocMemory(sizeof(fileDecryptor));
     if(newfd == NULL)
@@ -156,7 +158,8 @@ int open(int fd){
     addToList(newfd->users, getRunningPid());
 
     addToList(fdList, newfd);
-    addFdToProcess(getRunningProcess(), fd);
+    if(fd >= 3 || fd < 0)
+        addFdToProcess(fd);
     return 1;
 }
 

@@ -59,16 +59,16 @@ void addToList(linkedList l, void * elem) {
         return;
     }
     l->dim++;
+
+    ListNode * new = mallocMemory(sizeof(*new));
+    new->elem = elem;
+    new->next = NULL;
+
     if (l->first == NULL) {
-        ListNode * new = mallocMemory(sizeof(*new));
-        new->elem = elem;
-        new->next = NULL;
-        l->first = l->last = new;
+        l->first = new;
+        l->last = new;
         return;
     } else {
-        ListNode * new = mallocMemory(sizeof(*new));
-        new->elem = elem;
-        new->next = NULL;
         l->last->next = new;
         l->last = new;
         return;
@@ -76,7 +76,7 @@ void addToList(linkedList l, void * elem) {
 }
 
 static
-ListNode * geListNode(linkedList l, int i){
+ListNode * getListNode(linkedList l, int i){
     if (l == NULL || l->first == NULL) {
         return NULL;
     }
@@ -94,7 +94,7 @@ ListNode * geListNode(linkedList l, int i){
 }
 
 void * getFromList(linkedList l, int i) {
-    ListNode * resp = geListNode(l,i);
+    ListNode * resp = getListNode(l,i);
     if(resp == NULL)
         return NULL;
     return resp->elem;
@@ -165,7 +165,7 @@ int removeElemListAt(linkedList l, int i) {
         return 1;
     }
 
-    ListNode * aux = geListNode(l,i-1);
+    ListNode * aux = getListNode(l,i-1);
     if(aux == NULL || aux->next == NULL)
         return 0;
 
@@ -210,7 +210,7 @@ void freeList(linkedList l) {
     freeMemory(l);
 }
 
-void freeLisListNodes(linkedList l) {
+void freeListNodes(linkedList l) {
     if (l == NULL) {
         return;
     }
