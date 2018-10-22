@@ -22,7 +22,7 @@ tProcess* createProcess(char* processName,void* startingPoint, int parentPid, in
     process->code = startingPoint;
 
     process->fdList = newList(sizeof(int), pidcmp);
-    /*for(int i = 0; i < 3; i++) {
+   /* for(int i = 0; i < 3; i++) {
         open(i);
             addToList(process->fdList, i);
     }*/

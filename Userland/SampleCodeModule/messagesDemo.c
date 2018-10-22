@@ -8,10 +8,12 @@ void startMessagesDemo() {
     printf("\n");
     int fd;
     open(fd);
-    write(fd,"hola",5);
+    write(fd,"msgd",5);
     char buffer[20];
     readfd(fd,buffer,5);
+    buffer[4] = '\0';
     printf("%s", buffer);
+    return;
 }
 
 /*

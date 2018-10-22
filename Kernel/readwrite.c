@@ -116,7 +116,6 @@ int pipe(int fd[]) {
 }
 
 int open(int fd){
-    putStr("hola",somecolor);
     // Si ya existe solo agrego el pid
     fileDecryptor * newfd = getFd(fdList, fd);
     if(newfd != NULL){
@@ -137,9 +136,9 @@ int open(int fd){
     char * name = mallocMemory(19);
     intToString(name, fd);
 
-    char readMutexName = mallocMemory(strlenght(name) + 6);
-    char writeMutexName = mallocMemory(strlenght(name) + 6);
-    char useMutexName = mallocMemory(strlenght(name) + 6);
+    char * readMutexName = mallocMemory(strlenght(name) + 6);
+    char * writeMutexName = mallocMemory(strlenght(name) + 6);
+    char * useMutexName = mallocMemory(strlenght(name) + 6);
 
     newfd->useMutex = initMutex(strconcat(name, " use",useMutexName));
     newfd->readMutex = initMutex(strconcat(name, " read",readMutexName));
@@ -211,7 +210,6 @@ int read(int fd, char * msg, int amount) {
             myfd->readPosition = 0;
         msg[i] = (myfd->buffer)[myfd->readPosition];
     }
-
     if(myfd->waitingForWrite != -1)
         unblockProcess(myfd->waitingForWrite);
 
