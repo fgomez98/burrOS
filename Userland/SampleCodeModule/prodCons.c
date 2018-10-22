@@ -15,6 +15,9 @@ static int sushiManCount;
 static int monsterState[5];
 static int sushiManState[5];
 
+int countSushiMan();
+int countMonster();
+
 void initProdCons() { //TODO:matar procesos no esta funcionando bien
     running = 1;
     char initialized = 0;
@@ -46,7 +49,6 @@ void initProdCons() { //TODO:matar procesos no esta funcionando bien
     printf("empty                                                                                                       full\n");
     printf(" 1  2  3  4  5  6  7  8  9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30\n");
     while (running) {
-        drawSushiState(sushiManCount, monsterCount);
         char key;
         _syscall(_read, &key);
         switch (key) {
@@ -54,12 +56,14 @@ void initProdCons() { //TODO:matar procesos no esta funcionando bien
                 if ((sushiManCount < MAXSUSHIMEN) && initialized) {
                     sushiManState[sushiManCount] = 1;
                     exec("sushiMan",sushiMan, sushiManCount++, 0);
+                    drawSushiState(sushiManCount, monsterCount);
                 }
                 break;
             case 'm':
                 if ((monsterCount < MAXMONSTERS) && initialized) {
                     monsterState[monsterCount] = 1;
                     exec("monster",monster, monsterCount++, 0);
+                    drawSushiState(sushiManCount, monsterCount);
                 }
                 break;
             case 'q':
@@ -69,26 +73,30 @@ void initProdCons() { //TODO:matar procesos no esta funcionando bien
                 initialized = 1;
                 monsterState[monsterCount] = 1;
                 exec("monster",monster, monsterCount++, 0);
-
+                drawSushiState(sushiManCount, monsterCount);
                 sushiManState[sushiManCount] = 1;
                 exec("sushiMan",sushiMan, sushiManCount++, 0);
+                drawSushiState(sushiManCount, monsterCount);
                 break;
             case'o':
                 if (monsterCount > 1) {
                     monsterState[--monsterCount] = 0;
                 }
+                drawSushiState(sushiManCount, monsterCount);
                 break;
             case'p':
                 if (sushiManCount > 1) {
                     sushiManState[--sushiManCount] = 0;
                 }
+                drawSushiState(sushiManCount, monsterCount);
                 break;
         }
     }
-    clearSushiState(sushiManCount, monsterCount);
     for (int i = 0; i < (sushiManCount + monsterCount); i++) {
         wait(finish);
+        drawSushiState(countSushiMan(), countMonster());
     }
+    clearSushiState(sushiManCount, monsterCount);
     printf("\nGame Over\n");
     destroyMutex(buffMutex);
     destroySemaphore(finish);
@@ -96,6 +104,21 @@ void initProdCons() { //TODO:matar procesos no esta funcionando bien
     return;
 }
 
+int countSushiMan() {
+    int rta = 0;
+    for (int i = 0; i < MAXSUSHIMEN; i++) {
+        rta += sushiManState[i];
+    }
+    return rta;
+}
+
+int countMonster() {
+    int rta = 0;
+    for (int i = 0; i < MAXMONSTERS; i++) {
+        rta += monsterState[i];
+    }
+    return rta;
+}
 
 int myRand() {
     static int next = 12;
@@ -159,6 +182,7 @@ void sushiMan(int index) {
         release(buffMutex);
     }
     if (!running) {
+        sushiManState[index] = 0;
         post(finish);
     }
 }
@@ -187,6 +211,7 @@ void monster(int index) {
 
     }
     if (!running) {
+        monsterState[index] = 0;
         post(finish);
     }
 }

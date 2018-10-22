@@ -30,15 +30,18 @@ typedef struct {
     int pid; //process ID
     int parentPid; //parent's ID
     int priority;
+    int quantumTime;
     char * name; //process name
     pState state; //process status
     void * stackPointer;
     void * processMemoryLowerAddress;
     void * code;
     queueADT heap;
+
     queueADT fdList;
 //    queueADT mutexs; // la idea es que si tiene algun ipc adquirido aumentarle la prioridad a este asi libera el recurso mas rapido
 //    queueADT semaphores;
+
     uint64_t memoryAllocated;
 
 } tProcess;

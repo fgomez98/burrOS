@@ -23,17 +23,19 @@ static Colour filofochoColours[] = {
     {180, 40, 18},
     {100, 1000, 255},
     {50, 50, 280},
-    {70, 0, 94}
+    {70, 0, 94},
+    {255, 165, 0}
 };
 
-int philState[MAX_FILOSOPHERS] = {THINKING, THINKING, THINKING, THINKING};
+int philState[MAX_FILOSOPHERS] = {THINKING, THINKING, THINKING, THINKING, THINKING, THINKING};
 
-static Colour forks[] = {
+static Colour forks[MAX_FILOSOPHERS] = {
     {255, 255, 255},
     {255, 255, 255},
     {255, 255, 255},
     {255, 255, 255},
-    {255, 255, 255}
+    {255, 255, 255},
+    {255, 255, 255},
 //    {100, 100, 255},
 //    {180, 40, 18},
 //    {100, 1000, 255},
@@ -43,6 +45,7 @@ static Colour forks[] = {
 
 void philospher(int id);
 
+//TODO: hace falta mostrar cuadno los filosofos tienen hambre??, se pone medio inentendible el dibujo
 void initFilofochos() {
     running = 1;
     filofochosAmount = 0;
@@ -64,7 +67,7 @@ void initFilofochos() {
     printf("Welcome to Dinning Philosofers\n");
     printf("Initially there are 2 philosofers\n");
     printf("Press q to quit\n");
-    printf("Press z to add a philosofer to the table (max 5)\n");
+    printf("Press z to add a philosofer to the table (max 6)\n");
     printf("Press x to kill a philosofer\n");
     printf("Press i to start\n");
     while (!initialized) {
@@ -93,11 +96,11 @@ void initFilofochos() {
         switch (key) {
             case 'z':
                 if (filofochosAmount < MAX_FILOSOPHERS) {
-                    clearTable();
                     adquire(mutex);
+                    clearTable();
                     exec("philosopher", philospher, filofochosAmount++, 0);
-                    release(mutex);
                     drawTable();
+                    release(mutex);
                 }
                 break;
             case 'x':
@@ -130,7 +133,7 @@ void think() {
 }
 
 void eat() {
-    delay(9000);
+    delay(10000);
 }
 
 void markForks(int id) {
@@ -156,6 +159,7 @@ void test(int id) {
 void take_fork(int id) {
     adquire(mutex);
     philState[id] = HUNGRY;
+    drawFilofochos();
     test(id);
     release(mutex);
     wait(sem[id]);
@@ -164,8 +168,8 @@ void take_fork(int id) {
 void put_fork(int id) {
     adquire(mutex);
     philState[id] = THINKING;
-    drawFilofochos();
     unMarkForks(id);
+    drawFilofochos();
     drawForks();
     test(left(id));
     test(right(id));
@@ -194,9 +198,11 @@ void philospher(int id) {
 }
 
 void drawFilofocho(Colour colour, int x, int y, int state) {
-    DrawFilledCircle(x, y, 35, colour);
+    DrawFilledCircle(x, y, 35, colour); // cuando esta en thinking se muestra solemente un circulo del color que representa al filosofo
     if (state == EATING) {
         DrawFilledCircle(x, y, 15, white);
+    } else if (state == HUNGRY) {
+        drawCircle(x, y, 15, white);
     }
 }
 
@@ -228,6 +234,14 @@ void drawFilofochos() {
             drawFilofocho(filofochoColours[4], MIDX - 180, MIDY - 80, philState[4]);
             drawFilofocho(filofochoColours[3], MIDX, MIDY - 215, philState[3]);
             break;
+//        case 6:
+//            drawFilofocho(filofochoColours[0], MIDX, MIDY + 215, philState[0]);
+//            drawFilofocho(filofochoColours[5], MIDX - 160, MIDY + 140, philState[5]);
+//            drawFilofocho(filofochoColours[1], MIDX + 160, MIDY + 140, philState[1]);
+//            drawFilofocho(filofochoColours[2], MIDX + 180, MIDY - 80, philState[2]);
+//            drawFilofocho(filofochoColours[4], MIDX - 180, MIDY - 80, philState[4]);
+//            drawFilofocho(filofochoColours[3], MIDX, MIDY - 215, philState[3]);
+//            break;
     }
 }
 
@@ -255,6 +269,14 @@ void clearFilofochos() {
             drawFilofocho(black, MIDX - 180, MIDY - 80, -1);
             drawFilofocho(black, MIDX + 180, MIDY - 80, -1);
             break;
+//        case 6:
+//            drawFork(black, MIDX + 50, MIDX + 50, MIDY + 250, MIDY + 180);
+//            drawFork(black, MIDX - 130, MIDX - 80, MIDY + 200, MIDY + 140);
+//            drawFork(black, MIDX + 250, MIDX + 170, MIDY + 100, MIDY + 70);
+//            drawFork(black, MIDX + 130, MIDX + 80, MIDY - 160, MIDY - 100);
+//            drawFork(black, MIDX - 250, MIDX - 170, MIDY - 40, MIDY - 10);
+//            drawFork(black, MIDX - 50, MIDX - 50, MIDY - 250, MIDY - 180);
+//            break;
     }
 }
 
@@ -281,7 +303,15 @@ void drawForks() {
             drawFork(forks[2], MIDX + 130, MIDX + 80, MIDY - 160, MIDY - 100);
             drawFork(forks[4], MIDX - 250, MIDX - 170, MIDY - 40, MIDY - 10);
             drawFork(forks[3], MIDX - 50, MIDX - 50, MIDY - 250, MIDY - 180);
-            break;
+//            break;
+//        case 6:
+//            drawFork(forks[0], MIDX + 50, MIDX + 50, MIDY + 250, MIDY + 180);
+//            drawFork(forks[5], MIDX - 130, MIDX - 80, MIDY + 200, MIDY + 140);
+//            drawFork(forks[1], MIDX + 250, MIDX + 170, MIDY + 100, MIDY + 70);
+//            drawFork(forks[2], MIDX + 130, MIDX + 80, MIDY - 160, MIDY - 100);
+//            drawFork(forks[4], MIDX - 250, MIDX - 170, MIDY - 40, MIDY - 10);
+//            drawFork(forks[3], MIDX - 50, MIDX - 50, MIDY - 250, MIDY - 180);
+//            break;
     }
     
 }
@@ -310,6 +340,14 @@ void clearForks() {
             drawFork(black, MIDX - 250, MIDX - 170, MIDY - 40, MIDY - 10);
             drawFork(black, MIDX - 50, MIDX - 50, MIDY - 250, MIDY - 180);
             break;
+//        case 6:
+//            drawFork(black, MIDX + 50, MIDX + 50, MIDY + 250, MIDY + 180);
+//            drawFork(black, MIDX - 130, MIDX - 80, MIDY + 200, MIDY + 140);
+//            drawFork(black, MIDX + 250, MIDX + 170, MIDY + 100, MIDY + 70);
+//            drawFork(black, MIDX + 130, MIDX + 80, MIDY - 160, MIDY - 100);
+//            drawFork(black, MIDX - 250, MIDX - 170, MIDY - 40, MIDY - 10);
+//            drawFork(black, MIDX - 50, MIDX - 50, MIDY - 250, MIDY - 180);
+//            break;
     }
     
 }

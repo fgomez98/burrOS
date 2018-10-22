@@ -1,6 +1,7 @@
 #include "KeyboardDriver.h"
 #include "VideoDriver.h"
 #include "ScanCodes.h"
+#include "scheduler.h"
 #include "Keyboard.h"
 #define FALSE 0
 #define TRUE 1
@@ -22,6 +23,8 @@ void Keyboard_Handler() { // once a key is pressed, it calls an interrupton whic
     if (scan & 0x80) { //if first bit is 1 then the key was released
         if (scan == 0xAA || scan == 0xB6) { // shift
             SHIFT_ON = FALSE;
+        } else if (scan == 0x9D) {
+            CNTRL_ON = FALSE;
         }
     } else { // a key was pressed,is another one was already pressed, and it remains being pressed, it will send multiple iterruption,if it is a special key set on TRUE, pressing another key will access to its special map
         switch (scan) {
@@ -34,6 +37,9 @@ void Keyboard_Handler() { // once a key is pressed, it calls an interrupton whic
             case CAPS:  // caps
                 CAPS_ON = !CAPS_ON;
                 break;
+            case CTRL:
+                CNTRL_ON = TRUE;
+                break;
         }
         if (SHIFT_ON) {
             input = getAsciiShiftCode(scan);
@@ -44,6 +50,13 @@ void Keyboard_Handler() { // once a key is pressed, it calls an interrupton whic
                 input -= 32;
             }
             addToBuffer(input);
+        } else if (CNTRL_ON) {
+            input = getAsciiCode(scan);
+            switch (input) {
+                case 'c':
+                    kill(getRunningPid());
+                    break;
+            }
         } else {
             input = getAsciiCode(scan);
             addToBuffer(input);
