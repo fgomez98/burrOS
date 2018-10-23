@@ -222,7 +222,7 @@ void addFdToProcess(int fd){
         addToList((getRunningProcess())->fdList, fd);
 }
 
+/*
 void dup2(int newFd, int fdToReplace) {
-    open(newFd);
     replaceElem(getRunningProcess()->fdList, newFd,fdToReplace);
-}
+}*/

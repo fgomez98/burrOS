@@ -12,6 +12,7 @@
 #include "syscalls.h"
 #include "pipe.h"
 #include "readwrite.h"
+#include <process.h>
 
 
 static char buff[8];
@@ -58,6 +59,7 @@ systemCall sysCalls[] = { 0, 0, 0,
 		(systemCall) _write,
 		(systemCall) _close,
 		(systemCall) _pipe,
+		(systemCall) _dup,
 
 };
 
@@ -252,4 +254,10 @@ uint64_t _close(uint64_t fd) {
 
 uint64_t _pipe(uint64_t fd[]) {
 	return pipe(fd);
+}
+
+// hay que ver que devuelve dup2
+uint64_t _dup(uint64_t newFd, uint64_t oldFd) {
+	dup2(newFd, oldFd);
+	return 1;
 }

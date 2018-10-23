@@ -38,6 +38,10 @@ int fdcmp(fileDecryptor * f1, fileDecryptor * f2){
         return f1->fd - f2->fd;
 }
 
+int getFdAt(int index) {
+    return getElemAtFromList(getRunningProcess()->fdList, index);
+}
+
 static
 int availableToWrite(fileDecryptor * fd) {
     if(fd->writePosition >= fd->readPosition)
@@ -153,6 +157,9 @@ int close(int fd) {
 }
 
 int read(int fd, char * msg, int amount) {
+    if(fd >= 0 && fd < 3)
+        fd = getElemAtFromList(getRunningProcess()->fdList, fd);
+
     fileDecryptor * myfd = getFd(fdList, fd);
     if(myfd == NULL)
         return -1;
@@ -199,6 +206,10 @@ int read(int fd, char * msg, int amount) {
 }
 
 int write(int fd, char * msg, int amount) {
+
+    if(fd >= 0 && fd < 3)
+        fd = getElemAtFromList(getRunningProcess()->fdList, fd);
+
 
     fileDecryptor * myfd = getFd(fdList, fd);
     if(myfd == NULL)

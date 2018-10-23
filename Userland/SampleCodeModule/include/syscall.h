@@ -39,6 +39,7 @@
 #define _write 37
 #define _close 38
 #define _pipe 39
+#define _dup 40
 
 uint64_t _syscall(uint64_t, ...);
 

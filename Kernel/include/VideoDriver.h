@@ -34,5 +34,6 @@
     void putTime(char * time, Colour colour);
     void deleteChar();
     void newComand();
+    void putStrWithSize(char * str, Colour colour, int amount);
 
 #endif /* VideoDriver_h */

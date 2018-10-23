@@ -143,6 +143,28 @@ void putStrAux(char * str, Colour colour) {
     }
 }
 
+void putStrWithSize(char * str, Colour colour, int amount) { // lee hasta el cero, si no lo tiene como hago para que corte en algun momento (excepcion)
+    char buff[128] = {0};
+    int i = 0;
+    int j = 0;
+    char c;
+    while (i < amount) {
+        c=str[i++];
+        if(c != '\0')
+            buff[j++] = c;
+        if (c == ' ') {
+            buff[j] = 0;
+            putStrAux(buff, colour);
+            memSet(buff, 0, j);
+            j = 0;
+        } else if (c == '\n') {
+            newLine();
+        }
+    }
+    putStrAux(buff, colour);
+
+}
+
 // imprime un string en pantalla
 void putStr(char * str, Colour colour) { // lee hasta el cero, si no lo tiene como hago para que corte en algun momento (excepcion)
     char buff[128] = {0};

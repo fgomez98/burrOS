@@ -79,3 +79,7 @@ int close(int fd){
 int pipe(int fd[]) {
     return _syscall(_pipe, fd);
 }
+
+void dup(int newFd, int oldFd) {
+    _syscall(_dup, newFd,oldFd);
+}

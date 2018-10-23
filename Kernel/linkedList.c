@@ -93,7 +93,7 @@ ListNode * getListNode(linkedList l, int i){
     return aux;
 }
 
-void * getFromList(linkedList l, int i) {
+void * getElemAtFromList(linkedList l, int i) {
     ListNode * resp = getListNode(l,i);
     if(resp == NULL)
         return NULL;

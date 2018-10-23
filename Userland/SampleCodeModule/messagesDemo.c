@@ -7,7 +7,11 @@
 int fd;
 
 void startMessagesDemo() {
-    write(1,"hola soy el proceso", 20);
+    open(fd);
+    dup(fd,1);
+    write(1,"hola", 5);
+    char buffer[5];
+    readfd(1,buffer,5);
 
    /* writeWelcomeMessage();
     open(fd);
