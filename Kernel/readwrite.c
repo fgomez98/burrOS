@@ -6,8 +6,7 @@
 #include <VideoDriver.h>
 #include <lib.h>
 #include <process.h>
-
-#define BUFFERSIZE 1024
+#include <readwrite.h>
 
 typedef struct fileDecryptor {
     int fd;
@@ -228,8 +227,10 @@ int write(int fd, char * msg, int amount) {
     if(myfd == NULL)
         return -1;
 
-    if(!containsList(myfd->users,getRunningPid()))
-        return -1;
+    if(fd < 0 || fd > 3) {
+        if (!containsList(myfd->users, getRunningPid()))
+            return -1;
+    }
 
     if(myfd->pipefd != -1){
         myfd = getFd(fdList, myfd->pipefd);

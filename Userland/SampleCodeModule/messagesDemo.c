@@ -7,7 +7,9 @@
 int fd;
 
 void startMessagesDemo() {
-    writeWelcomeMessage();
+    write(1,"hola soy el proceso", 20);
+
+   /* writeWelcomeMessage();
     open(fd);
     char * pipeName = "thisIsADemoPipe";
     char c;
@@ -59,7 +61,7 @@ void startMessagesDemo() {
                 break;
             }
         }
-    }
+    }*/
 }
 
 void writeMessage(int argc, char ** argv) {

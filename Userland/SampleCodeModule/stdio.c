@@ -3,6 +3,7 @@
 #include "syscall.h"
 #define WRITE 1
 #define READ 0
+#define STDERR 2
 #define STDOUT 1
 #define STDIN 0
 #define CLEAR 0
@@ -40,7 +41,7 @@ void putChar(char c) {
 }
 
 void putString(char * str) {
-    _syscall(_putString, str);
+    write(_putString, str);
 }
 
 

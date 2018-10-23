@@ -32,7 +32,7 @@ void initializeShell() {
     while (running){
         char * arg1 = calloc(MAXLENGTH);
         char * arg2 = calloc(MAXLENGTH);
-        printf("$>");
+        printf("\n$>");
         scanAndPrint(command);
         
         sscanf("%s & %s", command, arg1, arg2);

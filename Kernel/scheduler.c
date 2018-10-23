@@ -1,6 +1,7 @@
 #include "scheduler.h"
 #include "mutex.h"
 #include <pipe.h>
+#include <writerProcess.h>
 #include "queueADT.h"
 
 char buff[8];
@@ -403,9 +404,12 @@ void init_(void * startingPoint) {
 
     initializeFileDecryptors();
 
+    tProcess * writerProcess = createProcess("writerProcess", writeToScreen, 0, 0, NULL);
+
     //RUN FIRST PROCESS
     running = createProcess("theGodFather", startingPoint, 0, 0, NULL);
     running->state = RUNNING;
+    addProcess(writerProcess);
     contextSwitch(running->stackPointer);
 }
 
