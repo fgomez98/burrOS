@@ -23,7 +23,7 @@ void scanAndPrint(char* buffer) {
         }
     }
     else if (k > 0 && k < 127) {
-      _syscall(_putChar, k);
+      putChar(k);
       buffer[i++] = k;
     }
 
@@ -37,11 +37,16 @@ void deleteChar() {
 }
 
 void putChar(char c) {
-    _syscall(_putChar, c);
+    /*char * aux = malloc(1);
+    *aux = c;
+    write(STDOUT, aux,1);
+    free(aux);*/
+   _syscall(_putChar, c);
 }
 
 void putString(char * str) {
-    write(_putString, str);
+    //write(STDOUT, str, strlen(str));
+    _syscall(_putString, str);
 }
 
 

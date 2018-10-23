@@ -258,6 +258,6 @@ uint64_t _pipe(uint64_t fd[]) {
 
 // hay que ver que devuelve dup2
 uint64_t _dup(uint64_t newFd, uint64_t oldFd) {
-	dup2(newFd, oldFd);
+	//dup2(newFd, oldFd);
 	return 1;
 }

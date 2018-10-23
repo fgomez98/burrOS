@@ -7,11 +7,9 @@
 int fd;
 
 void startMessagesDemo() {
-    open(fd);
-    dup(fd,1);
-    write(1,"hola", 5);
+    write(0,"hola", 5);
     char buffer[5];
-    readfd(1,buffer,5);
+    readfd(0,buffer,5);
 
    /* writeWelcomeMessage();
     open(fd);
