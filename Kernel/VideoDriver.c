@@ -133,12 +133,27 @@ void deleteChar() {
 
 void putStrAux(char * str, Colour colour) {
     int i = strlen(str);
+    //Ya lo comprueba PUTCHAR!
     if ((XPOSITION+(CHAR_WIDTH+X_SPACE)*i) > video->XResolution) {
-        newLine();
+        //newLine();
     }
     char c;
     i = 0;
     while ( (c = str[i++])) {
+        putChar(c, colour);
+    }
+}
+
+void putStrAuxWithSize(char * str, Colour colour, int amount) {
+    int i = strlen(str);
+    //Ya lo comprueba PUTCHAR!
+    if ((XPOSITION+(CHAR_WIDTH+X_SPACE)*i) > video->XResolution) {
+        //newLine();
+    }
+    char c;
+    i = 0;
+    while ( i < amount) {
+        c = str[i++];
         putChar(c, colour);
     }
 }
@@ -158,7 +173,7 @@ void putStrWithSize(char * str, Colour colour, int amount) { // lee hasta el cer
             memSet(buff, 0, j);
             j = 0;
         } else if (c == '\n') {
-            newLine();
+            //newLine();
         }
     }
     putStrAux(buff, colour);

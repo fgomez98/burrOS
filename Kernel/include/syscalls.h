@@ -44,6 +44,6 @@ uint64_t _write(uint64_t fd, uint64_t * msg, uint64_t amount);
 uint64_t _close(uint64_t fd);
 uint64_t _pipe(uint64_t fd[]);
 uint64_t _dup(uint64_t newFd, uint64_t oldFd);
-
+uint64_t _getPid();
 
 #endif

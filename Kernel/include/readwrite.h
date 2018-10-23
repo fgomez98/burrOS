@@ -11,3 +11,4 @@ int close(int fd);
 int read(int fd, char * msg, int amount);
 int write(int fd, char * msg, int amount);
 void initializeFileDecryptors();
+void dup2(int newFd, int fdToReplace);

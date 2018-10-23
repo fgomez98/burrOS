@@ -60,7 +60,7 @@ systemCall sysCalls[] = { 0, 0, 0,
 		(systemCall) _close,
 		(systemCall) _pipe,
 		(systemCall) _dup,
-
+		(systemCall) _getPid,
 };
 
 void syscall_handler(uint64_t index, uint64_t a, uint64_t b, uint64_t c, uint64_t d, uint64_t e) {
@@ -258,6 +258,10 @@ uint64_t _pipe(uint64_t fd[]) {
 
 // hay que ver que devuelve dup2
 uint64_t _dup(uint64_t newFd, uint64_t oldFd) {
-	//dup2(newFd, oldFd);
+	dup2(newFd, oldFd);
 	return 1;
+}
+
+uint64_t _getPid() {
+	return getRunningPid();
 }

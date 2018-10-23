@@ -1,5 +1,6 @@
 #include "stdio.h"
 #include "lib.h"
+#include <string.h>
 #include "syscall.h"
 #define WRITE 1
 #define READ 0
@@ -37,16 +38,13 @@ void deleteChar() {
 }
 
 void putChar(char c) {
-    /*char * aux = malloc(1);
-    *aux = c;
-    write(STDOUT, aux,1);
-    free(aux);*/
-   _syscall(_putChar, c);
+    write(STDOUT, &c,1);
+   //_syscall(_putChar, c);
 }
 
 void putString(char * str) {
-    //write(STDOUT, str, strlen(str));
-    _syscall(_putString, str);
+    write(STDOUT, str, strlen(str));
+    //_syscall(_putString, str);
 }
 
 

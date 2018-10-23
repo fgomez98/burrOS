@@ -28,7 +28,7 @@ typedef struct fileDecryptor {
 }fileDecryptor;
 
 linkedList fdList = NULL;
-Colour somecolor = {255, 255, 255};
+Colour whiteColor = {255, 255, 255};
 
 static
 int fdcmp(fileDecryptor * f1, fileDecryptor * f2){
@@ -36,10 +36,6 @@ int fdcmp(fileDecryptor * f1, fileDecryptor * f2){
         return -1;
     else
         return f1->fd - f2->fd;
-}
-
-int getFdAt(int index) {
-    return getElemAtFromList(getRunningProcess()->fdList, index);
 }
 
 static
@@ -97,13 +93,15 @@ int pipe(int fd[]) {
 }
 
 int open(int fd){
+    if(fd == 0 || fd == 1)
+        return -1;
+
     // Si ya existe solo agrego el pid
     fileDecryptor * newfd = getFd(fdList, fd);
     if(newfd != NULL){
         int runningPid = getRunningPid();
         if(!containsList(newfd->users, runningPid)) {
             addToList(newfd->users, runningPid);
-            addFdToProcess(fd);
             return 1;
         }
         return 0;
@@ -138,8 +136,7 @@ int open(int fd){
     addToList(newfd->users, getRunningPid());
 
     addToList(fdList, newfd);
-    if(fd >= 3 || fd < 0)
-        addFdToProcess(fd);
+
     return 1;
 }
 
@@ -157,8 +154,6 @@ int close(int fd) {
 }
 
 int read(int fd, char * msg, int amount) {
-    if(fd >= 0 && fd < 3)
-        fd = getElemAtFromList(getRunningProcess()->fdList, fd);
 
     fileDecryptor * myfd = getFd(fdList, fd);
     if(myfd == NULL)
@@ -173,12 +168,9 @@ int read(int fd, char * msg, int amount) {
         amount = BUFFERSIZE;
 
     adquire(myfd->readMutex);
-    /* Si no hay nada para escribir y no hay nadie que escriba, o hay alguien y soy yo no me bloqueo*/
-    if(availableToRead(myfd) == 0 && (getListSize(writerFd->users) == 0 || (getListSize(writerFd->users) == 1 && containsList(writerFd->users, getRunningPid())) )){
-        release(myfd->readMutex);
-        return 0;
-    }
     adquire(myfd->useMutex);
+
+    /* Si no hay nada para escribir y no hay nadie que escriba, o hay alguien y soy yo no me bloqueo*/
 
     int readBytes = availableToRead(myfd);
     if(readBytes <= 0) {
@@ -196,6 +188,7 @@ int read(int fd, char * msg, int amount) {
             myfd->readPosition = 0;
         msg[i] = (myfd->buffer)[myfd->readPosition];
     }
+
     if(myfd->waitingForWrite != -1)
         unblockProcess(myfd->waitingForWrite);
 
@@ -207,23 +200,29 @@ int read(int fd, char * msg, int amount) {
 
 int write(int fd, char * msg, int amount) {
 
-    if(fd >= 0 && fd < 3)
-        fd = getElemAtFromList(getRunningProcess()->fdList, fd);
+    fileDecryptor * myfd;
 
-
-    fileDecryptor * myfd = getFd(fdList, fd);
-    if(myfd == NULL)
-        return -1;
-
-    if(fd < 0 || fd > 3) {
-        if (!containsList(myfd->users, getRunningPid()))
-            return -1;
+    if(fd == 1){
+        int processStdOutFd = getRunningProcess()->stdOut;
+        if(processStdOutFd == 1) {
+            putStrWithSize(msg, whiteColor, amount);
+            return amount;
+        }
+        else{
+            myfd = getFd(fdList, processStdOutFd);
+        }
     }
+    else {
+        myfd = getFd(fdList, fd);
 
-    if(myfd->pipefd != -1){
-        myfd = getFd(fdList, myfd->pipefd);
-        if(myfd == NULL)
+        if (myfd == NULL)
             return -1;
+
+        if (myfd->pipefd != -1) {
+            myfd = getFd(fdList, myfd->pipefd);
+            if (myfd == NULL)
+                return -1;
+        }
     }
 
     if(amount > BUFFERSIZE)
@@ -261,4 +260,20 @@ int write(int fd, char * msg, int amount) {
 
     return amount;
 }
+
+
+void dup2(int newFd, int fdToReplace) {
+    if (newFd == fdToReplace || (newFd < 2 && newFd >= 0)) {
+        return;
+    }
+
+    open(newFd);
+    if (fdToReplace == 0) {
+        getRunningProcess()->stdIn = newFd;
+    }
+    else if(fdToReplace == 1){
+        getRunningProcess()->stdOut = newFd;
+    }
+}
+
 

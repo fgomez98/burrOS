@@ -6,6 +6,7 @@
 #include "lib.h"
 #include "queueADT.h"
 #include "String.h"
+#include "readwrite.h"
 #include "linkedList.h"
 
 #define BLOCK_SIZE 4096
@@ -38,7 +39,8 @@ typedef struct {
     void * code;
     queueADT heap;
 
-    queueADT fdList;
+    int stdOut;
+    int stdIn;
 //    queueADT mutexs; // la idea es que si tiene algun ipc adquirido aumentarle la prioridad a este asi libera el recurso mas rapido
 //    queueADT semaphores;
 
@@ -87,7 +89,5 @@ void endProcess(int pid);
 int stateIdentifier(pState state);
 void* callocMemoryInProcess(size_t request, tProcess* process);
 void* reallocMemoryInProcess(size_t request, tProcess* process, uint64_t oldPtr);
-void addFdToProcess(int fd);
-void dup2(int newFd, int fdToReplace);
 
 #endif

@@ -3,6 +3,8 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "messagesDemo.h"
+#include "sync.h"
+#include "syscall.h"
 #include "VideoModule.h"
 #include "prodCons.h"
 #include "filofochos.h"
@@ -82,6 +84,10 @@ void initializeShell() {
                 exec("backgroundTest", stayAlive, 0, 0);
             } else if (strcmp("messages", arg2) == 0) {
                 exec("message",startMessagesDemo, 0, 0);
+                open(35);
+                char buffer[5];
+                readfd(35,buffer,5);
+                printf("\nRecibi un: %s",buffer);
             } else{
                 printf("\nUnknown command, type help\n");
                 continue;
@@ -129,7 +135,11 @@ void initializeShell() {
                 exec("backgroundTest", stayAlive, 0, 0);
                 printf("\n");
             } else if (strcmp("messages", arg1) == 0) {
-                startMessagesDemo();
+                exec("startMessagesDemo", startMessagesDemo,0,0);
+                open(35);
+                char buffer[5];
+                readfd(35,buffer,5);
+                printf("\nRecibi un: %s",buffer);
             } else if (strcmp("circle", arg1) == 0) {
                 DrawFilledCircle(200, 200, 80, white);
                 //drawCircle(200, 200, 80, white);

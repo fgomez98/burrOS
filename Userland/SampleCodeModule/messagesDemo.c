@@ -4,12 +4,15 @@
 #include <messagesDemo.h>
 #include <sync.h>
 
-int fd;
 
 void startMessagesDemo() {
-    write(0,"hola", 5);
-    char buffer[5];
-    readfd(0,buffer,5);
+    int fd = 35;
+    open(fd);
+    dup(fd,1);
+    char * s = "hola";
+    printf("%s", s);
+
+    return;
 
    /* writeWelcomeMessage();
     open(fd);
@@ -67,23 +70,23 @@ void startMessagesDemo() {
 }
 
 void writeMessage(int argc, char ** argv) {
-    tPipe myPipe = namedPipe(argv[0]);
+   /* tPipe myPipe = namedPipe(argv[0]);
     open(fd);
     write(fd,argv[1], argc);
     argv[1][argc] = '\0';
     printf("I wrote %s\n", argv[1]);
-    killCurrentProcess();
+    killCurrentProcess();*/
 }
 
 void readMessage(int argc, char ** argv) {
-    tPipe myPipe = namedPipe(argv[0]);
+    /*tPipe myPipe = namedPipe(argv[0]);
     open(fd);
     int amount = argc;
     char buffer[amount];
     int a = readfd(fd, buffer,amount);
     buffer[a] = '\0';
     printf("I read %d bytes: %s\n",a, buffer);
-    killCurrentProcess();
+    killCurrentProcess();*/
 }
 
 void writeWelcomeMessage() {
