@@ -61,35 +61,12 @@ fileDecryptor * getFd(linkedList * fdList, int fd) {
 
 static
 void createPipeLink(int fd1, int fd2){
-    fileDecryptor * newfd = mallocMemory(sizeof(newfd));
-    if(newfd == NULL)
-        return -1;
-    newfd->fd = fd1;
-    newfd->buffer = mallocMemory(BUFFERSIZE);
-    newfd->pipefd = fd2;
-    addToList(newfd->users, getRunningPid());
-
-
-    char * name = mallocMemory(19);
-    if(name == NULL)
-        return -1;
-    intToString(name, fd1);
-
-    char readMutexName[strlenght(name) + 6];
-    char writeMutexName[strlenght(name) + 6];
-    char useMutexName[strlenght(name) + 6];
-
-    newfd->readMutex = initMutex(strconcat(name, " read",readMutexName));
-    newfd->writeMutex = initMutex(strconcat(name, " write",writeMutexName));
-    newfd->useMutex = initMutex(strconcat(name, " use",useMutexName));
-    newfd->readPosition = 0;
-    newfd->writePosition = 0;
-    newfd->waitingForRead = -1;
-    newfd->waitingForWrite = -1;
-    newfd->users = newList(sizeof(int), pidcmp);
-    addToList(newfd->users, getRunningPid());
-
-    addToList(fdList, newfd);
+    open(fd1);
+    open(fd2);
+    fileDecryptor * myfd = getFd(fdList,fd1);
+    myfd->pipefd = fd2;
+    myfd = getFd(fdList,fd2);
+    myfd->pipefd = fd1;
     return 1;
 }
 

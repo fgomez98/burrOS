@@ -49,7 +49,7 @@ systemCall sysCalls[] = { 0, 0, 0,
 		(systemCall) _getMin,
 		(systemCall) _getSec,
 		(systemCall) _drawPixel,
-		(systemCall) _pipe,
+		(systemCall) _namedPipe,
 		(systemCall) _destroyPipe,
 		(systemCall) _readPipe,
 		(systemCall) _writePipe,
@@ -57,6 +57,8 @@ systemCall sysCalls[] = { 0, 0, 0,
 		(systemCall) _readfd,
 		(systemCall) _write,
 		(systemCall) _close,
+		(systemCall) _pipe,
+
 };
 
 void syscall_handler(uint64_t index, uint64_t a, uint64_t b, uint64_t c, uint64_t d, uint64_t e) {
@@ -215,7 +217,7 @@ void _drawPixel(uint64_t x, uint64_t y, uint64_t rgb){
 }
 
 
-void _pipe(uint64_t name, uint64_t ** p){
+void _namedPipe(uint64_t name, uint64_t ** p){
 	*p = namedPipe(name);
 }
 
@@ -245,5 +247,9 @@ uint64_t _write(uint64_t fd, uint64_t * msg, uint64_t amount) {
 }
 
 uint64_t _close(uint64_t fd) {
-    return close(fd);
+	return close(fd);
+}
+
+uint64_t _pipe(uint64_t fd[]) {
+	return pipe(fd);
 }

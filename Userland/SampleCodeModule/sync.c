@@ -75,3 +75,7 @@ int readfd(int fd, char * msg, int amount){
 int close(int fd){
     return _syscall(_close, fd);
 }
+
+int pipe(int fd[]) {
+    return _syscall(_pipe, fd);
+}
