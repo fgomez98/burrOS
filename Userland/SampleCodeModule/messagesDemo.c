@@ -10,7 +10,6 @@ void startMessagesDemo() {
     fd[0] = 31;
     fd[1] = 999;
     pipe(fd);
-
     writeWelcomeMessage();
     char * pipeName = "thisIsADemoPipe";
     char c;
