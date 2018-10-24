@@ -96,7 +96,6 @@ int pipeAlreadyExists(fileDecryptor * myfd1, fileDecryptor * myfd2) {
 //ESTO LO LLAMARIA EL KERNEL ANTES CUANDO CREA LOS BUFFERS DE OUTPUT, ETC
 void initializeFileDecryptors() {
     fdList = newList(sizeof(fileDecryptor *), fdcmp);
-    stdOutMutex = initMutex("stdOutMutex");
     listMutex = initMutex("fdListMutex");
 }
 
