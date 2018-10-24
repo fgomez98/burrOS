@@ -19,7 +19,6 @@ void irqDispatcher(uint64_t irq) {
 }
 
 void int_20() {
-    putStr("garchaMaxima", colour1);
 	timer_handler();
 }
 

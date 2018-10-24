@@ -2,22 +2,23 @@
 #define MIDX XRESOLUTION/2
 #define MIDY YRESOLUTION/2
 #define abs(x) (((x)<0) ? -(x) : (x))
-#define MAX_FILOSOPHERS 5
+#define MAX_FILOSOPHERS 6
 #define THINKING 2
 #define HUNGRY 1
 #define EATING 0
 #define FILOMUTEX "philosophersMutex"
 #define FINISH "philosophersFinishSem"
-char * semNames[] = {"philosophersSem1", "philosophersSem2", "philosophersSem3", "philosophersSem4", "philosophersSem5"};
+char * semNames[MAX_FILOSOPHERS] = {"philosophersSem1", "philosophersSem2", "philosophersSem3", "philosophersSem4", "philosophersSem5", "philosophersSem6"};
 static tMutex mutex;
 static tSem sem[MAX_FILOSOPHERS];
-static tSem finish;
+//static tSem finish;
 static int running;
 static int filofochosAmount;
 static int goToSleep;
 
 static Colour white = {255, 255, 255};
 static Colour black = {0,0,0};
+
 static Colour filofochoColours[] = {
     {100, 100, 255},
     {180, 40, 18},
@@ -36,11 +37,6 @@ static Colour forks[MAX_FILOSOPHERS] = {
     {255, 255, 255},
     {255, 255, 255},
     {255, 255, 255},
-//    {100, 100, 255},
-//    {180, 40, 18},
-//    {100, 1000, 255},
-//    {50, 50, 280},
-//    {180, 180, 180}
 };
 
 void philospher(int id);
@@ -52,8 +48,8 @@ void initFilofochos() {
     goToSleep = 0;
     char initialized = 0;
     mutex = createMutex(FILOMUTEX);
-    //finish = createSem(FINISH);
-    //char waitCant = 0;
+//    finish = createSem(FINISH);
+//    char waitCant = 0;
     for (int i = 0; i < MAX_FILOSOPHERS; i++) {
         forks[i] = white;
     }
@@ -66,9 +62,12 @@ void initFilofochos() {
     cleanScreen();
     printf("Welcome to Dinning Philosofers\n");
     printf("Initially there are 2 philosofers\n");
+    printf("Each philospher is represented with a colour on the table\n");
+    printf("when a philosopher is hungry an empty plate will apear on it otherwise it will be full of food\n");
+    printf("forks are coloured with the colour of the philopher thar owns them if no philosopher is using them their colour  will be white\n");
     printf("Press q to quit\n");
-    printf("Press z to add a philosofer to the table (max 6)\n");
-    printf("Press x to kill a philosofer\n");
+//    printf("Press z to add a philosofer to the table (max 6)\n");
+//    printf("Press x to kill a philosofer\n");
     printf("Press i to start\n");
     while (!initialized) {
         char key;
@@ -82,6 +81,10 @@ void initFilofochos() {
                 initialized = 1;
                 drawTable();
                 adquire(mutex);
+                cleanScreen();
+                printf("Press z to add a philosofer to the table (max 6)\n");
+                printf("Press x to kill a philosofer\n");
+                printf("Press q to quit\n");
                 exec("philosopher", philospher, filofochosAmount++, 0);
                 exec("philosopher", philospher, filofochosAmount++, 0);
                 release(mutex);
@@ -96,11 +99,13 @@ void initFilofochos() {
         switch (key) {
             case 'z':
                 if (filofochosAmount < MAX_FILOSOPHERS) {
+                    wait(sem[0]); // espero a que deje el tenedor el de la derecha
                     adquire(mutex);
                     clearTable();
                     exec("philosopher", philospher, filofochosAmount++, 0);
                     drawTable();
                     release(mutex);
+                    post(sem[0]);
                 }
                 break;
             case 'x':
@@ -109,13 +114,14 @@ void initFilofochos() {
                 }
                 break;
             case 'q':
-               // waitCant = filofochosAmount;
+//                waitCant = filofochosAmount;
                 running = 0;
                 break;
             }
     }
 //    for (int i = 0; i < waitCant; i++) {
-//        wait(finish);
+////        wait(finish);
+////        drawTable();
 //    }
     cleanScreen();
 }
@@ -192,7 +198,7 @@ void philospher(int id) {
     drawTable();
     release(mutex);
    if (!running) {
-//        post(finish);
+//       post(finish);
        clearTable();
     }
 }
@@ -234,14 +240,14 @@ void drawFilofochos() {
             drawFilofocho(filofochoColours[4], MIDX - 180, MIDY - 80, philState[4]);
             drawFilofocho(filofochoColours[3], MIDX, MIDY - 215, philState[3]);
             break;
-//        case 6:
-//            drawFilofocho(filofochoColours[0], MIDX, MIDY + 215, philState[0]);
-//            drawFilofocho(filofochoColours[5], MIDX - 160, MIDY + 140, philState[5]);
-//            drawFilofocho(filofochoColours[1], MIDX + 160, MIDY + 140, philState[1]);
-//            drawFilofocho(filofochoColours[2], MIDX + 180, MIDY - 80, philState[2]);
-//            drawFilofocho(filofochoColours[4], MIDX - 180, MIDY - 80, philState[4]);
-//            drawFilofocho(filofochoColours[3], MIDX, MIDY - 215, philState[3]);
-//            break;
+        case 6:
+            drawFilofocho(filofochoColours[0], MIDX, MIDY + 215, philState[0]);
+            drawFilofocho(filofochoColours[5], MIDX - 160, MIDY + 140, philState[5]);
+            drawFilofocho(filofochoColours[1], MIDX + 160, MIDY + 140, philState[1]);
+            drawFilofocho(filofochoColours[2], MIDX + 180, MIDY - 80, philState[2]);
+            drawFilofocho(filofochoColours[4], MIDX - 180, MIDY - 80, philState[4]);
+            drawFilofocho(filofochoColours[3], MIDX, MIDY - 215, philState[3]);
+            break;
     }
 }
 
@@ -269,14 +275,14 @@ void clearFilofochos() {
             drawFilofocho(black, MIDX - 180, MIDY - 80, -1);
             drawFilofocho(black, MIDX + 180, MIDY - 80, -1);
             break;
-//        case 6:
-//            drawFork(black, MIDX + 50, MIDX + 50, MIDY + 250, MIDY + 180);
-//            drawFork(black, MIDX - 130, MIDX - 80, MIDY + 200, MIDY + 140);
-//            drawFork(black, MIDX + 250, MIDX + 170, MIDY + 100, MIDY + 70);
-//            drawFork(black, MIDX + 130, MIDX + 80, MIDY - 160, MIDY - 100);
-//            drawFork(black, MIDX - 250, MIDX - 170, MIDY - 40, MIDY - 10);
-//            drawFork(black, MIDX - 50, MIDX - 50, MIDY - 250, MIDY - 180);
-//            break;
+        case 6:
+            drawFilofocho(black, MIDX, MIDY + 215, -1);
+            drawFilofocho(black, MIDX - 160, MIDY + 140, -1);
+            drawFilofocho(black, MIDX + 160, MIDY + 140, -1);
+            drawFilofocho(black, MIDX + 180, MIDY - 80, -1);
+            drawFilofocho(black, MIDX - 180, MIDY - 80, -1);
+            drawFilofocho(black, MIDX, MIDY - 215, -1);
+            break;
     }
 }
 
@@ -303,15 +309,15 @@ void drawForks() {
             drawFork(forks[2], MIDX + 130, MIDX + 80, MIDY - 160, MIDY - 100);
             drawFork(forks[4], MIDX - 250, MIDX - 170, MIDY - 40, MIDY - 10);
             drawFork(forks[3], MIDX - 50, MIDX - 50, MIDY - 250, MIDY - 180);
-//            break;
-//        case 6:
-//            drawFork(forks[0], MIDX + 50, MIDX + 50, MIDY + 250, MIDY + 180);
-//            drawFork(forks[5], MIDX - 130, MIDX - 80, MIDY + 200, MIDY + 140);
-//            drawFork(forks[1], MIDX + 250, MIDX + 170, MIDY + 100, MIDY + 70);
-//            drawFork(forks[2], MIDX + 130, MIDX + 80, MIDY - 160, MIDY - 100);
-//            drawFork(forks[4], MIDX - 250, MIDX - 170, MIDY - 40, MIDY - 10);
-//            drawFork(forks[3], MIDX - 50, MIDX - 50, MIDY - 250, MIDY - 180);
-//            break;
+            break;
+        case 6:
+            drawFork(forks[0], MIDX + 50, MIDX + 50, MIDY + 250, MIDY + 180);
+            drawFork(forks[5], MIDX - 130, MIDX - 80, MIDY + 200, MIDY + 140);
+            drawFork(forks[1], MIDX + 250, MIDX + 170, MIDY + 100, MIDY + 70);
+            drawFork(forks[2], MIDX + 130, MIDX + 80, MIDY - 160, MIDY - 100);
+            drawFork(forks[4], MIDX - 250, MIDX - 170, MIDY - 40, MIDY - 10);
+            drawFork(forks[3], MIDX - 50, MIDX - 50, MIDY - 250, MIDY - 180);
+            break;
     }
     
 }
@@ -340,14 +346,14 @@ void clearForks() {
             drawFork(black, MIDX - 250, MIDX - 170, MIDY - 40, MIDY - 10);
             drawFork(black, MIDX - 50, MIDX - 50, MIDY - 250, MIDY - 180);
             break;
-//        case 6:
-//            drawFork(black, MIDX + 50, MIDX + 50, MIDY + 250, MIDY + 180);
-//            drawFork(black, MIDX - 130, MIDX - 80, MIDY + 200, MIDY + 140);
-//            drawFork(black, MIDX + 250, MIDX + 170, MIDY + 100, MIDY + 70);
-//            drawFork(black, MIDX + 130, MIDX + 80, MIDY - 160, MIDY - 100);
-//            drawFork(black, MIDX - 250, MIDX - 170, MIDY - 40, MIDY - 10);
-//            drawFork(black, MIDX - 50, MIDX - 50, MIDY - 250, MIDY - 180);
-//            break;
+        case 6:
+            drawFork(black, MIDX + 50, MIDX + 50, MIDY + 250, MIDY + 180);
+            drawFork(black, MIDX - 130, MIDX - 80, MIDY + 200, MIDY + 140);
+            drawFork(black, MIDX + 250, MIDX + 170, MIDY + 100, MIDY + 70);
+            drawFork(black, MIDX + 130, MIDX + 80, MIDY - 160, MIDY - 100);
+            drawFork(black, MIDX - 250, MIDX - 170, MIDY - 40, MIDY - 10);
+            drawFork(black, MIDX - 50, MIDX - 50, MIDY - 250, MIDY - 180);
+            break;
     }
     
 }

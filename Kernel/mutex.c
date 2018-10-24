@@ -47,6 +47,7 @@ void destroyMutex(mutex * m) {
     mutex * elem = mallocMemory(sizeof(mutex));
     elem->name = m->name;
     mutex * aux = removeElem(myMutexs, elem);
+    freeMemory(elem);
     if (aux != NULL) {
         freeQueueNodes(aux->queue);
         freeMemory(aux);
@@ -110,7 +111,9 @@ void release(mutex * m) {
 void destroyAllMutexs() {
     mutex * current;
     while ((current = pop(myMutexs)) != NULL) {
+        freeQueueNodes(current->queue);
         freeMemory(current);
     }
+    freeMemory(myMutexs);
 }
 

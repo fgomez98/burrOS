@@ -124,8 +124,6 @@ void printProcess(tProcess * p) {
     printStackFrame(p->stackPointer);
 }
 
-// implementar yield para pasar a un proceso de ruuning a ready/waiting asi darle timepo a otro sin que este sea interrumpido por el timer tick
-
 void endProcess(int pid) {
     //_cli();
     changeProcessState(pid, DEAD);

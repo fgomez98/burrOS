@@ -3,8 +3,6 @@
 #ifndef SYSCALLS_H
 #define SYSCALLS_H
 
-
-
 void syscall_handler(uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t arg6);
 void _clearScreen();
 void _read(uint64_t key);
@@ -38,6 +36,6 @@ void _pipe(uint64_t name, uint64_t ** p);
 void _destroyPipe(uint64_t name);
 uint64_t _readPipe(uint64_t pipe, uint64_t a, uint64_t resp, uint64_t amount);
 uint64_t _writePipe(uint64_t * pipe, uint64_t * a, uint64_t msg, uint64_t amount);
-
+void _nice(int pid, int priority);
 
 #endif

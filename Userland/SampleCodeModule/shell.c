@@ -26,8 +26,6 @@ void initializeShell() {
     
     static char command[MAXLENGTH];
     
-    
-    
     int running = 1;
     while (running){
         char * arg1 = calloc(MAXLENGTH);
@@ -70,10 +68,6 @@ void initializeShell() {
             }
             else if(strcmp("malloc", arg2) == 0){
                 maDemo();
-                // char* a = malloc(10);
-                // char *b = malloc(20);
-                // free(a);
-                // free(b);
             } else if (strcmp("sushi", arg2) == 0) {
                 exec("initProdCons",initProdCons, 0, 0);
             } else if (strcmp("necesitoquemeapapachen", arg2) == 0) {
@@ -109,9 +103,7 @@ void initializeShell() {
                 running = 0;
             }
             else if(strcmp("ps", arg1) == 0){
-                // exec("probando",probando, 0, 0);
                 exec("ps",ps, 0, 0);
-                //ps();
             }
             else if(strcmp("memory", arg1) == 0){
                 memory();
@@ -130,13 +122,6 @@ void initializeShell() {
                 printf("\n");
             } else if (strcmp("messages", arg1) == 0) {
                 startMessagesDemo();
-            } else if (strcmp("circle", arg1) == 0) {
-                DrawFilledCircle(200, 200, 80, white);
-                //drawCircle(200, 200, 80, white);
-                printf("\n");
-            } else if (strcmp("line", arg1) == 0) {
-                line_fast(200, 200, 540, 800, white);
-                printf("\n");
             } else if (strcmp("philosophers", arg1) == 0) {
                 initFilofochos();
             } else if (strcmp("test", arg1) == 0) {
