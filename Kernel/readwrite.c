@@ -263,6 +263,7 @@ int close(int fd) {
 }
 
 int read(int fd, char * msg, int amount) {
+    fileDecryptor * myfd;
     if (fd == 0) {
         int processStdInFd = getRunningProcess()->stdIn;
         if(processStdInFd == 0) {

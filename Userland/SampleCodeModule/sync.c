@@ -1,6 +1,4 @@
 #include "sync.h"
-int fd[2];
-typedef void (*functiontype)();
 void runProgram(int argc, char ** argv);
 
 tMutex createMutex(char* mutexName){
@@ -84,34 +82,6 @@ int pipe(int fd[]) {
 
 void dup(int newFd, int oldFd) {
     _syscall(_dup, newFd,oldFd);
-}
-
-void makePiping(void * startingPoint1, void * startingPoint2) {
-    int fd[2];
-    if(fd[0] < 10 || fd[1] < 11){
-        fd[0] = 10;
-        fd[1] = 11;
-    }
-    char * argv1[1];
-    argv1[0] = 0;
-    char * argv2[1];
-    argv2[0] = 1;
-    exec("piping1",runProgram, startingPoint2, argv1);
-    exec("piping2",runProgram, startingPoint1, argv2);
-    return;
-}
-
-void runProgram(int argc, char ** argv) {
-    pipe(fd);
-    if(argv[0] == 0) {
-        dup(fd[0],0);
-    }
-    else {
-        dup(fd[1], 1);
-    }
-    functiontype f = (argc);
-    f();
-    return;
 }
 
 

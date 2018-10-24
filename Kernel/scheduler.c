@@ -141,7 +141,7 @@ void changeProcessState(int pid, pState state) {
         //TODO: hago yield()?? o que la haga la funcion que llama a esto
         return;
     }
-    putStr("LUGAR MAGICO", green); //TODO: esta al re pedo
+    //putStr("LUGAR MAGICO", green); //TODO: esta al re pedo
     tProcess * aux = removeProcess(pid);
     if (aux == NULL) {
         return;
@@ -164,7 +164,7 @@ void sort(tProcess * p, pState state) {
             // y que dsp el scheduler se encargue de borrarlo sino running apunta a cualquier cosa y cagamo
             // si lo saco de la colas es que no esta corriendo puedo borrarlo directo
             deleteProcess(p);
-            putStr("CASO DEAD EN SORT", green);
+            //putStr("CASO DEAD EN SORT", green);
             //push(ready, p);
             break;
         case READY:

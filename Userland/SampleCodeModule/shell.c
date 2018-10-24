@@ -20,18 +20,6 @@ void hinchaHuevos() {
     }
 }
 
-void readProgram() {
-    char c;
-    while((c=getChar())) {
-        printf("%c", c);
-    }
-}
-
-void writeProgram() {
-    char * msg = "hola como estas";
-    printf("%s", msg);
-}
-
 Colour white = {255, 255, 255};
 
 void initializeShell() {
@@ -156,7 +144,7 @@ void initializeShell() {
               printf("\n%s\n", echo);
             } else if (strcmp("pipe", arg1) == 0) {
                 makePiping(writeProgram, readProgram);
-            } else if (strcmp("priority demo", arg1) == 0) {
+            } else if (strcmp("priority", arg1) == 0) {
                 schedulerDemo();
             } else{
                 printf("\nUnknown command, type help\n");

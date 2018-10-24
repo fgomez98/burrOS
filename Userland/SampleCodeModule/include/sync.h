@@ -19,6 +19,5 @@ tPipe namedPipe(char* name);
 void unlinkPipe(char* name);
 int readPipe(tPipe pipe, char* resp, int amount);
 int writePipe(tPipe pipe, char * msg, int amount);
-void makePiping(void * startingPoint1, void * startingPoint2);
 
 #endif
