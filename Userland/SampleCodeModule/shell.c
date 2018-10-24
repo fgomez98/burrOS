@@ -22,23 +22,24 @@ void hinchaHuevos() {
 Colour white = {255, 255, 255};
 
 void initializeShell() {
-    
+
     showBurro();
     printf("Welcome to the shell!! Please type help to get a list of our commands\n");
-    
+
     static char command[MAXLENGTH];
-    
-    
-    
+
+
+
     int running = 1;
     while (running){
         char * arg1 = calloc(MAXLENGTH);
         char * arg2 = calloc(MAXLENGTH);
+        char * echo = calloc(MAXLENGTH);
         printf("\n$>");
         scanAndPrint(command);
-        
+
         sscanf("%s & %s", command, arg1, arg2);
-        
+
         if (*arg2) {
             if(strcmp("help", arg2) == 0){
                 exec("help",help, 0, 0);
@@ -88,7 +89,10 @@ void initializeShell() {
                 char buffer[5];
                 readfd(35,buffer,5);
                 printf("\nRecibi un: %s",buffer);
-            } else{
+            }else if (sscanf("echo-%s",arg2,echo)){
+              printf("\n%s\n", echo);
+            }
+            else{
                 printf("\nUnknown command, type help\n");
                 continue;
             }
@@ -151,6 +155,8 @@ void initializeShell() {
                 initFilofochos();
             } else if (strcmp("test", arg1) == 0) {
                 exec("hinchaHuevos", hinchaHuevos, 0, 0);
+            }else if (sscanf("echo-%s",arg1,echo)){
+              printf("\n%s\n", echo);
             } else{
                 printf("\nUnknown command, type help\n");
                 continue;
@@ -158,7 +164,8 @@ void initializeShell() {
         }
         free(arg1);
         free(arg2);
+        free(echo);
     }
     printf("\n\n\nSee you soon!");
-    
+
 }

@@ -17,22 +17,23 @@ Colour colour5 = {46, 230, 210};
 void help(){
     printf("\nHELP:\n");
     printf("\n");
-    printf("cntrl + c - to force quit a process\n");
+    printf("ctrl + c - press anytime to force quit a process\n");
     printf("& - use comand & comand to execute two comands at the same time\n");
-    printf("help - prints a list containing all the available commands and its descriptions\n");
-    printf("digitalTime - displays time in digital format. Press c to change colour and q to exit\n");
-    printf("time - displays current time\n");
-    printf("clear - clears screen\n");
-    printf("zero division - shows how the cero division exception is handled\n");
-    printf("invalid opcode - shows how the cero division exception is handled\n");
-    printf("sushi - interactive producer vs consumer problem solution with sushi\n");
-    printf("memory - shows bock index in buddy allocation system with it's base adress and final address(exclusive)\n");
-    printf("ps - shows information about the current processes in the system\n");
-    printf("necesitoquemeapapachen - shows burro\n");
-    printf("exit - exits from shell\n");
     printf("backgroundTest - executes a process in background for a limited time. The process will notify when alive and dead");
+    printf("clear - clears screen\n");
+    printf("digitalTime - displays time in digital format. Press c to change colour and q to exit\n");
+    printf("echo-TEXT - displays the TEXT in screen\n");
+    printf("restart - restart shell\n");
+    printf("help - prints a list containing all the available commands and its descriptions\n");
+    printf("invalid opcode - shows how the cero division exception is handled\n");
+    printf("memory - shows bock index in buddy allocation system with it's base adress and final address(exclusive)\n");
     printf("messages - shows a pipe demostration\n");
+    printf("necesitoquemeapapachen - shows burro\n");
     printf("philosophers - interactive dinning philosofers problem solution\n");
+    printf("ps - shows information about the current processes in the system\n");
+    printf("sushi - interactive producer vs consumer problem solution with sushi\n");
+    printf("time - displays current time\n");
+    printf("zero division - shows how the cero division exception is handled\n");
 }
 
 void cleanScreen(){
@@ -99,7 +100,7 @@ void ps(){
     printf("\n");
     _syscall(_ps, buffer, 2000);
     printf(buffer);
-    
+
     printf("\n");
     free(buffer);
 }
@@ -173,17 +174,17 @@ void maDemo(){
     printf("Press any key in order to visualize current process Memory Status\n");
     c = getChar();
     memory();
-    
+
     printf("Press any key in order to allocate a block of size 128\n");
     c = getChar();
     p = malloc(128);
     printf("\nA block of 128 was allocated: \n");
     memory();
-    
+
     printf("Press any key to free the block\n");
     c = getChar();
     free(p);
-    
+
     printf("The block was freed\n");
     memory();
 }
