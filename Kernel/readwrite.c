@@ -288,9 +288,7 @@ int write(int fd, char * msg, int amount) {
     if(fd == 1){
         int processStdOutFd = getRunningProcess()->stdOut;
         if(processStdOutFd == 1) {
-            adquire(stdOutMutex);
             putStrWithSize(msg, whiteColor, amount);
-            release(stdOutMutex);
             return amount;
         }
         else{
