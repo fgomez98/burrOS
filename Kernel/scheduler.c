@@ -385,8 +385,6 @@ int cmpPriority(tProcess * p1, tProcess * p2) {
 
 void init_(void * startingPoint) {
     // STATE PIORITY MODE
-    initializeFileDecryptors();
-
     mode = PRIORITY;
 
     // INITIALIZE QUEUES
@@ -402,8 +400,6 @@ void init_(void * startingPoint) {
     priority9Queue=  newQueue(sizeof(tProcess), cmpProcess);
     priority10Queue=  newQueue(sizeof(tProcess), cmpProcess);
     blocked = newQueue(sizeof(tProcess), cmpProcess);
-
-
 
     //RUN FIRST PROCESS
     running = createProcess("theGodFather", startingPoint, 0, 0, NULL);

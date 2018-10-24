@@ -127,7 +127,6 @@ void initializeShell() {
                 printf("\n");
             } else if (strcmp("messages", arg1) == 0) {
                 exec("startMessagesDemo", startMessagesDemo,0,0);
-                delay(92812390);
             } else if (strcmp("circle", arg1) == 0) {
                 DrawFilledCircle(200, 200, 80, white);
                 //drawCircle(200, 200, 80, white);

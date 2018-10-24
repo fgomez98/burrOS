@@ -66,6 +66,7 @@ int main() {
     stack = getStack();
     rip = (uint64_t)sampleCodeModuleAddress;
     load_idt();
+    initializeFileDecryptors();
     init_(sampleCodeModuleAddress);
     
     //    ((EntryPoint)sampleCodeModuleAddress)();
