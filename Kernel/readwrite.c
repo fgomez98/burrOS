@@ -274,13 +274,7 @@ int read(int fd, char * msg, int amount) {
             }
             return i;
         }
-        else {
-            myfd = getFd(fdList, processStdInFd);
-            if(!containsList(myfd->users,getRunningPid()))
-                return -1;
-        }
-    }
-    else {
+    } else {
         myfd = getFd(fdList, fd);
         if (myfd == NULL)
             return -1;
