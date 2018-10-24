@@ -8,9 +8,9 @@ int itos(char*str, int num);
 int numlength(int num);
 
 /*Returns the length of the string passed by parameter*/
-// int strlen(const char* str);
+int strlen(const char* str);
 
 /*Compares the two strings character to character, returns 0 if they are equal, -1 if the first string has a lower char value or 1 if the first string has a higher char value*/
-// int strcmp(char string1[], char string2[] );
+int strcmp(char string1[], char string2[] );
 
 #endif
