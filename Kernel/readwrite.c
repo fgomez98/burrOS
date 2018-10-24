@@ -218,23 +218,34 @@ int close(int fd) {
 }
 
 int read(int fd, char * msg, int amount) {
-    
+
+    fileDecryptor * myfd;
+
     if (fd == 0) {
-        char key;
-        int i = 0;
-        while ((key = getKeyInput()) != 0 && (i < amount)) {
-            msg[i] = key;
-            i++;
+        int processStdInFd = getRunningProcess()->stdIn;
+        if(processStdInFd == 0) {
+            char key;
+            int i = 0;
+            while ((key = getKeyInput()) != 0 && (i < amount)) {
+                msg[i] = key;
+                i++;
+            }
+            return i;
         }
-        return i;
+        else {
+            myfd = getFd(fdList, processStdInFd);
+            if(!containsList(myfd->users,getRunningPid()))
+                return -1;
+        }
     }
+    else {
+        myfd = getFd(fdList, fd);
+        if (myfd == NULL)
+            return -1;
 
-    fileDecryptor * myfd = getFd(fdList, fd);
-    if(myfd == NULL)
-        return -1;
-
-    if(!containsList(myfd->users, getRunningPid()))
-        return -1;
+        if (!containsList(myfd->users, getRunningPid()))
+            return -1;
+    }
 
     if(amount > BUFFERSIZE)
         amount = BUFFERSIZE;
