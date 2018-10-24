@@ -34,7 +34,7 @@ int getRunningPid() {
     return (running == NULL ) ? -1 : running->pid;
 }
 
-tProcess* getRunningProcess(){
+tProcess * getRunningProcess(){
     return running;
 }
 
@@ -400,7 +400,10 @@ void init_(void * startingPoint) {
     priority9Queue=  newQueue(sizeof(tProcess), cmpProcess);
     priority10Queue=  newQueue(sizeof(tProcess), cmpProcess);
     blocked = newQueue(sizeof(tProcess), cmpProcess);
-    
+
+    initializeFileDecryptors();
+
+
     //RUN FIRST PROCESS
     running = createProcess("theGodFather", startingPoint, 0, 0, NULL);
     running->state = RUNNING;
@@ -972,6 +975,7 @@ void mutexTest() {
     endProcess(getRunningPid());
 }
 
+/*
 void pipeTestWrite() {
     pipe_t * pipeT = pipe("test");
     putStr("escribo",yellow);
@@ -1040,4 +1044,4 @@ void pipeTest() {
     while (1);
     endProcess(getRunningPid());
     
-}
+}*/

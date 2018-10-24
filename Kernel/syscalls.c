@@ -11,6 +11,8 @@
 #include "semaphore.h"
 #include "syscalls.h"
 #include "pipe.h"
+#include "readwrite.h"
+#include <process.h>
 
 
 static char buff[8];
@@ -48,7 +50,7 @@ systemCall sysCalls[] = { 0, 0, 0,
 		(systemCall) _getMin,
 		(systemCall) _getSec,
 		(systemCall) _drawPixel,
-		(systemCall) _pipe,
+		(systemCall) _namedPipe,
 		(systemCall) _destroyPipe,
 		(systemCall) _readPipe,
 		(systemCall) _writePipe,
@@ -216,11 +218,12 @@ void _pipe(uint64_t name, uint64_t ** p){
 }
 
 void _destroyPipe(uint64_t name){
-    destroyPipe(name);
+   destroyPipe(name);
 }
 
 uint64_t _readPipe(uint64_t pipe, uint64_t a, uint64_t resp, uint64_t amount){
 	return readPipe(pipe, resp, amount);
+
 }
 
 uint64_t _writePipe(uint64_t * pipe, uint64_t * a, uint64_t msg, uint64_t amount){

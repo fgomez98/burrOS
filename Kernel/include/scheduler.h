@@ -16,6 +16,9 @@ typedef struct processNode{
   struct processNode * next;
 } tProcessNode;
 
+int getRunningStdOut();
+
+
 int getRunningPid();
 void addProcess(tProcess * p);
 void getFromWaiting();

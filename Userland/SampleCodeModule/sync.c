@@ -40,7 +40,7 @@ void post(tSem sem) {
 }
 
 //esta bien este nombre?
-tPipe pipe(char* name){
+tPipe namedPipe(char* name){
   tPipe p;
   _syscall(_pipe, name, &p);
   return p;
@@ -58,4 +58,28 @@ int readPipe(tPipe pipe, char* resp, int amount){
 int writePipe(tPipe pipe, char * msg, int cant){
     int a;
     return _syscall(_writePipe, pipe, &a, msg, cant);
+}
+
+int open(int fd){
+    return _syscall(_open, fd);
+}
+
+int write(int fd, char * msg, int amount){
+    return _syscall(_write, fd,msg,amount);
+}
+
+int readfd(int fd, char * msg, int amount){
+    return _syscall(_readfd, fd,msg,amount);
+}
+
+int close(int fd){
+    return _syscall(_close, fd);
+}
+
+int pipe(int fd[]) {
+    return _syscall(_pipe, fd);
+}
+
+void dup(int newFd, int oldFd) {
+    _syscall(_dup, newFd,oldFd);
 }

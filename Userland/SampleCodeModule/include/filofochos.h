@@ -5,7 +5,7 @@
 #include "sync.h"
 #include "stdlib.h"
 #include "commands.h"
-#include "videoModule.h"
+#include "VideoModule.h"
 void initFilofochos();
 
 #endif

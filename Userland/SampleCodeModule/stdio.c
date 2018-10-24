@@ -1,8 +1,10 @@
 #include "stdio.h"
 #include "lib.h"
+#include <string.h>
 #include "syscall.h"
 #define WRITE 1
 #define READ 0
+#define STDERR 2
 #define STDOUT 1
 #define STDIN 0
 #define CLEAR 0
@@ -22,7 +24,7 @@ void scanAndPrint(char* buffer) {
         }
     }
     else if (k > 0 && k < 127) {
-      _syscall(_putChar, k);
+      putChar(k);
       buffer[i++] = k;
     }
 
@@ -36,11 +38,13 @@ void deleteChar() {
 }
 
 void putChar(char c) {
-    _syscall(_putChar, c);
+    write(STDOUT, &c,1);
+   //_syscall(_putChar, c);
 }
 
 void putString(char * str) {
-    _syscall(_putString, str);
+    write(STDOUT, str, strlen(str));
+    //_syscall(_putString, str);
 }
 
 

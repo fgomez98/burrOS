@@ -1,6 +1,7 @@
 #include "process.h"
 #include "scheduler.h"
 #include "syscalls.h"
+#include "lib.h"
 
 char buff2[8];
 Colour colour2 = {255, 255, 255};
@@ -17,8 +18,12 @@ tProcess* createProcess(char* processName,void* startingPoint, int parentPid, in
     process->name = processName;
     process->processMemoryLowerAddress = mallocMemory(PROCESS_SIZE);
 
+    process->stdIn = 0;
+    process->stdOut = 1;
+
     process->code = startingPoint;
-    
+
+
     //esto tiene q ser uint64_t y no void*!!!!!!!!!! CAMBIARLO
     void* processMemoryUpperAddress = process->processMemoryLowerAddress + PROCESS_SIZE -1;
     process->stackPointer = processMemoryUpperAddress - sizeof(tStackFrame) + 1;

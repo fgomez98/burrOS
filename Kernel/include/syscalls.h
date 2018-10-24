@@ -32,7 +32,7 @@ void _getHour(uint64_t arg);
 void _getMin(uint64_t arg);
 void _getSec(uint64_t arg);
 void _drawPixel(uint64_t x, uint64_t y, uint64_t rgb);
-void _pipe(uint64_t name, uint64_t ** p);
+void _namedPipe(uint64_t name, uint64_t ** p);
 void _destroyPipe(uint64_t name);
 uint64_t _readPipe(uint64_t pipe, uint64_t a, uint64_t resp, uint64_t amount);
 uint64_t _writePipe(uint64_t * pipe, uint64_t * a, uint64_t msg, uint64_t amount);

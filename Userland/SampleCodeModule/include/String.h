@@ -4,7 +4,7 @@
 /*Recieves an integer number on base 10 and loads it on a char array, returns the array length*/
 int itos(char*str, int num);
 
-/*Returns the ammount of digits of the number passed by parameter*/
+/*Returns the amount of digits of the number passed by parameter*/
 int numlength(int num);
 
 /*Returns the length of the string passed by parameter*/
