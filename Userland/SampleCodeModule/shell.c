@@ -15,8 +15,20 @@ void probando(){
 
 void hinchaHuevos() {
     while (1) {
-        printf("aca toyy");
+        printf("aca toy");
     }
+}
+
+void readProgram() {
+    char c;
+    while((c=getChar())) {
+        printf("%c", c);
+    }
+}
+
+void writeProgram() {
+    char * msg = "hola como estas";
+    printf("%s", msg);
 }
 
 Colour white = {255, 255, 255};
@@ -126,7 +138,8 @@ void initializeShell() {
                 exec("backgroundTest", stayAlive, 0, 0);
                 printf("\n");
             } else if (strcmp("messages", arg1) == 0) {
-                exec("startMessagesDemo", startMessagesDemo,0,0);
+                startMessagesDemo();
+                //exec("startMessagesDemo", startMessagesDemo,0,0);
             } else if (strcmp("circle", arg1) == 0) {
                 DrawFilledCircle(200, 200, 80, white);
                 //drawCircle(200, 200, 80, white);
@@ -138,8 +151,12 @@ void initializeShell() {
                 initFilofochos();
             } else if (strcmp("test", arg1) == 0) {
                 exec("hinchaHuevos", hinchaHuevos, 0, 0);
-            }else if (sscanf("echo-%s",arg1,echo)){
+            } else if (sscanf("echo-%s",arg1,echo)){
               printf("\n%s\n", echo);
+            } else if (strcmp("pipe", arg1) == 0) {
+                makePiping(writeProgram, readProgram);
+            } else if (strcmp("priority demo", arg1) == 0) {
+                schedulerDemo();
             } else{
                 printf("\nUnknown command, type help\n");
                 continue;

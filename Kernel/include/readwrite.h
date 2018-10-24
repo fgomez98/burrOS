@@ -13,3 +13,4 @@ int write(int fd, char * msg, int amount);
 void initializeFileDecryptors();
 void dup2(int newFd, int fdToReplace);
 void printfd();
+int openWithPid(int fd, int pid);

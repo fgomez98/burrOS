@@ -1,6 +1,6 @@
 #include "scheduler.h"
 #include "mutex.h"
-#include <pipe.h>
+#include "pipe.h"
 #include "queueADT.h"
 
 char buff[8];
@@ -8,21 +8,10 @@ Colour colour = {255, 255, 255};
 Colour yellow = {100, 1000, 255};
 Colour green = {50, 50, 280};
 Colour red = {100, 100, 255};
-
-static queueADT priority1Queue;
-static queueADT priority2Queue;
-static queueADT priority3Queue;
-static queueADT priority4Queue;
-static queueADT priority5Queue;
-static queueADT priority6Queue;
-static queueADT priority7Queue;
-static queueADT priority8Queue;
-static queueADT priority9Queue;
-static queueADT priority10Queue;
 static queueADT ready; // colas de procesos en espera para ser ejecutados
 static queueADT blocked; // cola de procesos bloqueados //TODO: prioridad a processos bloqueados??
 static tProcess * running; // puntero al proceso que se esta corriendo en este momento
-static char mode; // TODO: inicilaizar el shceuler en un modo
+//static tProcess * halting;
 
 //TODO: si hay un proceso de prioridad mas alta ejecutamos ese, expulsando al que esta corriendo ahora?
 
@@ -44,25 +33,6 @@ void kill(int pid) {
     }
 }
 
-void runShell() {
-//    if (getRunningPid() == 1) {
-//        return;
-//    } else {
-//        
-//    }
-}
-
-//TODO: nunca fue testeado
-void changeToPriorityMode() {
-    //_cli();
-    mode = PRIORITY;
-    tProcess * aux;
-    while ((aux = pop(ready)) != NULL) {
-        addProcess(aux);
-    }
-    //_sti();
-}
-
 void addAll(queueADT dst, queueADT src) {
     tProcess * aux;
     while ((aux = pop(src)) != NULL) {
@@ -70,64 +40,11 @@ void addAll(queueADT dst, queueADT src) {
     }
 }
 
-//TODO: nunca fue testeado
-void changeToNormalMode() {
-      //  _cli();
-    // TODO: hay que seterar en 0 las prioridades de todos los procesos asi cuando vuelve a modo prioridad no hay problema o se re ordenan todos los procesos con la prioridades que estaban
-    mode = NO_PRIORITY;
-    addAll(ready, priority10Queue);
-    addAll(ready, priority9Queue);
-    addAll(ready, priority8Queue);
-    addAll(ready, priority7Queue);
-    addAll(ready, priority6Queue);
-    addAll(ready, priority5Queue);
-    addAll(ready, priority4Queue);
-    addAll(ready, priority3Queue);
-    addAll(ready, priority2Queue);
-    addAll(ready, priority1Queue);
-     //   _sti();
-}
-
 void addProcess(tProcess * p) {
     p->state = READY; // es necesario??
     p->quantumTime = 0;
-    if (mode == NO_PRIORITY) {
-        push(ready, p);
-    } else {
-        switch (p->priority) {
-            case 1:
-                push(priority1Queue, p);
-                break;
-            case 2:
-                push(priority2Queue, p);
-                break;
-            case 3:
-                push(priority3Queue, p);
-                break;
-            case 4:
-                push(priority4Queue, p);
-                break;
-            case 5:
-                push(priority5Queue, p);
-                break;
-            case 6:
-                push(priority6Queue, p);
-                break;
-            case 7:
-                push(priority7Queue, p);
-                break;
-            case 8:
-                push(priority8Queue, p);
-                break;
-            case 9:
-                push(priority9Queue, p);
-                break;
-            case 10:
-                push(priority10Queue, p);
-                break;
-        }
-        //        yield();
-    }
+    push(ready, p);
+    //        yield();
 }
 
 tProcess * removeProcess(int pid) {
@@ -136,36 +53,9 @@ tProcess * removeProcess(int pid) {
     }
     tProcess * elem = mallocMemory(sizeof(tProcess));
     elem->pid = pid;
-    tProcess * aux = removeElem(priority1Queue, elem);
+    tProcess * aux = removeElem(ready, elem);
     if (aux == NULL) {
-        aux = removeElem(priority2Queue, elem);
-        if (aux == NULL) {
-            aux = removeElem(priority3Queue, elem);
-            if (aux == NULL) {
-                aux = removeElem(priority4Queue, elem);
-                if (aux == NULL) {
-                    aux = removeElem(priority5Queue, elem);
-                    if (aux == NULL) {
-                        aux = removeElem(priority6Queue, elem);
-                        if (aux == NULL) {
-                            aux = removeElem(priority7Queue, elem);
-                            if (aux == NULL) {
-                                aux = removeElem(priority8Queue, elem);
-                                if (aux == NULL) {
-                                    aux = removeElem(priority9Queue, elem);
-                                    if (aux == NULL) {
-                                        aux = removeElem(priority10Queue, elem);
-                                        if (aux == NULL) {
-                                            aux = removeElem(blocked, elem);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        aux = removeElem(blocked, elem);
     }
     freeMemory(elem);
     return aux;
@@ -173,24 +63,23 @@ tProcess * removeProcess(int pid) {
 
 void nice(int pid, int priority) {
     //_cli();
-    if (mode == PRIORITY) {
-        tProcess * proc = removeProcess(pid); // lo quitamos de la cola para luego insertarlo de nuevo y mantener el orden de la cola
-        if (proc != NULL) {
-            proc->priority = priority;
-            switch (proc->state) {
-                case READY:
-                    addProcess(proc);
-                    break;
-                case WAITING:
-                    push(blocked, proc); // podriamos solamente retornar el puntero para este caso pero quedaria in consistente el nombre de la funcion remove TODO: cmabiarle el nombre a la funcion remove o ver que hacer con eso
-                    break;
-                case RUNNING:
-                    break;
-                case DEAD:
-                    // un proceso que esta corriendo no puede hacer nice si esta muerto, una vez sacado de su respectiva cola directamete lo borro a la mierda
-                    deleteProcess(proc);
-                    break;
-            }
+    tProcess * proc = removeProcess(pid); // lo quitamos de la cola para luego insertarlo de nuevo y mantener el orden de la cola
+    if (proc != NULL) {
+        proc->priority = priority;
+        proc->nice = 1;
+        switch (proc->state) {
+            case READY:
+                addProcess(proc);
+                break;
+            case WAITING:
+                push(blocked, proc); // podriamos solamente retornar el puntero para este caso pero quedaria in consistente el nombre de la funcion remove TODO: cmabiarle el nombre a la funcion remove o ver que hacer con eso
+                break;
+            case RUNNING:
+                break;
+            case DEAD:
+                // un proceso que esta corriendo no puede hacer nice si esta muerto, una vez sacado de su respectiva cola directamete lo borro a la mierda
+                deleteProcess(proc);
+                break;
         }
     }
     //_sti();
@@ -199,72 +88,46 @@ void nice(int pid, int priority) {
 }
 
 void ageRunningProcess() {// TODO: ver que onda con el proceso padre aka shell
-    if (running->priority > 1) {
+    if (running->priority > 1 && !running->nice) {
         (running->priority)--;
     }
 }
 
-void pickReadyQueue() {
-    if (mode == PRIORITY) {
-        if (getSize(priority10Queue) > 0) {
-            ready = priority10Queue;
-        } else if (getSize(priority9Queue) > 0) {
-            ready = priority9Queue;
-        } else if (getSize(priority8Queue) > 0) {
-            ready = priority8Queue;
-        } else if (getSize(priority7Queue) > 0) {
-            ready = priority7Queue;
-        } else if (getSize(priority6Queue) > 0) {
-            ready = priority6Queue;
-        } else if (getSize(priority5Queue) > 0) {
-            ready = priority5Queue;
-        } else if (getSize(priority4Queue) > 0) {
-            ready = priority4Queue;
-        } else if (getSize(priority3Queue) > 0) {
-            ready = priority3Queue;
-        } else if (getSize(priority2Queue) > 0) {
-            ready = priority2Queue;
-        } else if (getSize(priority1Queue) > 0) {
-            ready = priority1Queue;
-        }
-    }
-}
-
 void blockProcess(int pid) { //TODO: solamente se bloquean los procesos que estan correindo, quitar parametro pid
-      //_cli();
-//        putStr("Block: ", green);
-//        uintToBase(pid, buff, 10);
-//        putStr(buff, yellow);
-//        putChar('\n', yellow);
-   // running->state = WAITING;
+    //_cli();
+    //        putStr("Block: ", green);
+    //        uintToBase(pid, buff, 10);
+    //        putStr(buff, yellow);
+    //        putChar('\n', yellow);
+    // running->state = WAITING;
     changeProcessState(pid, WAITING);
-//     _sti();
+    //     _sti();
     //yield();
 }
 
 int unblockProcess(int pid) {
-       //_cli();
-//        putStr("Volvi: ", green);
-//        uintToBase(pid, buff, 10);
-//        putStr(buff, yellow);
-//        putChar('\n', yellow);
+    //_cli();
+    //        putStr("Volvi: ", green);
+    //        uintToBase(pid, buff, 10);
+    //        putStr(buff, yellow);
+    //        putChar('\n', yellow);
     tProcess * elem = mallocMemory(sizeof(tProcess));
     elem->pid = pid;
     tProcess * aux = removeElem(blocked, elem);
     freeMemory(elem);
     if (aux == NULL) {
-                //_sti();
+        //_sti();
         return -1;
     }
     if (aux->state == DEAD) {
         deleteProcess(aux);
-                //_sti();
+        //_sti();
         return 0;
     }
     //    aux->state = READY;
     //    push(ready, aux);
     addProcess(aux);
-     // _sti();
+    // _sti();
     yield();
     return 1;
 }
@@ -328,10 +191,10 @@ tProcess * getProcessState(int pid) { //TODO: esta mal el nombre de la funcion, 
 
 void scheduler() {
     if (running->state == DEAD) {
-//                putStr("Dead ", red);
-//                uintToBase(getRunningPid(), buff, 10);
-//                putStr(buff, red);
-//                putChar('\n', red);
+        //                putStr("Dead ", red);
+        //                uintToBase(getRunningPid(), buff, 10);
+        //                putStr(buff, red);
+        //                putChar('\n', red);
         deleteProcess(running);
     } else if (running->state == RUNNING) {
         addProcess(running);
@@ -342,16 +205,14 @@ void scheduler() {
         //push(ready, running);
         addProcess(running);
     }
-    pickReadyQueue();
     while ((running = pop(ready))->state != READY) {
-                if (running->state == DEAD) {
-                    putStr("SCHEDULER ENCONTRO UN PROCESSO EN DEAD", green); //TODO: esta al re pedo
-                    deleteProcess(running);
-                } else if (running->state == WAITING) {
-                    putStr("SCHEDULER ENCONTRO UN PROCESSO EN WAITING", green); //TODO: esta al re pedo
-                    push(blocked, running);
-                }
-        pickReadyQueue();
+        if (running->state == DEAD) {
+            putStr("SCHEDULER ENCONTRO UN PROCESSO EN DEAD", green); //TODO: esta al re pedo
+            deleteProcess(running);
+        } else if (running->state == WAITING) {
+            putStr("SCHEDULER ENCONTRO UN PROCESSO EN WAITING", green); //TODO: esta al re pedo
+            push(blocked, running);
+        }
     }
     running->state = RUNNING;
 }
@@ -362,10 +223,8 @@ void * dispatcher(int rsp) {
     }
     running->stackPointer = rsp;
     running->quantumTime++;
-    if (mode == PRIORITY && running->quantumTime >= running->priority) {
+    if (running->quantumTime >= running->priority) {
         ageRunningProcess();
-        scheduler();
-    } else {
         scheduler();
     }
     return running->stackPointer;
@@ -382,25 +241,21 @@ int cmpPriority(tProcess * p1, tProcess * p2) {
     return (p1->priority) - (p2->priority);
 }
 
+void halter() {
+    while (1) {
+        _hlt();
+    }
+}
+
 
 void init_(void * startingPoint) {
-    // STATE PIORITY MODE
-    mode = PRIORITY;
-
     // INITIALIZE QUEUES
-    ready; // = newQueue(sizeof(tProcess), cmpProcess);
-    priority1Queue = newQueue(sizeof(tProcess), cmpProcess);
-    priority2Queue = newQueue(sizeof(tProcess), cmpProcess);
-    priority3Queue=  newQueue(sizeof(tProcess), cmpProcess);
-    priority4Queue=  newQueue(sizeof(tProcess), cmpProcess);
-    priority5Queue=  newQueue(sizeof(tProcess), cmpProcess);
-    priority6Queue = newQueue(sizeof(tProcess), cmpProcess);
-    priority7Queue = newQueue(sizeof(tProcess), cmpProcess);
-    priority8Queue=  newQueue(sizeof(tProcess), cmpProcess);
-    priority9Queue=  newQueue(sizeof(tProcess), cmpProcess);
-    priority10Queue=  newQueue(sizeof(tProcess), cmpProcess);
+    ready = newQueue(sizeof(tProcess), cmpProcess);
     blocked = newQueue(sizeof(tProcess), cmpProcess);
-
+    
+    //HALT PROCESS
+    // halting = createProcess("halter", halter, 0, 0, NULL);
+    
     //RUN FIRST PROCESS
     running = createProcess("theGodFather", startingPoint, 0, 0, NULL);
     running->state = RUNNING;
@@ -644,9 +499,9 @@ void priorityTest() {
     }
     
     
-    nice(2, 5);
-    nice(3, 7);
-    nice(4, 10);
+    nice(2, 15);
+    nice(3, 20);
+    nice(4, 30);
     
     endProcess(getRunningPid());
 }
@@ -659,8 +514,8 @@ void probandoEscribirEnKernel2() {
     }
     putStr(" Mato al 4 ", green);
     endProcess(4);
-//    putStr(" Me Bloqueo ", green);
-//    blockProcess(getRunningPid());
+    //    putStr(" Me Bloqueo ", green);
+    //    blockProcess(getRunningPid());
     i = 0;
     while (i < 100) {
         putStr(" Cosa ", colour);
@@ -700,9 +555,9 @@ void probandoEscribirEnKernel3() {
         putStr(" Vamo ", colour);
         i++;
     }
-//    unblockProcess(3);
-//    putStr(" Me Bloqueo ", green);
-//    blockProcess(getRunningPid());
+    //    unblockProcess(3);
+    //    putStr(" Me Bloqueo ", green);
+    //    blockProcess(getRunningPid());
     i = 0;
     while (i < 100) {
         putStr(" Vamo ", colour);
@@ -717,8 +572,8 @@ void probandoEscribirEnKernel() {
         putStr(" Genere ", colour);
         i++;
     }
-//     putStr(" Mato al 3 ", green);
-//    endProcess(3);
+    //     putStr(" Mato al 3 ", green);
+    //    endProcess(3);
     dumpMemory();
     while(1) {
         putStr(" Genere ", colour);
@@ -973,72 +828,72 @@ void mutexTest() {
 }
 
 /*
-void pipeTestWrite() {
-    pipe_t * pipeT = pipe("test");
-    putStr("escribo",yellow);
-    writePipe(pipeT,"holaholaholaholaholaholaholahola", 8);
-    endProcess(getRunningPid());
-}
-void pipeTest1() {
-    pipe_t * pipeT = pipe("test");
-    char * resp = mallocMemory(5);
-    
-    readPipe(pipeT,resp, 4);
-    resp[4] = '\0';
-    putStr(resp,yellow);
-    endProcess(getRunningPid());
-}
-
-void pipeTest2() {
-    pipe_t * pipeT = pipe("test");
-    char * resp = mallocMemory(5);
-    
-    readPipe(pipeT,resp, 4);
-    resp[4] = '\0';
-    putStr(resp,yellow);
-    endProcess(getRunningPid());
-}
-
-void pipeTest3() {
-    pipe_t * pipeT = pipe("test");
-    char * resp = mallocMemory(5);
-    
-    readPipe(pipeT,resp, 4);
-    resp[4] = '\0';
-    putStr(resp,yellow);
-    endProcess(getRunningPid());
-}
-
-
-
-void pipeTest() {
-    //myMutex = initMutex("myMutex");
-    critical = 1;
-    tProcess * write1 = createProcess("escritura", pipeTestWrite, 0, 0, NULL);
-    
-    tProcess * write2 = createProcess("escritura2", pipeTestWrite, 0, 0, NULL);
-    
-    tProcess * read1 = createProcess("lectura2", pipeTest2, 0, 0, NULL);
-    
-    tProcess * read2 = createProcess("lectura3", pipeTest3, 0, 0, NULL);
-    
-    tProcess * read3 = createProcess("lecura3", pipeTest1, 0, 0, NULL);
-    
-    
-    //dumpMemory();
-    
-    push(ready,write1);
-    push(ready, read2);
-    push(ready, read1);
-    push(ready, read3);
-    float i = 0;
-    while(i<1000000)
-        i+=0.1;
-    push(ready, write2);
-    
-    // push(ready, anotherP1);
-    //push(ready, anotherP2);
-    while (1);
-    endProcess(getRunningPid());
-    
-}*/
+ void pipeTestWrite() {
+ pipe_t * pipeT = pipe("test");
+ putStr("escribo",yellow);
+ writePipe(pipeT,"holaholaholaholaholaholaholahola", 8);
+ endProcess(getRunningPid());
+ }
+ void pipeTest1() {
+ pipe_t * pipeT = pipe("test");
+ char * resp = mallocMemory(5);
+ 
+ readPipe(pipeT,resp, 4);
+ resp[4] = '\0';
+ putStr(resp,yellow);
+ endProcess(getRunningPid());
+ }
+ 
+ void pipeTest2() {
+ pipe_t * pipeT = pipe("test");
+ char * resp = mallocMemory(5);
+ 
+ readPipe(pipeT,resp, 4);
+ resp[4] = '\0';
+ putStr(resp,yellow);
+ endProcess(getRunningPid());
+ }
+ 
+ void pipeTest3() {
+ pipe_t * pipeT = pipe("test");
+ char * resp = mallocMemory(5);
+ 
+ readPipe(pipeT,resp, 4);
+ resp[4] = '\0';
+ putStr(resp,yellow);
+ endProcess(getRunningPid());
+ }
+ 
+ 
+ 
+ void pipeTest() {
+ //myMutex = initMutex("myMutex");
+ critical = 1;
+ tProcess * write1 = createProcess("escritura", pipeTestWrite, 0, 0, NULL);
+ 
+ tProcess * write2 = createProcess("escritura2", pipeTestWrite, 0, 0, NULL);
+ 
+ tProcess * read1 = createProcess("lectura2", pipeTest2, 0, 0, NULL);
+ 
+ tProcess * read2 = createProcess("lectura3", pipeTest3, 0, 0, NULL);
+ 
+ tProcess * read3 = createProcess("lecura3", pipeTest1, 0, 0, NULL);
+ 
+ 
+ //dumpMemory();
+ 
+ push(ready,write1);
+ push(ready, read2);
+ push(ready, read1);
+ push(ready, read3);
+ float i = 0;
+ while(i<1000000)
+ i+=0.1;
+ push(ready, write2);
+ 
+ // push(ready, anotherP1);
+ //push(ready, anotherP2);
+ while (1);
+ endProcess(getRunningPid());
+ 
+ }*/

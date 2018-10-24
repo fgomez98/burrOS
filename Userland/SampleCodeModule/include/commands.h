@@ -37,7 +37,7 @@ void ps();
 void memory();
 void showBurro();
 void stayAlive();
-
+void schedulerDemo();
 void startProcessCommunication();
 void maDemo();
 

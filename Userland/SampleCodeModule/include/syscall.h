@@ -42,6 +42,8 @@
 #define _dup 40
 #define _getPid 41
 #define _nice 42
+#define _execDup 43
+#define _getProcessPriority 44
 
 uint64_t _syscall(uint64_t, ...);
 

@@ -54,7 +54,7 @@ void showDigitalHour(){
     char key = 0;
     int j = 0;
     while (1) {
-        key = 0;
+//        key = 0;
         _syscall(_read, &key);
         switch (key) {
             case 'c': //hotkey
@@ -69,6 +69,7 @@ void showDigitalHour(){
                 return;
                 break;
         }
+        key = 0;
         drawTime(getTime(), myColours[j]);
     }
 }
@@ -188,4 +189,60 @@ void maDemo(){
 
     printf("The block was freed\n");
     memory();
+}
+
+int getProcessPriority(int pid) {
+    return _syscall(_getProcessPriority, pid);
+}
+
+int getCurrentPid(){
+    return _syscall(_getPid);
+}
+
+void process(int id) {
+    int pid = getCurrentPid();
+        while(1){
+        delay(5000);
+        delay(5000);
+        delay(5000);
+        delay(5000);
+        printf("\nI am number %d priority: %d\n", id, getProcessPriority(pid));
+    }
+}
+
+void schedulerDemo() {
+    printf("\nSCHEDULER PRIORITY DEMO\n");
+    printf("\nPress 'i' to increase process 1 priority\n");
+    printf("\nPress 'd' to decrease process 1 priority\n");
+    int processId = 1;
+    int p1Pid = exec("process 1", process, processId++, 0);
+    int p2Pid = exec("process 2", process, processId, 0);
+    
+    int running = 1;
+    int priority = 1;
+    int key = 0;
+    while (running) {
+        _syscall(_read, &key);
+        switch (key) {
+            case 'i':
+                if(priority < 100) {
+                    priority++;
+                    nice(p1Pid, priority);
+                }
+                break;
+            case 'd':
+                if(priority > 1) {
+                    priority--;
+                    nice(p1Pid, priority);
+                }
+                break;
+            case 'q':
+                running = 0;
+                kill(p1Pid, 0);
+                kill(p2Pid, 0);
+                break;
+        }
+        key = 0;
+    }
+    
 }

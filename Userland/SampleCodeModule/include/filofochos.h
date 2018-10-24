@@ -7,5 +7,6 @@
 #include "commands.h"
 #include "VideoModule.h"
 void initFilofochos();
+void philospher(int id);
 
 #endif

@@ -63,6 +63,12 @@ int exec(char* name,void* startingPoint, int argc, void* argv[]) {
     return pid;
 }
 
+int execDup(char * name,void * startingPoint, int newFd, int fdToReplace) {
+    int pid;
+    _syscall(_execDup,name , startingPoint, &pid, newFd, fdToReplace);
+    return pid;
+}
+
 /*
   msg:
     0: ends process

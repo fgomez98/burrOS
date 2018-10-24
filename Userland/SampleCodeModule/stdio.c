@@ -44,9 +44,12 @@ void putChar(char c) {
 
 void putString(char * str) {
     write(STDOUT, str, strlen(str)+1);
-    //_syscall(_putString, str);
+ //   _syscall(_putString, str);
 }
 
+void nice(pid, priority) {
+    _syscall(_nice, pid, priority);
+}
 
 char getChar(){
   char c=0;
