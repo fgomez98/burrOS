@@ -130,6 +130,7 @@ int scanf(const char* fmt, ...){
                   i++;
                   break;
         case 's': c = getString(str, va_arg(args, char*));
+                  printf("skere");
                   i++;
                   break;
         case 'c': c = va_arg(args,char*);
@@ -205,9 +206,11 @@ char * getInt(const char * str, int * n){
 
 char* getString(const char * str, char*  dest){
   int i = 0;
-  while(*str && *(str) != ' '){
+  while(str[i] && str[i] != ' ' ){
+    printf("%c\n",*str );
     dest[i]=str[i];
     i++;
+
   }
   return dest;
 }
