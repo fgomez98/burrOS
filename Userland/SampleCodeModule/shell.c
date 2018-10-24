@@ -8,6 +8,7 @@
 #include "VideoModule.h"
 #include "prodCons.h"
 #include "filofochos.h"
+#include "piping.h"
 
 void probando(){
     while(1);

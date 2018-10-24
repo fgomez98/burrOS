@@ -3,7 +3,7 @@
 #include "stdlib.h"
 #include <messagesDemo.h>
 #include <sync.h>
-#include <pipe.h>
+#include <piping.h>
 
 int fd[2];
 typedef void (*functiontype)();
