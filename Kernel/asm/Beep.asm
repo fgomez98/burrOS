@@ -9,8 +9,8 @@ beep:
     mov al, 0xb6
     out 0x43, al
     mov rax, 0
-    mov al, 72549
-;mov al, 11931
+;    mov al, 72549
+    mov al, 11931
     out 0x42, al
     mov al, ah
     out 0x42, al

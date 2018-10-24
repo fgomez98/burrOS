@@ -10,8 +10,8 @@ void startMessagesDemo() {
     open(fd);
     dup(fd,1);
     char * s = "hola";
-    printf("%s", s);
-
+//    printf("%s", s);
+    printf(" jlasdbflk  jsnadjknsdnflkandslkjfnasdnfaskdjiarnguierofnauirnsdui");
     return;
 
    /* writeWelcomeMessage();

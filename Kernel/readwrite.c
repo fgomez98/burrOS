@@ -154,6 +154,16 @@ int close(int fd) {
 }
 
 int read(int fd, char * msg, int amount) {
+    
+    if (fd == 0) {
+        char key;
+        int i = 0;
+        while ((key = getKeyInput()) != 0 && (i < amount)) {
+            msg[i] = key;
+            i++;
+        }
+        return i;
+    }
 
     fileDecryptor * myfd = getFd(fdList, fd);
     if(myfd == NULL)

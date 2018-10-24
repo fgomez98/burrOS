@@ -34,7 +34,14 @@
 #define _destroyPipe 32
 #define _readPipe 33
 #define _writePipe 34
-#define _nice 35
+#define _open 35
+#define _readfd 36
+#define _write 37
+#define _close 38
+#define _pipe 39
+#define _dup 40
+#define _getPid 41
+#define _nice 42
 
 uint64_t _syscall(uint64_t, ...);
 

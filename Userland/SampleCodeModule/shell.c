@@ -131,7 +131,22 @@ void initializeShell() {
                 exec("backgroundTest", stayAlive, 0, 0);
                 printf("\n");
             } else if (strcmp("messages", arg1) == 0) {
-                startMessagesDemo();
+                exec("startMessagesDemo", startMessagesDemo,0,0);
+                open(35);
+                char buffer[70];
+                int i = 0;
+                while (i < 55) {
+                    i += readfd(35,buffer+i,50);
+                    printf("\namount read: %d str: %s", i, buffer);
+                }
+                printf("\nRecibi un: %s",buffer);
+            } else if (strcmp("circle", arg1) == 0) {
+                DrawFilledCircle(200, 200, 80, white);
+                //drawCircle(200, 200, 80, white);
+                printf("\n");
+            } else if (strcmp("line", arg1) == 0) {
+                line_fast(200, 200, 540, 800, white);
+                printf("\n");
             } else if (strcmp("philosophers", arg1) == 0) {
                 initFilofochos();
             } else if (strcmp("test", arg1) == 0) {

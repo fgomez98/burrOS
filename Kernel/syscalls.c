@@ -54,6 +54,13 @@ systemCall sysCalls[] = { 0, 0, 0,
 		(systemCall) _destroyPipe,
 		(systemCall) _readPipe,
 		(systemCall) _writePipe,
+		(systemCall) _open,
+		(systemCall) _readfd,
+		(systemCall) _write,
+		(systemCall) _close,
+		(systemCall) _pipe,
+		(systemCall) _dup,
+		(systemCall) _getPid,
         (systemCall) _nice,
 };
 
@@ -67,7 +74,8 @@ void _clearScreen(){
 
 void _read(uint64_t key){
 	char * p =(char *) key;
-	*(p) =  getKeyInput();
+	//*(p) =  getKeyInput();
+    read(0, p, 1);
 }
 
 void _beep(){
@@ -213,8 +221,9 @@ void _drawPixel(uint64_t x, uint64_t y, uint64_t rgb){
 	putPixel(x, y, colour2); //puts pixel on screen in arg4 (x) and arg5 (y) positions, in selected colour
 }
 
-void _pipe(uint64_t name, uint64_t ** p){
-	*p = pipe(name);
+
+void _namedPipe(uint64_t name, uint64_t ** p){
+	*p = namedPipe(name);
 }
 
 void _destroyPipe(uint64_t name){
@@ -232,4 +241,34 @@ uint64_t _writePipe(uint64_t * pipe, uint64_t * a, uint64_t msg, uint64_t amount
 
 void _nice(int pid, int priority) {
     nice(pid, priority);
+}
+
+uint64_t _open(uint64_t fd) {
+    return open(fd);
+}
+
+uint64_t _readfd(uint64_t fd, uint64_t * msg, uint64_t amount) {
+    return read(fd,msg,amount);
+}
+
+uint64_t _write(uint64_t fd, uint64_t * msg, uint64_t amount) {
+    return write(fd,msg,amount);
+}
+
+uint64_t _close(uint64_t fd) {
+	return close(fd);
+}
+
+uint64_t _pipe(uint64_t fd[]) {
+	return pipe(fd);
+}
+
+// hay que ver que devuelve dup2
+uint64_t _dup(uint64_t newFd, uint64_t oldFd) {
+	dup2(newFd, oldFd);
+	return 1;
+}
+
+uint64_t _getPid() {
+	return getRunningPid();
 }

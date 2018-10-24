@@ -69,8 +69,9 @@ void initFilofochos() {
 //    printf("Press z to add a philosofer to the table (max 6)\n");
 //    printf("Press x to kill a philosofer\n");
     printf("Press i to start\n");
+    char key = 0;
     while (!initialized) {
-        char key;
+        key = 0;
         _syscall(_read, &key);
         switch (key) {
             case 'q':
@@ -91,10 +92,9 @@ void initFilofochos() {
                 drawTable();
                 break;
         }
-
     }
     while (running) {
-        char key;
+         key = 0;
         _syscall(_read, &key);
         switch (key) {
             case 'z':

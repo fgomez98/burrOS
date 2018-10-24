@@ -36,6 +36,13 @@ void _namedPipe(uint64_t name, uint64_t ** p);
 void _destroyPipe(uint64_t name);
 uint64_t _readPipe(uint64_t pipe, uint64_t a, uint64_t resp, uint64_t amount);
 uint64_t _writePipe(uint64_t * pipe, uint64_t * a, uint64_t msg, uint64_t amount);
+uint64_t _open(uint64_t fd);
+uint64_t _readfd(uint64_t fd, uint64_t * msg, uint64_t amount);
+uint64_t _write(uint64_t fd, uint64_t * msg, uint64_t amount);
+uint64_t _close(uint64_t fd);
+uint64_t _pipe(uint64_t fd[]);
+uint64_t _dup(uint64_t newFd, uint64_t oldFd);
+uint64_t _getPid();
 void _nice(int pid, int priority);
 
 #endif
