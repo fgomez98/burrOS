@@ -28,7 +28,6 @@ struct fileDecryptorStruct {
 };
 
 mutex * listMutex;
-mutex * stdOutMutex;
 linkedList fdList = NULL;
 Colour whiteColor = {255, 255, 255};
 
