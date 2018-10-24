@@ -135,7 +135,7 @@ void putStrAux(char * str, Colour colour) {
     int i = strlen(str);
     //Ya lo comprueba PUTCHAR!
     if ((XPOSITION+(CHAR_WIDTH+X_SPACE)*i) > video->XResolution) {
-        //newLine();
+        newLine();
     }
     char c;
     i = 0;
@@ -147,9 +147,9 @@ void putStrAux(char * str, Colour colour) {
 void putStrAuxWithSize(char * str, Colour colour, int amount) {
     int i = strlen(str);
     //Ya lo comprueba PUTCHAR!
-    if ((XPOSITION+(CHAR_WIDTH+X_SPACE)*i) > video->XResolution) {
-        //newLine();
-    }
+    /*if ((XPOSITION+(CHAR_WIDTH+X_SPACE)*i) > video->XResolution) {
+        newLine();
+    }*/
     char c;
     i = 0;
     while ( i < amount) {
@@ -165,17 +165,16 @@ void putStrWithSize(char * str, Colour colour, int amount) { // lee hasta el cer
     char c;
     while (i < amount) {
         c=str[i++];
-        if(c != '\0')
-            buff[j++] = c;
-        if (c == ' ') {
-            buff[j] = 0;
+        buff[j++] = c;
+
+        if(j == 128) {
             putStrAux(buff, colour);
-            memSet(buff, 0, j);
             j = 0;
-        } else if (c == '\n') {
-            //newLine();
         }
+
     }
+
+    buff[j] = '\0';
     putStrAux(buff, colour);
 
 }
@@ -188,15 +187,21 @@ void putStr(char * str, Colour colour) { // lee hasta el cero, si no lo tiene co
     int j = 0;
     while ((c=str[i++])) {
         buff[j++] = c;
-        if (c == ' ') {
-            buff[j] = 0;
+        /*if (c == ' ') {
+            buff[j] = '\0';
             putStrAux(buff, colour);
-            memSet(buff, 0, j);
             j = 0;
         } else if (c == '\n') {
+            //NO ENTIENDO PORQUE ESTA ESTO, EL PUTCHAR SE OCUPA DEL \n!!!!!!
             newLine();
+        }*/
+        if(j == 128) {
+            putStrAux(buff, colour);
+            j = 0;
         }
+
     }
+    buff[j] = '\0';
     if (c == 0) {
         putStrAux(buff, colour);
     }

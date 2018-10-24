@@ -27,7 +27,7 @@ void initializeShell() {
     printf("Welcome to the shell!! Please type help to get a list of our commands\n");
 
     static char command[MAXLENGTH];
-    
+
     int running = 1;
     while (running){
         char * arg1 = calloc(MAXLENGTH);
@@ -79,14 +79,7 @@ void initializeShell() {
                 exec("backgroundTest", stayAlive, 0, 0);
             } else if (strcmp("messages", arg2) == 0) {
                 exec("message",startMessagesDemo, 0, 0);
-                open(35);
-                char buffer[5];
-                readfd(35,buffer,5);
-                printf("\nRecibi un: %s",buffer);
-            }else if (sscanf("echo-%s",arg2,echo)){
-              printf("\n%s\n", echo);
-            }
-            else{
+            } else{
                 printf("\nUnknown command, type help\n");
                 continue;
             }
@@ -113,7 +106,9 @@ void initializeShell() {
                 running = 0;
             }
             else if(strcmp("ps", arg1) == 0){
+                // exec("probando",probando, 0, 0);
                 exec("ps",ps, 0, 0);
+                //ps();
             }
             else if(strcmp("memory", arg1) == 0){
                 memory();
@@ -132,14 +127,7 @@ void initializeShell() {
                 printf("\n");
             } else if (strcmp("messages", arg1) == 0) {
                 exec("startMessagesDemo", startMessagesDemo,0,0);
-                open(35);
-                char buffer[70];
-                int i = 0;
-                while (i < 55) {
-                    i += readfd(35,buffer+i,50);
-                    printf("\namount read: %d str: %s", i, buffer);
-                }
-                printf("\nRecibi un: %s",buffer);
+
             } else if (strcmp("circle", arg1) == 0) {
                 DrawFilledCircle(200, 200, 80, white);
                 //drawCircle(200, 200, 80, white);

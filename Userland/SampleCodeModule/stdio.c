@@ -43,7 +43,7 @@ void putChar(char c) {
 }
 
 void putString(char * str) {
-    write(STDOUT, str, strlen(str));
+    write(STDOUT, str, strlen(str)+1);
     //_syscall(_putString, str);
 }
 

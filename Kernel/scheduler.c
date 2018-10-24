@@ -385,8 +385,10 @@ int cmpPriority(tProcess * p1, tProcess * p2) {
 
 void init_(void * startingPoint) {
     // STATE PIORITY MODE
+    initializeFileDecryptors();
+
     mode = PRIORITY;
-    
+
     // INITIALIZE QUEUES
     ready; // = newQueue(sizeof(tProcess), cmpProcess);
     priority1Queue = newQueue(sizeof(tProcess), cmpProcess);
@@ -401,7 +403,6 @@ void init_(void * startingPoint) {
     priority10Queue=  newQueue(sizeof(tProcess), cmpProcess);
     blocked = newQueue(sizeof(tProcess), cmpProcess);
 
-    initializeFileDecryptors();
 
 
     //RUN FIRST PROCESS

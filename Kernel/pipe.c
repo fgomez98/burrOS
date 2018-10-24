@@ -110,7 +110,6 @@ int readPipe(pipe_t * pipe, char * resp, size_t amount) {
     adquire(pipe->readMutex);
     adquire(pipe->useMutex);
 
-
     int readBytes = availableToRead(pipe);
     if(readBytes <= 0) {
         int pid = getRunningPid();

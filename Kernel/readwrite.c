@@ -8,7 +8,7 @@
 #include <process.h>
 #include <readwrite.h>
 
-typedef struct fileDecryptor {
+struct fileDecryptorStruct {
     int fd;
     char * buffer;
 
@@ -25,17 +25,18 @@ typedef struct fileDecryptor {
     unsigned int writePosition;
 
     linkedList users;
-}fileDecryptor;
+};
 
+mutex * listMutex;
+mutex * stdOutMutex;
 linkedList fdList = NULL;
 Colour whiteColor = {255, 255, 255};
 
-static
+
 int fdcmp(fileDecryptor * f1, fileDecryptor * f2){
     if(f1 == NULL || f2 == NULL)
         return -1;
-    else
-        return f1->fd - f2->fd;
+    return f1->fd - f2->fd;
 }
 
 static
@@ -53,10 +54,13 @@ int availableToRead(fileDecryptor * fd){
 }
 
 static
-fileDecryptor * getFd(linkedList * fdList, int fd) {
-    struct fileDecryptor aux;
+fileDecryptor * getFd(linkedList fdList, int fd) {
+    struct fileDecryptorStruct aux;
     aux.fd = fd;
-    return getElemFromList(fdList, &aux);
+    adquire(listMutex);
+    fileDecryptor * resp = getElemFromList(fdList, &aux);
+    release(listMutex);
+    return resp;
 }
 
 static
@@ -70,45 +74,77 @@ void createPipeLink(int fd1, int fd2){
     return 1;
 }
 
+static
+int addUserToFd(fileDecryptor * myfd){
+    int runningPid = getRunningPid();
+    adquire(listMutex);
+    if(!containsList(myfd->users, runningPid)) {
+        addToList(myfd->users, runningPid);
+        release(listMutex);
+        return 1;
+    }
+    release(listMutex);
+    return 0;
+}
+
+static
+int pipeAlreadyExists(fileDecryptor * myfd1, fileDecryptor * myfd2) {
+    if(myfd1->pipefd == myfd2->fd && myfd2->pipefd == myfd1->fd)
+        return 1;
+    return 0;
+}
+
 //ESTO LO LLAMARIA EL KERNEL ANTES CUANDO CREA LOS BUFFERS DE OUTPUT, ETC
 void initializeFileDecryptors() {
-    fdList = newList(sizeof(fileDecryptor), fdcmp);
+    fdList = newList(sizeof(fileDecryptor *), fdcmp);
+    stdOutMutex = initMutex("stdOutMutex");
+    listMutex = initMutex("fdListMutex");
 }
 
 int pipe(int fd[]) {
-    if(fd == NULL || fd[0] == NULL || fd[1] == NULL)
+    if(fd == NULL || fd[0] == NULL || fd[1] == NULL || fd[0] == 1 || fd[1] == 1 || fd[0] == 0 ||fd[1] == 0)
         return -1;
 
-    fileDecryptor * myfd = getFd(fdList, fd[0]);
-    if(myfd != NULL)
-        return -1;
-    else {
-        myfd = getFd(fdList, fd[1]);
-        if(myfd != NULL)
+    fileDecryptor * myfd1 = getFd(fdList, fd[0]);
+    fileDecryptor * myfd2 = getFd(fdList, fd[1]);
+    if(myfd1 == NULL || myfd2 == NULL) {
+        if(myfd1 != NULL && myfd1->pipefd != -1)
             return -1;
-    }
+        if(myfd2 != NULL && myfd2->pipefd != -1)
+            return -1;
 
-    createPipeLink(fd[0], fd[1]);
-    createPipeLink(fd[1], fd[0]);
+        createPipeLink(fd[0], fd[1]);
+        return 1;
+    }
+    else if(pipeAlreadyExists(myfd1,myfd2)) {
+        addUserToFd(myfd1);
+        addUserToFd(myfd2);
+        return 1;
+    }
+    else if(myfd1->pipefd == -1 && myfd2->pipefd == -1) {
+
+        myfd1->pipefd = myfd2->fd;
+        myfd2->pipefd = myfd1->fd;
+
+        addUserToFd(myfd1);
+        addUserToFd(myfd2);
+        return 1;
+    }
+    return -1;
 }
 
 int open(int fd){
+
     if(fd == 0 || fd == 1)
         return -1;
 
-    // Si ya existe solo agrego el pid
     fileDecryptor * newfd = getFd(fdList, fd);
     if(newfd != NULL){
         int runningPid = getRunningPid();
-        if(!containsList(newfd->users, runningPid)) {
-            addToList(newfd->users, runningPid);
-            return 1;
-        }
-        return 0;
+        return addUserToFd(newfd);
     }
 
-
-    newfd = mallocMemory(sizeof(fileDecryptor));
+    newfd = mallocMemory(sizeof(newfd));
     if(newfd == NULL)
         return -1;
 
@@ -133,21 +169,49 @@ int open(int fd){
     newfd->waitingForWrite = -1;
 
     newfd->users = newList(sizeof(int), pidcmp);
+
     addToList(newfd->users, getRunningPid());
 
+    adquire(listMutex);
     addToList(fdList, newfd);
+    release(listMutex);
 
     return 1;
+}
+//ESTO VUELA , LO DEJO POR LAS DUDAS
+void printfd(){
+    char buffer[19];
+    int i = 0;
+    fileDecryptor * resp = getElemAtFromList(fdList, i);
+    while(resp != NULL){
+        intToString(buffer,resp->fd);
+        putStr(buffer,whiteColor);
+        i++;
+        resp = getElemAtFromList(fdList, i);
+    }
+
 }
 
 int close(int fd) {
     fileDecryptor * myfd = getFd(fdList, fd);
     if(removeElemList(myfd->users, getRunningPid()) == NULL)
         return 0;
-    if(getListSize(myfd->users) == 0) {
+    if(myfd->pipefd == -1 && getListSize(myfd->users) == 0) {
         freeMemory(myfd->buffer);
         freeList(myfd->users);
+        adquire(listMutex);
         removeElemList(fdList, myfd);
+        release(listMutex);
+        return 1;
+    }
+
+    fileDecryptor * reader = myfd;
+    if(myfd->pipefd != -1)
+        reader = getFd(fdList, myfd->pipefd);
+
+    if(getListSize(myfd->users) == 1 && containsList(myfd->users, reader->waitingForRead) == 1) {
+        unblockProcess(myfd->waitingForRead);
+        putStr("unblock 17a",whiteColor);
     }
     return 1;
 
@@ -169,10 +233,8 @@ int read(int fd, char * msg, int amount) {
     if(myfd == NULL)
         return -1;
 
-    fileDecryptor * writerFd = myfd;
-    if(myfd->pipefd != -1) {
-        writerFd = getElemFromList(fdList, myfd->pipefd);
-    }
+    if(!containsList(myfd->users, getRunningPid()))
+        return -1;
 
     if(amount > BUFFERSIZE)
         amount = BUFFERSIZE;
@@ -194,7 +256,7 @@ int read(int fd, char * msg, int amount) {
 
     int i;
     for(i = 0; i < amount && availableToRead(myfd) > 0 ; i++, (myfd->readPosition)++) {
-        if(myfd->readPosition == 1024)
+        if(myfd->readPosition == BUFFERSIZE)
             myfd->readPosition = 0;
         msg[i] = (myfd->buffer)[myfd->readPosition];
     }
@@ -215,17 +277,24 @@ int write(int fd, char * msg, int amount) {
     if(fd == 1){
         int processStdOutFd = getRunningProcess()->stdOut;
         if(processStdOutFd == 1) {
+            adquire(stdOutMutex);
             putStrWithSize(msg, whiteColor, amount);
+            release(stdOutMutex);
             return amount;
         }
         else{
             myfd = getFd(fdList, processStdOutFd);
+            if(!containsList(myfd->users, getRunningPid()))
+                return -1;
         }
     }
     else {
         myfd = getFd(fdList, fd);
 
         if (myfd == NULL)
+            return -1;
+
+        if(!containsList(myfd->users, getRunningPid()))
             return -1;
 
         if (myfd->pipefd != -1) {
@@ -257,10 +326,11 @@ int write(int fd, char * msg, int amount) {
     }
 
     for(int i = 0; i < amount; i++, (myfd->writePosition)++) {
-        if (myfd->writePosition == 1024)
+        if (myfd->writePosition == BUFFERSIZE)
             myfd->writePosition = 0;
         (myfd->buffer)[myfd->writePosition] = msg[i];
     }
+
 
     if(myfd->waitingForRead != -1)
         unblockProcess(myfd->waitingForRead);

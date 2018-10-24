@@ -6,16 +6,12 @@
 
 
 void startMessagesDemo() {
-    int fd = 35;
-    open(fd);
-    dup(fd,1);
-    char * s = "hola";
-//    printf("%s", s);
-    printf(" jlasdbflk  jsnadjknsdnflkandslkjfnasdnfaskdjiarnguierofnauirnsdui");
-    return;
+    int fd[2];
+    fd[0] = 31;
+    fd[1] = 999;
+    pipe(fd);
 
-   /* writeWelcomeMessage();
-    open(fd);
+    writeWelcomeMessage();
     char * pipeName = "thisIsADemoPipe";
     char c;
     while((c=getChar()) != 'q') {
@@ -66,11 +62,18 @@ void startMessagesDemo() {
                 break;
             }
         }
-    }*/
+    }
 }
 
 void writeMessage(int argc, char ** argv) {
-   /* tPipe myPipe = namedPipe(argv[0]);
+    int fd[2];
+    fd[0] = 31;
+    fd[1] = 999;
+    pipe(fd);
+    write(fd[1], argv[1],argc);
+    printf("I wrote %s\n", argv[1]);
+
+    /* tPipe myPipe = namedPipe(argv[0]);
     open(fd);
     write(fd,argv[1], argc);
     argv[1][argc] = '\0';
@@ -79,6 +82,16 @@ void writeMessage(int argc, char ** argv) {
 }
 
 void readMessage(int argc, char ** argv) {
+    int fd[2];
+    fd[0] = 31;
+    fd[1] = 999;
+    pipe(fd);
+    int amount = argc;
+    char buffer[amount];
+    int a = readfd(fd[0], buffer,amount);
+    buffer[a] = '\0';
+    printf("I read %d bytes: %s\n",a, buffer);
+
     /*tPipe myPipe = namedPipe(argv[0]);
     open(fd);
     int amount = argc;
