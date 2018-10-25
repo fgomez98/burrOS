@@ -37,6 +37,10 @@ void deleteChar() {
     _syscall(_deleteChar);
 }
 
+void putStringWithSize(char * str, int size){
+    write(STDOUT, str, size);
+}
+
 void putChar(char c) {
     write(STDOUT, &c,1);
    //_syscall(_putChar, c);
@@ -82,39 +86,39 @@ void printf(char* fmt, ...) {
     int j = 0;
     while(*fmt){
         if(*fmt != '%'){
-            putChar(*fmt);
+            buffer[j++] = *fmt;
         }else{
-          fmt++;
-          switch(*fmt){
-              case 'c':
-                  i = (char) va_arg(args, int);
-                  buffer[j++] = (char) i;
-                  break;
-              case 'd':
-                  i = va_arg(args, int);
-                  uintToBase(i, printable, 10);
-                  putStringToBuffer(buffer,printable,&j);
-                  break;
-              case 's':
-                  s = (char*) va_arg(args, char*);
-                  putStringToBuffer(buffer,s,&j);
-                  break;
-              case 'o':
-                  i = va_arg(args, int);
-                  uintToBase(i, printable, 8);
-                  putStringToBuffer(buffer,printable,&j);
-                  break;
-              case 'x':
-                  i = va_arg(args, int);
-                  uintToBase(i, printable, 16);
-                  putStringToBuffer(buffer,printable,&j);
-                  break;
+            fmt++;
+            switch(*fmt){
+                case 'c':
+                    i = (char) va_arg(args, int);
+                    buffer[j++] = (char) i;
+                    break;
+                case 'd':
+                    i = va_arg(args, int);
+                    uintToBase(i, printable, 10);
+                    putStringToBuffer(buffer,printable,&j);
+                    break;
+                case 's':
+                    s = (char*) va_arg(args, char*);
+                    putStringToBuffer(buffer,s,&j);
+                    break;
+                case 'o':
+                    i = va_arg(args, int);
+                    uintToBase(i, printable, 8);
+                    putStringToBuffer(buffer,printable,&j);
+                    break;
+                case 'x':
+                    i = va_arg(args, int);
+                    uintToBase(i, printable, 16);
+                    putStringToBuffer(buffer,printable,&j);
+                    break;
             }
         }
         fmt++;
     }
     buffer[j] = '\0';
-    putString(buffer);
+    putStringWithSize(buffer, j);
     va_end(args);
 }
 
