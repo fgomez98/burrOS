@@ -11,7 +11,7 @@
 char * semNames[MAX_FILOSOPHERS] = {"philosophersSem1", "philosophersSem2", "philosophersSem3", "philosophersSem4", "philosophersSem5", "philosophersSem6"};
 static tMutex mutex;
 static tSem sem[MAX_FILOSOPHERS];
-//static tSem finish;
+static tSem finish;
 static int running;
 static int filofochosAmount;
 static int goToSleep;
@@ -39,8 +39,6 @@ static Colour forks[MAX_FILOSOPHERS] = {
     {255, 255, 255},
 };
 
-void philospher(int id);
-
 //TODO: hace falta mostrar cuadno los filosofos tienen hambre??, se pone medio inentendible el dibujo
 void initFilofochos() {
     running = 1;
@@ -48,8 +46,8 @@ void initFilofochos() {
     goToSleep = 0;
     char initialized = 0;
     mutex = createMutex(FILOMUTEX);
-//    finish = createSem(FINISH);
-//    char waitCant = 0;
+    finish = createSem(FINISH);
+    char waitCant = 0;
     for (int i = 0; i < MAX_FILOSOPHERS; i++) {
         forks[i] = white;
     }
@@ -71,7 +69,7 @@ void initFilofochos() {
     printf("Press i to start\n");
     char key = 0;
     while (!initialized) {
-        key = 0;
+        //key = 0;
         _syscall(_read, &key);
         switch (key) {
             case 'q':
@@ -92,9 +90,11 @@ void initFilofochos() {
                 drawTable();
                 break;
         }
+        key = 0;
     }
+    key = 0;
     while (running) {
-         key = 0;
+        // key = 0;
         _syscall(_read, &key);
         switch (key) {
             case 'z':
@@ -114,16 +114,23 @@ void initFilofochos() {
                 }
                 break;
             case 'q':
-//                waitCant = filofochosAmount;
+                waitCant = filofochosAmount;
                 running = 0;
                 break;
             }
+        key = 0;
     }
-//    for (int i = 0; i < waitCant; i++) {
-////        wait(finish);
-////        drawTable();
-//    }
+    for (int i = 0; i < waitCant; i++) {
+        wait(finish);
+        drawTable();
+    }
     cleanScreen();
+    destroyMutex(mutex);
+    destroySemaphore(finish);
+    for (int i = 0; i < MAX_FILOSOPHERS; i++) {
+        destroySemaphore(sem[i]);
+    }
+    return;
 }
 
 int left(int i) {
@@ -198,8 +205,8 @@ void philospher(int id) {
     drawTable();
     release(mutex);
    if (!running) {
-//       post(finish);
-       clearTable();
+       post(finish);
+      // clearTable();
     }
 }
 

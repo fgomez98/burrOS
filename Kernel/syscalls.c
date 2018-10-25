@@ -62,6 +62,8 @@ systemCall sysCalls[] = { 0, 0, 0,
 		(systemCall) _dup,
 		(systemCall) _getPid,
         (systemCall) _nice,
+        (systemCall) _execDup,
+        (systemCall) _getProcessPriority
 };
 
 void syscall_handler(uint64_t index, uint64_t a, uint64_t b, uint64_t c, uint64_t d, uint64_t e) {
@@ -75,7 +77,7 @@ void _clearScreen(){
 void _read(uint64_t key){
 	char * p =(char *) key;
 	//*(p) =  getKeyInput();
-    read(0, p, 1);
+    read(getRunningProcess()->stdIn, p, 1);
 }
 
 void _beep(){
@@ -128,8 +130,14 @@ void _free(uint64_t ad){
 	freeMemoryInProcess(ad, getRunningProcess());
 }
 
-void _exec(uint64_t pName,uint64_t startingPoint, int *  pid, int argc, void* argv[]){
-	tProcess* process = createProcess(pName, startingPoint, 0, argc, argv);
+void _exec(uint64_t pName,uint64_t startingPoint, int *  pid, int argc, void* argv[]) {
+	tProcess * process = createProcess(pName, startingPoint, 0, argc, argv);
+    *pid = process->pid;
+    addProcess(process);
+}
+
+void _execDup(uint64_t pName, uint64_t startingPoint, int * pid, int newFd, int fdToReplace) {
+    tProcess * process = createProcessWithDup(pName, startingPoint, 0, 0, NULL, newFd, fdToReplace);
     *pid = process->pid;
     addProcess(process);
 }
@@ -239,8 +247,11 @@ uint64_t _writePipe(uint64_t * pipe, uint64_t * a, uint64_t msg, uint64_t amount
     return writePipe(pipe, msg, amount);
 }
 
-void _nice(int pid, int priority) {
-    nice(pid, priority);
+uint64_t _nice(int pid, int priority) {
+    if (priority > 100) {
+        return;
+    }
+return nice(pid, priority);
 }
 
 uint64_t _open(uint64_t fd) {
@@ -271,4 +282,11 @@ uint64_t _dup(uint64_t newFd, uint64_t oldFd) {
 
 uint64_t _getPid() {
 	return getRunningPid();
+}
+
+uint64_t _getProcessPriority(int pid) {
+    if(getProcessState(pid) == NULL){
+        return 0;
+    }
+    return getProcessState(pid)->priority;
 }

@@ -9,6 +9,7 @@
 #include "prodCons.h"
 #include "filofochos.h"
 #include "pipesDemo.h"
+#include "piping.h"
 
 void probando(){
     while(1);
@@ -16,7 +17,7 @@ void probando(){
 
 void hinchaHuevos() {
     while (1) {
-        printf("aca toyy");
+        printf("aca toy");
     }
 }
 
@@ -32,6 +33,9 @@ void initializeShell() {
         char * arg1 = calloc(MAXLENGTH);
         char * arg2 = calloc(MAXLENGTH);
         char * echo = calloc(MAXLENGTH);
+        char * commandName = calloc(MAXLENGTH);
+        char * pid = calloc(10);
+        char * niceness = calloc(3);
         printf("\n$>");
         scanAndPrint(command);
 
@@ -40,25 +44,35 @@ void initializeShell() {
         if (*arg2) {
             if(strcmp("help", arg2) == 0){
                 exec("help",help, 0, 0);
-            } else if(strcmp("digitalTime", arg2) == 0){
+            }
+            else if(strcmp("digitalTime", arg2) == 0){
                 exec("showDigitalHour",showDigitalHour, 0, 0);
-            } else if(strcmp("time", arg2) == 0){
+            }
+            else if(strcmp("time", arg2) == 0){
                 exec("showTime",showTime, 0, 0);
-            } else if(strcmp("clear", arg2) == 0){
+            }
+            else if(strcmp("clear", arg2) == 0){
                 exec("clearScreen",cleanScreen, 0, 0);
-            } else if(strcmp("zero division", arg2) == 0){
+            }
+            else if(strcmp("zero division", arg2) == 0){
                 exec("zeroDiv",divi, 0, 0);
-            } else if(strcmp("invalid opcode", arg2) == 0){
+            }
+            else if(strcmp("invalid opcode", arg2) == 0){
                 exec("opcodeExc",showOpcodeExc, 0, 0);
-            } else if(strcmp("exit", arg2) == 0){
+            }
+            else if(strcmp("exit", arg2) == 0){
                 running = 0;
-            } else if(strcmp("ps", arg2) == 0){
+            }
+            else if(strcmp("ps", arg2) == 0){
                 exec("ps",ps, 0, 0);
-            } else if(strcmp("memory", arg2) == 0){
+            }
+            else if(strcmp("memory", arg2) == 0){
                 exec("memory",memory, 0, 0);
-            } else if(strcmp("exec", arg2) == 0){
+            }
+            else if(strcmp("exec", arg2) == 0){
                 int pid = exec("probando",probando, 0, 0);
-            } else if(strcmp("malloc", arg2) == 0){
+            }
+            else if(strcmp("malloc", arg2) == 0){
                 maDemo();
             } else if (strcmp("sushi", arg2) == 0) {
                 exec("initProdCons",initProdCons, 0, 0);
@@ -77,27 +91,37 @@ void initializeShell() {
         } if (*arg1) {
             if(strcmp("help", arg1) == 0){
                 help();
-            } else if(strcmp("digitalTime", arg1) == 0){
+            }
+            else if(strcmp("digitalTime", arg1) == 0){
                 showDigitalHour();
-            } else if(strcmp("time", arg1) == 0){
+            }
+            else if(strcmp("time", arg1) == 0){
                 showTime();
-            } else if(strcmp("clear", arg1) == 0){
+            }
+            else if(strcmp("clear", arg1) == 0){
                 cleanScreen();
-            } else if(strcmp("zero division", arg1) == 0){
+            }
+            else if(strcmp("zero division", arg1) == 0){
                 divi();
-            } else if(strcmp("invalid opcode", arg1) == 0){
+            }
+            else if(strcmp("invalid opcode", arg1) == 0){
                 showOpcodeExc();
-            } else if(strcmp("exit", arg1) == 0){
+            }
+            else if(strcmp("exit", arg1) == 0){
                 running = 0;
-            } else if(strcmp("ps", arg1) == 0){
+            }
+            else if(strcmp("ps", arg1) == 0){
                 // exec("probando",probando, 0, 0);
                 exec("ps",ps, 0, 0);
                 //ps();
-            } else if(strcmp("memory", arg1) == 0){
+            }
+            else if(strcmp("memory", arg1) == 0){
                 memory();
-            } else if(strcmp("exec", arg1) == 0){
+            }
+            else if(strcmp("exec", arg1) == 0){
                 int pid = exec("probando",probando, 0, 0);
-            } else if(strcmp("malloc", arg1) == 0){
+            }
+            else if(strcmp("malloc", arg1) == 0){
                 maDemo();
             } else if (strcmp("sushi", arg1) == 0) {
                 initProdCons();
@@ -107,7 +131,8 @@ void initializeShell() {
                 exec("backgroundTest", stayAlive, 0, 0);
                 printf("\n");
             } else if (strcmp("messages", arg1) == 0) {
-              startMessagesDemo();
+                makePiping(hinchaHuevos,hinchaHuevos);
+                delay(20000);
             } else if (strcmp("circle", arg1) == 0) {
                 DrawFilledCircle(200, 200, 80, white);
                 //drawCircle(200, 200, 80, white);
@@ -121,18 +146,39 @@ void initializeShell() {
                 exec("hinchaHuevos", hinchaHuevos, 0, 0);
             } else if (sscanf("echo-%s",arg1,echo)){
               printf("\n%s\n", echo);
-            } else if (strcmp("pipesdemo", arg1) == 0){
+            } else if (strcmp("pipe", arg1) == 0) {
+                makePiping(writeProgram, readProgram);
+            } else if (strcmp("priority", arg1) == 0) {
+                schedulerDemo();
+            }  else if (strcmp("pipesdemo", arg1) == 0){
               initPipesDemo();
-            }
+            } else{
+                sscanf("%s %s %s", command, commandName, pid, niceness);
+                if(strcmp("nice", commandName) == 0){
+                    if(*pid == 0){
+                        printf("\nSyntax error. Command syntax should be: nice [pid] [1-10] to adjust niceness or nice [pid] to get process priority\n");
+                    }
+                    else if (*niceness == 0){
 
-            else{
-                printf("\nUnknown command, type help\n");
+                        getProcessPriorityShell(pid);
+                    }
+                    else{
+                        niceShell(pid, niceness);
+                    }
+
+                }
+                else{
+                    printf("\nUnknown command, type help\n");
+                }
                 continue;
             }
         }
         free(arg1);
         free(arg2);
         free(echo);
+        free(commandName);
+        free(pid);
+        free(niceness);
     }
     printf("\n\n\nSee you soon!");
 

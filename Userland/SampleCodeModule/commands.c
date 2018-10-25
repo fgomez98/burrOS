@@ -31,10 +31,13 @@ void help(){
     printf("necesitoquemeapapachen - shows burro\n");
     printf("philosophers - interactive dinning philosofers problem solution\n");
     printf("pipesdemo - starts a simple program that creates two processes that say hi to each other using pipes");
+    printf("priority - shows scheduler priority\n");
     printf("ps - shows information about the current processes in the system\n");
     printf("sushi - interactive producer vs consumer problem solution with sushi\n");
     printf("time - displays current time\n");
     printf("zero division - shows how the cero division exception is handled\n");
+    printf("\nnice [PID] [1-10] - run a program with modified scheduling priority. \nNiceness values range from 1 (least favorable to the process)to 100 (most favorable to the process).\n");
+    printf("\nnice [PID] - prints the process niceness\n");
 }
 
 void cleanScreen(){
@@ -55,7 +58,7 @@ void showDigitalHour(){
     char key = 0;
     int j = 0;
     while (1) {
-        key = 0;
+//        key = 0;
         _syscall(_read, &key);
         switch (key) {
             case 'c': //hotkey
@@ -70,6 +73,7 @@ void showDigitalHour(){
                 return;
                 break;
         }
+        key = 0;
         drawTime(getTime(), myColours[j]);
     }
 }
@@ -189,4 +193,94 @@ void maDemo(){
 
     printf("The block was freed\n");
     memory();
+}
+
+int getProcessPriority(int pid) {
+    return _syscall(_getProcessPriority, pid);
+}
+
+void getProcessPriorityShell(char * sPid){
+    int pid = atoi(sPid);
+    if(pid <= 0){ //no hay proceso con pid 0. Significa que el usuario no ingreso un numero como argumento pid
+        printf("\nThe process pid entered is invalid. Keep in mind it should be an integer\n");
+    }
+    int result = getProcessPriority(pid);
+    if(result == 0){ //significa que el pid pasado es incorrecto
+        printf("\nThere is no process identified with the pid entered\n");
+    }
+    else{
+        printf("\nNiceness: %d", result);
+    }
+}
+
+void niceShell(char * sPid, char * sNiceness){
+    int result;
+    int pid = atoi(sPid);
+    int niceness = atoi(sNiceness);
+    if(pid <= 0){ //no hay proceso con pid 0. Significa que el usuario no ingreso un numero como argumento pid
+        printf("\nThe process pid entered is invalid. Keep in mind it should be an integer\n");
+    }
+    else if(niceness<= 0 || niceness > 100){ //la niceness va de 1-100. Significa que el usuario ingreso mal la niceness
+        printf("\nThe niceness entered is invalid. It should be a number between 1-100\n");
+    }
+    else{
+        result = nice(pid, niceness);
+        if(result != 0){
+            printf("There is no process identified with the pid entered\n");
+        }
+    }
+    // printf("%d\n", pid);
+    // printf("%d\n", niceness);
+}
+
+int getCurrentPid(){
+    return _syscall(_getPid);
+}
+
+void process(int id) {
+    int pid = getCurrentPid();
+        while(1){
+        delay(5000);
+        delay(5000);
+        delay(5000);
+        delay(5000);
+        printf("\nI am number %d priority: %d\n", id, getProcessPriority(pid));
+    }
+}
+
+void schedulerDemo() {
+    printf("\nSCHEDULER PRIORITY DEMO\n");
+    printf("\nPress 'i' to increase process 1 priority\n");
+    printf("\nPress 'd' to decrease process 1 priority\n");
+    int processId = 1;
+    int p1Pid = exec("process 1", process, processId++, 0);
+    int p2Pid = exec("process 2", process, processId, 0);
+
+    int running = 1;
+    int priority = 1;
+    int key = 0;
+    while (running) {
+        _syscall(_read, &key);
+        switch (key) {
+            case 'i':
+                if(priority < 100) {
+                    priority++;
+                    nice(p1Pid, priority);
+                }
+                break;
+            case 'd':
+                if(priority > 1) {
+                    priority--;
+                    nice(p1Pid, priority);
+                }
+                break;
+            case 'q':
+                running = 0;
+                kill(p1Pid, 0);
+                kill(p2Pid, 0);
+                break;
+        }
+        key = 0;
+    }
+
 }

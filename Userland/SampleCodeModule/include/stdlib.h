@@ -25,6 +25,7 @@ void kill(int pid, int msg);
 
 
 int exec(char* name,void* startingPoint, int argc, void* argv[]);
+int execDup(char * name,void * startingPoint, int newFd, int fdToReplace);
 /*
  msg:
  0: ends process
@@ -37,4 +38,5 @@ void kill(int pid, int msg);
 void killCurrentProcess();
 void* calloc(int bytes);
 void* realloc(void* ptr, int bytes);
+
 #endif

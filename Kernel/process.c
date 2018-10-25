@@ -2,6 +2,7 @@
 #include "scheduler.h"
 #include "syscalls.h"
 #include "lib.h"
+#include "readwrite.h"
 
 char buff2[8];
 Colour colour2 = {255, 255, 255};
@@ -11,19 +12,12 @@ static int nextPid = 1; //Esta variable le asigna a cada proceso un pid distinto
 tProcess* createProcess(char* processName,void* startingPoint, int parentPid, int argc, char* argv[]){
     /*Se reserva espacio para la estructura del proceso*/
     tProcess* process = mallocMemory(sizeof(tProcess));
-
     /*Se completan los campos del nuevo proceso*/
     process->pid = nextPid++;
     process->parentPid = parentPid;
     process->name = processName;
     process->processMemoryLowerAddress = mallocMemory(PROCESS_SIZE);
-
-    process->stdIn = 0;
-    process->stdOut = 1;
-
     process->code = startingPoint;
-
-
     //esto tiene q ser uint64_t y no void*!!!!!!!!!! CAMBIARLO
     void* processMemoryUpperAddress = process->processMemoryLowerAddress + PROCESS_SIZE -1;
     process->stackPointer = processMemoryUpperAddress - sizeof(tStackFrame) + 1;
@@ -33,7 +27,22 @@ tProcess* createProcess(char* processName,void* startingPoint, int parentPid, in
     process->heap = NULL;
     process->priority = 1;
     process->quantumTime = 0;
+    process->stdIn = 0;
+    process->stdOut = 1;
+    process->nice = 0;
     return process;
+}
+
+tProcess * createProcessWithDup(char* processName,void* startingPoint, int parentPid, int argc, char* argv[], int newFd, int fdToReplace) {
+    tProcess * proc = createProcess(processName, startingPoint, parentPid, argc, argv);
+    openWithPid(newFd, proc->pid);
+    if (fdToReplace == 0) {
+        proc->stdIn = newFd;
+    }
+    else if(fdToReplace == 1){
+        proc->stdOut = newFd;
+    }
+    return proc;
 }
 
 void runProcess(int argc, char * argv[], void * startingPoint) { // por orden de como se levantan los argumentos

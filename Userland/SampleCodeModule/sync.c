@@ -1,5 +1,5 @@
 #include "sync.h"
-
+void runProgram(int argc, char ** argv);
 
 tMutex createMutex(char* mutexName){
   tMutex mutex;
@@ -83,3 +83,8 @@ int pipe(int fd[]) {
 void dup(int newFd, int oldFd) {
     _syscall(_dup, newFd,oldFd);
 }
+
+
+
+
+

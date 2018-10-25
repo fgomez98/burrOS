@@ -18,6 +18,7 @@ void _calloc(uint64_t bytes, uint64_t address);
 void _realloc(uint64_t bytes, uint64_t address);
 void _free(uint64_t ad);
 void _exec(uint64_t pName,uint64_t startingPoint, int *pid, int argc, void* argv[]);
+void _execDup(uint64_t pName, uint64_t startingPoint, int * pid, int newFd, int fdToReplace);
 void _kill(uint64_t pid, uint64_t message);
 void _killCurrentProcess();
 void _createMutex(uint64_t mutexName, uint64_t mutex);
@@ -43,6 +44,7 @@ uint64_t _close(uint64_t fd);
 uint64_t _pipe(uint64_t fd[]);
 uint64_t _dup(uint64_t newFd, uint64_t oldFd);
 uint64_t _getPid();
-void _nice(int pid, int priority);
+uint64_t _nice(int pid, int priority);
+uint64_t _getProcessPriority();
 
 #endif

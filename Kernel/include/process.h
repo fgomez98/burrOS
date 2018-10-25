@@ -32,20 +32,16 @@ typedef struct {
     int parentPid; //parent's ID
     int priority;
     int quantumTime;
+    char stdOut;
+    char stdIn;
     char * name; //process name
     pState state; //process status
     void * stackPointer;
     void * processMemoryLowerAddress;
     void * code;
+    int nice;
     queueADT heap;
-
-    int stdOut;
-    int stdIn;
-//    queueADT mutexs; // la idea es que si tiene algun ipc adquirido aumentarle la prioridad a este asi libera el recurso mas rapido
-//    queueADT semaphores;
-
     uint64_t memoryAllocated;
-
 } tProcess;
 
 //RowDaBoat
@@ -89,5 +85,6 @@ void endProcess(int pid);
 int stateIdentifier(pState state);
 void* callocMemoryInProcess(size_t request, tProcess* process);
 void* reallocMemoryInProcess(size_t request, tProcess* process, uint64_t oldPtr);
+tProcess * createProcessWithDup(char* processName,void* startingPoint, int parentPid, int argc, char* argv[], int newFd, int fdToReplace);
 
 #endif

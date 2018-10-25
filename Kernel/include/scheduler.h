@@ -6,10 +6,6 @@
 #include "lib.h"
 #include <VideoDriver.h>
 #define MAX_PROCESSES 20
-#define PRIORITY 1
-#define NO_PRIORITY 0
-
-
 
 typedef struct processNode{
   tProcess* process;
@@ -42,5 +38,6 @@ void priorityTest();
 void yield();
 void changeProcessState(int pid, pState state);
 void kill(int pid);
+int nice(int pid, int priority) ;
 
 #endif

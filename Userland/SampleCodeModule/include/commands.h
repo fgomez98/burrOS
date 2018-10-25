@@ -37,8 +37,10 @@ void ps();
 void memory();
 void showBurro();
 void stayAlive();
-
+void schedulerDemo();
 void startProcessCommunication();
 void maDemo();
+void getProcessPriorityShell(char * sPid);
+void niceShell(char * sPid, char * sNiceness);
 
 #endif
