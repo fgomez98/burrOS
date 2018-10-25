@@ -54,12 +54,19 @@ int nice(pid, priority) {
 char getChar(){
   char c=0;
 	while(1) {
-        _syscall(_read, &c);
+        readfd(0,&c,1);
         if ( c > 0 && c <128) {
             return c;
         }
 	}
   return 0;
+}
+
+static
+void putStringToBuffer(char * buffer, char * message, int * index) {
+    for(int i = 0; message[i] != '\0'; i++, (*index)++){
+        buffer[*index] = message[i];
+    }
 }
 
 
@@ -71,7 +78,8 @@ void printf(char* fmt, ...) {
     int i;
     char* s;
     char printable[64];
-
+    char bufferPrint[2048];
+    int j = 0;
     while(*fmt){
         if(*fmt != '%'){
             putChar(*fmt);
@@ -80,31 +88,33 @@ void printf(char* fmt, ...) {
           switch(*fmt){
               case 'c':
                   i = (char) va_arg(args, int);
-                  putChar((char)i);
+                  buffer[j++] = (char) i;
                   break;
               case 'd':
                   i = va_arg(args, int);
                   uintToBase(i, printable, 10);
-                  putString(printable);
+                  putStringToBuffer(buffer,printable,&j);
                   break;
               case 's':
                   s = (char*) va_arg(args, char*);
-                  putString(s);
+                  putStringToBuffer(buffer,s,&j);
                   break;
               case 'o':
                   i = va_arg(args, int);
                   uintToBase(i, printable, 8);
-                  putString(printable);
+                  putStringToBuffer(buffer,printable,&j);
                   break;
               case 'x':
                   i = va_arg(args, int);
                   uintToBase(i, printable, 16);
-                  putString(printable);
+                  putStringToBuffer(buffer,printable,&j);
                   break;
             }
         }
         fmt++;
     }
+    buffer[j] = '\0';
+    putString(buffer);
     va_end(args);
 }
 

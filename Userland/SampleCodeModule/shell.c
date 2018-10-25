@@ -130,8 +130,8 @@ void initializeShell() {
                 exec("backgroundTest", stayAlive, 0, 0);
                 printf("\n");
             } else if (strcmp("messages", arg1) == 0) {
-                startMessagesDemo();
-                //exec("startMessagesDemo", startMessagesDemo,0,0);
+                makePiping(hinchaHuevos,hinchaHuevos);
+                delay(20000);
             } else if (strcmp("circle", arg1) == 0) {
                 DrawFilledCircle(200, 200, 80, white);
                 //drawCircle(200, 200, 80, white);
