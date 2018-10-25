@@ -338,26 +338,24 @@ int write(int fd, char * msg, int amount) {
             return amount;
         }
         else{
-            myfd = getFd(fdList, processStdOutFd);
-            if(!containsList(myfd->users, getRunningPid()))
-                return -1;
+            fd = processStdOutFd;
         }
     }
-    else {
-        myfd = getFd(fdList, fd);
 
+    myfd = getFd(fdList, fd);
+
+    if (myfd == NULL)
+        return -1;
+
+    if(!containsList(myfd->users, getRunningPid()))
+        return -1;
+
+    if (myfd->pipefd != -1) {
+        myfd = getFd(fdList, myfd->pipefd);
         if (myfd == NULL)
             return -1;
-
-        if(!containsList(myfd->users, getRunningPid()))
-            return -1;
-
-        if (myfd->pipefd != -1) {
-            myfd = getFd(fdList, myfd->pipefd);
-            if (myfd == NULL)
-                return -1;
-        }
     }
+
 
     if(amount > BUFFERSIZE)
         amount = BUFFERSIZE;
