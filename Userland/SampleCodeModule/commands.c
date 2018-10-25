@@ -34,6 +34,9 @@ void help(){
     printf("sushi - interactive producer vs consumer problem solution with sushi\n");
     printf("time - displays current time\n");
     printf("zero division - shows how the cero division exception is handled\n");
+    printf("\nnice [PID] [1-10] - run a program with modified scheduling priority. \nNiceness values range from 1 (least favorable to the process)to 100 (most favorable to the process).\n");
+    printf("\nnice [PID] - prints the process niceness\n");
+    printf("priority - shows scheduler priority\n");
 }
 
 void cleanScreen(){
@@ -195,6 +198,40 @@ int getProcessPriority(int pid) {
     return _syscall(_getProcessPriority, pid);
 }
 
+void getProcessPriorityShell(char * sPid){
+    int pid = atoi(sPid);
+    if(pid <= 0){ //no hay proceso con pid 0. Significa que el usuario no ingreso un numero como argumento pid
+        printf("\nThe process pid entered is invalid. Keep in mind it should be an integer\n");
+    }
+    int result = getProcessPriority(pid);
+    if(result == 0){ //significa que el pid pasado es incorrecto
+        printf("\nThere is no process identified with the pid entered\n");
+    }
+    else{
+        printf("\nNiceness: %d", result);
+    }
+}
+
+void niceShell(char * sPid, char * sNiceness){
+    int result;
+    int pid = atoi(sPid);
+    int niceness = atoi(sNiceness);
+    if(pid <= 0){ //no hay proceso con pid 0. Significa que el usuario no ingreso un numero como argumento pid
+        printf("\nThe process pid entered is invalid. Keep in mind it should be an integer\n");
+    }
+    else if(niceness<= 0 || niceness > 100){ //la niceness va de 1-100. Significa que el usuario ingreso mal la niceness
+        printf("\nThe niceness entered is invalid. It should be a number between 1-100\n");
+    }
+    else{
+        result = nice(pid, niceness);
+        if(result != 0){
+            printf("There is no process identified with the pid entered\n");
+        }
+    }
+    // printf("%d\n", pid);
+    // printf("%d\n", niceness);
+}
+
 int getCurrentPid(){
     return _syscall(_getPid);
 }
@@ -217,7 +254,7 @@ void schedulerDemo() {
     int processId = 1;
     int p1Pid = exec("process 1", process, processId++, 0);
     int p2Pid = exec("process 2", process, processId, 0);
-    
+
     int running = 1;
     int priority = 1;
     int key = 0;
@@ -244,5 +281,5 @@ void schedulerDemo() {
         }
         key = 0;
     }
-    
+
 }

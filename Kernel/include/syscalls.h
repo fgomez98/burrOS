@@ -44,7 +44,7 @@ uint64_t _close(uint64_t fd);
 uint64_t _pipe(uint64_t fd[]);
 uint64_t _dup(uint64_t newFd, uint64_t oldFd);
 uint64_t _getPid();
-void _nice(int pid, int priority);
+uint64_t _nice(int pid, int priority);
 uint64_t _getProcessPriority();
 
 #endif

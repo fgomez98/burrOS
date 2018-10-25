@@ -47,8 +47,8 @@ void putString(char * str) {
  //   _syscall(_putString, str);
 }
 
-void nice(pid, priority) {
-    _syscall(_nice, pid, priority);
+int nice(pid, priority) {
+    return _syscall(_nice, pid, priority);
 }
 
 char getChar(){

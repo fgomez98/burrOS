@@ -34,6 +34,9 @@ void initializeShell() {
         char * arg1 = calloc(MAXLENGTH);
         char * arg2 = calloc(MAXLENGTH);
         char * echo = calloc(MAXLENGTH);
+        char * commandName = calloc(MAXLENGTH);
+        char * pid = calloc(10);
+        char * niceness = calloc(3);
         printf("\n$>");
         scanAndPrint(command);
 
@@ -147,13 +150,32 @@ void initializeShell() {
             } else if (strcmp("priority", arg1) == 0) {
                 schedulerDemo();
             } else{
-                printf("\nUnknown command, type help\n");
+                sscanf("%s %s %s", command, commandName, pid, niceness);
+                if(strcmp("nice", commandName) == 0){
+                    if(*pid == 0){
+                        printf("\nSyntax error. Command syntax should be: nice [pid] [1-10] to adjust niceness or nice [pid] to get process priority\n");
+                    }
+                    else if (*niceness == 0){
+
+                        getProcessPriorityShell(pid);
+                    }
+                    else{
+                        niceShell(pid, niceness);
+                    }
+
+                }
+                else{
+                    printf("\nUnknown command, type help\n");
+                }
                 continue;
             }
         }
         free(arg1);
         free(arg2);
         free(echo);
+        free(commandName);
+        free(pid);
+        free(niceness);
     }
     printf("\n\n\nSee you soon!");
 
