@@ -17,7 +17,7 @@ void initPipesDemo(){
 
   while (running){
     char c;
-    _syscall(_read, &c );
+    readfd(0,&c,1);
     if(c == 'q'){
       running = 0;
     }

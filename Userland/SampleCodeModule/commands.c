@@ -58,7 +58,7 @@ void showDigitalHour(){
     char key = 0;
     int j = 0;
     while (1) {
-        _syscall(_read, &key);
+        readfd(0,&key,1);
         switch (key) {
             case 'c': //hotkey
                 _syscall(_beep);
@@ -104,7 +104,7 @@ void ps(){
     printf("PID   STATE      MEMORYALLOCATED   PROCESSNAME");
     printf("\n");
     _syscall(_ps, buffer, 2000);
-    printf(buffer);
+    printf("%s",buffer);
 
     printf("\n");
     free(buffer);
@@ -114,11 +114,12 @@ void memory(){
     char* buffer = malloc(3000);
     printf("\n");
     _syscall(_sprintMemory, buffer, 3000);
-    printf(buffer);
+    printf("%s",buffer);
     free(buffer);
 }
 
 void showBurro() {
+    printf("\n");
     printf("    ,--._ \n");
     printf("    `.   `.                      ,-. \n");
     printf("      `.`. `.                  ,'   ) \n");
@@ -260,7 +261,7 @@ void schedulerDemo() {
     int priority = 1;
     int key = 0;
     while (running) {
-        _syscall(_read, &key);
+        readfd(0,&key,1);
         switch (key) {
             case 'i':
                 if(priority < 100) {

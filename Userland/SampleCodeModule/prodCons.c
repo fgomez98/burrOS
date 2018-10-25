@@ -1,4 +1,5 @@
 #include "prodCons.h"
+#include "sync.h"
 #define MAXMONSTERS 5
 #define MAXSUSHIMEN 5
 #define BUFFER_LIMIT 30
@@ -50,7 +51,7 @@ void initProdCons() { //TODO:matar procesos no esta funcionando bien
     printf(" 1  2  3  4  5  6  7  8  9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30\n");
     char key = 0;
     while (running) {
-        _syscall(_read, &key);
+        readfd(0,&key,1);
         switch (key) {
             case 's':
                 if ((sushiManCount < MAXSUSHIMEN) && initialized) {
@@ -185,6 +186,7 @@ void sushiMan(int index) {
         sushiManState[index] = 0;
         post(finish);
     }
+    killCurrentProcess();
 }
 
 void monster(int index) {
@@ -213,4 +215,5 @@ void monster(int index) {
         monsterState[index] = 0;
         post(finish);
     }
+    killCurrentProcess();
 }

@@ -54,10 +54,10 @@ void initializeShell() {
             else if(strcmp("clear", arg2) == 0){
                 exec("clearScreen",cleanScreen, 0, 0);
             }
-            else if(strcmp("zero division", arg2) == 0){
+            else if(strcmp("zeroDivision", arg2) == 0){
                 exec("zeroDiv",divi, 0, 0);
             }
-            else if(strcmp("invalid opcode", arg2) == 0){
+            else if(strcmp("invalidOpcode", arg2) == 0){
                 exec("opcodeExc",showOpcodeExc, 0, 0);
             }
             else if(strcmp("exit", arg2) == 0){
@@ -101,10 +101,10 @@ void initializeShell() {
             else if(strcmp("clear", arg1) == 0){
                 cleanScreen();
             }
-            else if(strcmp("zero division", arg1) == 0){
+            else if(strcmp("zeroDivision", arg1) == 0){
                 divi();
             }
-            else if(strcmp("invalid opcode", arg1) == 0){
+            else if(strcmp("invalidOpcode", arg1) == 0){
                 showOpcodeExc();
             }
             else if(strcmp("exit", arg1) == 0){

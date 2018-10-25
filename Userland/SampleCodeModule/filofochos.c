@@ -69,7 +69,7 @@ void initFilofochos() {
     printf("Press i to start\n");
     char key = 0;
     while (!initialized) {
-        _syscall(_read, &key);
+        readfd(0,&key,1);
         switch (key) {
             case 'q':
                 running = 0;
@@ -94,7 +94,7 @@ void initFilofochos() {
     key = 0;
     while (running) {
         // key = 0;
-        _syscall(_read, &key);
+        readfd(0,&key,1);
         switch (key) {
             case 'z':
                 if (filofochosAmount < MAX_FILOSOPHERS) {

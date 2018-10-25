@@ -131,23 +131,11 @@ void deleteChar() {
     printChar(' ', black);
 }
 
-void putStrAux(char * str, Colour colour) {
-    int i = strlen(str);
-    //Ya lo comprueba PUTCHAR!
-    if ((XPOSITION+(CHAR_WIDTH+X_SPACE)*i) > video->XResolution) {
-        newLine();
-    }
-    char c;
-    i = 0;
-    while ( (c = str[i++])) {
-        putChar(c, colour);
-    }
-}
 
 void putStrAuxWithSize(char * str, Colour colour, int amount) {
     int i = strlen(str);
     //Ya lo comprueba PUTCHAR!
-    /*if ((XPOSITION+(CHAR_WIDTH+X_SPACE)*i) > video->XResolution) {
+   /* if ((XPOSITION+(CHAR_WIDTH+X_SPACE)*i) > video->XResolution) {
         newLine();
     }*/
     char c;
@@ -158,7 +146,7 @@ void putStrAuxWithSize(char * str, Colour colour, int amount) {
     }
 }
 
-void putStrWithSize(char * str, Colour colour, int amount) { // lee hasta el cero, si no lo tiene como hago para que corte en algun momento (excepcion)
+void putStrWithSize(char * str, Colour colour, int amount) {
     char buff[128] = {0};
     int i = 0;
     int j = 0;
@@ -166,17 +154,26 @@ void putStrWithSize(char * str, Colour colour, int amount) { // lee hasta el cer
     while (i < amount) {
         c=str[i++];
         buff[j++] = c;
-
         if(j == 128) {
-            putStrAux(buff, colour);
+            putStrAuxWithSize(buff, colour,j);
             j = 0;
         }
-
     }
+    putStrAuxWithSize(buff, colour,j);
 
-    buff[j] = '\0';
-    putStrAux(buff, colour);
+}
 
+void putStrAux(char * str, Colour colour) {
+    int i = strlen(str);
+    /* YA LO VE PUTCHAR!
+    if ((XPOSITION+(CHAR_WIDTH+X_SPACE)*i) > video->XResolution) {
+        newLine();
+    }*/
+    char c;
+    i = 0;
+    while ( (c = str[i++])) {
+        putChar(c, colour);
+    }
 }
 
 // imprime un string en pantalla
@@ -196,15 +193,13 @@ void putStr(char * str, Colour colour) { // lee hasta el cero, si no lo tiene co
             newLine();
         }*/
         if(j == 128) {
-            putStrAux(buff, colour);
+            putStrAuxWithSize(buff, colour,j);
             j = 0;
         }
 
     }
-    buff[j] = '\0';
-    if (c == 0) {
-        putStrAux(buff, colour);
-    }
+    putStrAuxWithSize(buff, colour,j);
+
 }
 
 void newLine() {
