@@ -103,8 +103,10 @@ int pipe(int fd[]) {
     if(fd == NULL || fd[0] == NULL || fd[1] == NULL || fd[0] == 1 || fd[1] == 1 || fd[0] == 0 ||fd[1] == 0)
         return -1;
 
+
     fileDecryptor * myfd1 = getFd(fdList, fd[0]);
     fileDecryptor * myfd2 = getFd(fdList, fd[1]);
+
     if(myfd1 == NULL || myfd2 == NULL) {
         if(myfd1 != NULL && myfd1->pipefd != -1)
             return -1;
@@ -112,6 +114,7 @@ int pipe(int fd[]) {
             return -1;
 
         createPipeLink(fd[0], fd[1]);
+
         return 1;
     }
     else if(pipeAlreadyExists(myfd1,myfd2)) {
@@ -120,7 +123,6 @@ int pipe(int fd[]) {
         return 1;
     }
     else if(myfd1->pipefd == -1 && myfd2->pipefd == -1) {
-
         myfd1->pipefd = myfd2->fd;
         myfd2->pipefd = myfd1->fd;
 

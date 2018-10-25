@@ -27,9 +27,9 @@ void initPipesDemo(){
 }
 
 void messenger1(){
-  fd1[0] = 40;
+  fd1[0] = 898;
   fd1[1] = 900;
-  fd2[0] = 41;
+  fd2[0] = 899;
   fd2[1] = 901;
 
   pipe(fd1);
@@ -49,9 +49,9 @@ void messenger1(){
 }
 
 void messenger2(){
-  fd1[0] = 40;
+  fd1[0] = 898;
   fd1[1] = 900;
-  fd2[0] = 41;
+  fd2[0] = 899;
   fd2[1] = 901;
 
   pipe(fd1);
