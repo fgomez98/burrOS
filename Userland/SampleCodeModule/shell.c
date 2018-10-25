@@ -8,6 +8,7 @@
 #include "VideoModule.h"
 #include "prodCons.h"
 #include "filofochos.h"
+#include "pipesDemo.h"
 #include "piping.h"
 
 void probando(){
@@ -25,8 +26,6 @@ Colour white = {255, 255, 255};
 void initializeShell() {
 
     showBurro();
-    printf("Welcome to the shell!! Please type help to get a list of our commands\n");
-
     static char command[MAXLENGTH];
 
     int running = 1;
@@ -34,6 +33,9 @@ void initializeShell() {
         char * arg1 = calloc(MAXLENGTH);
         char * arg2 = calloc(MAXLENGTH);
         char * echo = calloc(MAXLENGTH);
+        char * commandName = calloc(MAXLENGTH);
+        char * pid = calloc(10);
+        char * niceness = calloc(3);
         printf("\n$>");
         scanAndPrint(command);
 
@@ -80,6 +82,8 @@ void initializeShell() {
                 exec("backgroundTest", stayAlive, 0, 0);
             } else if (strcmp("messages", arg2) == 0) {
                 exec("message",startMessagesDemo, 0, 0);
+            } else if (strcmp("pipesdemo", arg1) == 0){
+                exec("pipesdemo",initPipesDemo,0,0);
             } else{
                 printf("\nUnknown command, type help\n");
                 continue;
@@ -127,8 +131,8 @@ void initializeShell() {
                 exec("backgroundTest", stayAlive, 0, 0);
                 printf("\n");
             } else if (strcmp("messages", arg1) == 0) {
-                startMessagesDemo();
-                //exec("startMessagesDemo", startMessagesDemo,0,0);
+                makePiping(hinchaHuevos,hinchaHuevos);
+                delay(20000);
             } else if (strcmp("circle", arg1) == 0) {
                 DrawFilledCircle(200, 200, 80, white);
                 //drawCircle(200, 200, 80, white);
@@ -146,14 +150,36 @@ void initializeShell() {
                 makePiping(writeProgram, readProgram);
             } else if (strcmp("priority", arg1) == 0) {
                 schedulerDemo();
+            }  else if (strcmp("pipesdemo", arg1) == 0){
+              initPipesDemo();
             } else{
-                printf("\nUnknown command, type help\n");
-                continue;
+                sscanf("%s %s %s", command, commandName, pid, niceness);
+                if(strcmp("nice", commandName) == 0){
+                    if(*pid == 0){
+                        printf("\nSyntax error. Command syntax should be: nice [pid] [1-10] to adjust niceness or nice [pid] to get process priority\n");
+                    }
+                    else if (*niceness == 0){
+
+                        getProcessPriorityShell(pid);
+                    }
+                    else{
+                        niceShell(pid, niceness);
+                    }
+
+                }
+                else{
+                    printf("\nUnknown command, type help\n");
+                    continue;
+                }
+                
             }
         }
         free(arg1);
         free(arg2);
         free(echo);
+        free(commandName);
+        free(pid);
+        free(niceness);
     }
     printf("\n\n\nSee you soon!");
 

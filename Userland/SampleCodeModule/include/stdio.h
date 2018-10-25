@@ -12,7 +12,7 @@ void putString(char * str);
 void printf(char* fmt, ...);
 int scanf(const char * fmt, ...);
 int sscanf(const char * fmt, const char * str, ...);
-void nice(pid, priority);
+int nice(pid, priority);
 void getInput(char * string);
 char * getInt(const char * str, int * n );
 char* getString(const char* str, char * source);

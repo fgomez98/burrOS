@@ -3,7 +3,7 @@
 #include "stdlib.h"
 #include <messagesDemo.h>
 #include <sync.h>
-
+#include "commands.h"
 
 void startMessagesDemo() {
     int fd[2];

@@ -9,17 +9,21 @@ int fd[2];
 typedef void (*functiontype)();
 
 void makePiping(void * startingPoint1, void * startingPoint2) {
-    int fd[2];
     if(fd[0] < 10 || fd[1] < 11){
         fd[0] = 10;
         fd[1] = 11;
+    }
+    else {
+        fd[0]+=2;
+        fd[1]+=2;
     }
     char * argv1[1];
     argv1[0] = 0;
     char * argv2[1];
     argv2[0] = 1;
-    exec("piping1",runProgram, readProgram, argv1);
-    exec("piping2",runProgram, writeProgram, argv2);
+    exec("piping1", runProgram, readProgram, argv1);
+    exec("piping2", runProgram, writeProgram, argv2);
+    return;
 }
 
 void runProgram(int argc, char ** argv) {
@@ -34,17 +38,23 @@ void runProgram(int argc, char ** argv) {
 
     functiontype f = (argc);
     f();
-
+    return;
 }
 
 void readProgram() {
     char c;
+    char message[20];
     while((c=getChar())) {
         printf("%c", c);
     }
+    return;
 }
 
 void writeProgram() {
-    char * msg = "hola como estas";
-    printf("%s", msg);
+
+
+
+    printf("hola como estaas");
+
+    return;
 }

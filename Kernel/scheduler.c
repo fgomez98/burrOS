@@ -59,7 +59,7 @@ tProcess * removeProcess(int pid) {
     return aux;
 }
 
-void nice(int pid, int priority) {
+int nice(int pid, int priority) {
     //_cli();
     tProcess * proc = removeProcess(pid); // lo quitamos de la cola para luego insertarlo de nuevo y mantener el orden de la cola
     if (proc != NULL) {
@@ -79,6 +79,9 @@ void nice(int pid, int priority) {
                 deleteProcess(proc);
                 break;
         }
+    }
+    else{
+        return 1;
     }
     //_sti();
 }
@@ -253,7 +256,7 @@ void init_(void * startingPoint) {
     // INITIALIZE QUEUES
     ready = newQueue(sizeof(tProcess), cmpProcess);
     blocked = newQueue(sizeof(tProcess), cmpProcess);
-    
+
     //HALT PROCESS
 //    halting = createProcess("halter", halter, 0, 0, NULL);
     
@@ -276,7 +279,7 @@ void sprintProcesses(char* buffer, int buffSize){
     states[1] = "running";
     states[2] = "waiting";
     states[3] = "dead";
-    
+
     intToString(pid, running->pid);
     occ = strcpy2(buffer+index,pid,buffSize);
     index += occ;
@@ -284,139 +287,139 @@ void sprintProcesses(char* buffer, int buffSize){
     occ = strcpy2(buffer+index,"     ",buffSize);
     index += occ;
     buffSize -= occ;
-    
+
     s = stateIdentifier(running->state);
     occ = strcpy2(buffer+index,states[s],buffSize);
     index+=occ;
     buffSize-=occ;
-    
+
     occ = strcpy2(buffer+index,"     ",buffSize);
     index += occ;
     buffSize -= occ;
-    
-    
+
+
     intToString(mem, running->memoryAllocated);
     occ = strcpy2(buffer+index,mem,buffSize);
     index += occ;
     buffSize -= occ;
-    
-    
+
+
     occ = strcpy2(buffer+index,"             ",buffSize);
     index += occ;
     buffSize -= occ;
-    
-    
-    
+
+
+
     occ = strcpy2(buffer+index,running->name,buffSize);
     index += occ;
     buffSize -= occ;
-    
+
     occ = strcpy2(buffer+index,"\n",buffSize);
     index += occ;
     buffSize -= occ;
-    
-    
-    
+
+
+
     if(ready != NULL){
         aux = ready->first;
         while(aux!= NULL){
             if(buffSize<=20) break;
-            
+
             tProcess* p = aux->elem;
-            
+
             intToString(pid, p->pid);
             occ = strcpy2(buffer + index, pid, buffSize);
             index += occ;
             buffSize -= occ;
-            
-            
+
+
             occ = strcpy2(buffer+index,"     ",buffSize);
             index+=occ;
             buffSize-=occ;
-            
-            
+
+
             s = stateIdentifier(p->state);
             occ = strcpy2(buffer+index,states[s],buffSize);
             index+=occ;
             buffSize-=occ;
-            
-            
+
+
             occ = strcpy2(buffer+index,"     ",buffSize);
             index += occ;
             buffSize -= occ;
-            
+
             intToString(mem, p->memoryAllocated);
             occ = strcpy2(buffer+index,mem,buffSize);
             index += occ;
             buffSize -= occ;
-            
+
             occ = strcpy2(buffer+index,"             ",buffSize);
             index += occ;
             buffSize -= occ;
-            
-            
+
+
             occ = strcpy2(buffer+index,p->name,buffSize);
             index += occ;
             buffSize -= occ;
-            
+
             occ = strcpy2(buffer+index,"\n",buffSize);
             index += occ;
             buffSize -= occ;
-            
-            
-            
-            
+
+
+
+
             aux = aux->next;
         }
-        
+
     }
-    
+
     if(blocked != NULL){
         aux = blocked->first;
         while(aux!= NULL){
             if(buffSize<=20) break;
-            
+
             tProcess* p = aux->elem;
-            
+
             intToString(pid, p->pid);
             occ = strcpy2(buffer + index, pid, buffSize);
             index += occ;
             buffSize -= occ;
-            
-            
+
+
             occ = strcpy2(buffer+index,"     ",buffSize);
             index+=occ;
             buffSize-=occ;
-            
-            
+
+
             s = stateIdentifier(p->state);
             occ = strcpy2(buffer+index,states[s],buffSize);
             index+=occ;
             buffSize-=occ;
-            
-            
+
+
             occ = strcpy2(buffer+index,"     ",buffSize);
             index += occ;
             buffSize -= occ;
-            
+
             intToString(mem, p->memoryAllocated);
             occ = strcpy2(buffer+index,mem,buffSize);
             index += occ;
             buffSize -= occ;
-            
+
             occ = strcpy2(buffer+index,"             ",buffSize);
             index += occ;
             buffSize -= occ;
-            
-            
+
+
             occ = strcpy2(buffer+index,p->name,buffSize);
             index += occ;
             buffSize -= occ;
-            
+
             occ = strcpy2(buffer+index,"\n",buffSize);
             index += occ;
             buffSize -= occ;
-            
+
             aux = aux->next;
         }
     }
@@ -475,35 +478,35 @@ void priority3() {
 void priorityTest() {
     tProcess * proc = createProcess("maite capa", priority1, 0, 0, NULL);
     printProcess(proc);
-    
+
     tProcess * anotherP = createProcess("fer0", priority1, 0, 0, NULL);
     printProcess(anotherP);
-    
+
     tProcess * anotherP1 = createProcess("fer1", priority1, 0, 0, NULL);
     printProcess(anotherP1);
-    
+
     dumpMemory();
-    
+
     //    push(ready, proc);
     //    push(ready, anotherP);
     //    push(ready, anotherP1);
-    
+
     addProcess(proc);
     addProcess(anotherP);
     addProcess(anotherP1);
-    
+
     int i;
-    
+
     i = 0;
     while (i < 90000000) {
         i++;
     }
-    
-    
+
+
     nice(2, 15);
     nice(3, 20);
     nice(4, 30);
-    
+
     endProcess(getRunningPid());
 }
 
@@ -564,7 +567,7 @@ void probandoEscribirEnKernel3() {
         putStr(" Vamo ", colour);
         i++;
     }
-    
+
     endProcess(getRunningPid());
 }
 void probandoEscribirEnKernel() {
@@ -585,23 +588,23 @@ void probandoEscribirEnKernel() {
 void init_Process() {
     tProcess * proc = createProcess("maite capa", probandoEscribirEnKernel, 0, 0, NULL);
     printProcess(proc);
-    
+
     tProcess * anotherP = createProcess("fer0", probandoEscribirEnKernel2, 0, 0, NULL);
     printProcess(anotherP);
-    
+
     tProcess * anotherP1 = createProcess("fer1", probandoEscribirEnKernel3, 0, 0, NULL);
     printProcess(anotherP1);
-    
+
     dumpMemory();
-    
+
     //    push(ready, proc);
     //    push(ready, anotherP);
     //    push(ready, anotherP1);
-    
+
     addProcess(proc);
     addProcess(anotherP);
     addProcess(anotherP1);
-    
+
     probandoEscribirEnKernel4();
     //endProcess(getRunningPid());
 }
@@ -618,13 +621,13 @@ void mutexTest1() {
     //    putStr(buff, green);
     //    putChar('\n', yellow);
     //    putChar('\n', yellow);
-    
+
     adquire(myMutex);
-    
+
     putStr("My pid: ", yellow);
     uintToBase(getRunningPid(), buff, 10);
     putStr(buff, yellow);
-    
+
     critical++;
     putStr("valor del mutex: ", yellow);
     uintToBase(critical, buff, 10);
@@ -634,19 +637,19 @@ void mutexTest1() {
     while (i < 500000) {
         i++;
     }
-    
+
     release(myMutex);
-    
+
     i = 0;
     while (i<500) {
         i++;
     }
-    
+
     i = 0;
-    
-    
+
+
     adquire(myMutex);
-    
+
     while (i < 5) {
         critical++;
         putStr("My pid: ", yellow);
@@ -658,9 +661,9 @@ void mutexTest1() {
         putChar('\n', yellow);
         i++;
     }
-    
+
     release(myMutex);
-    
+
     putStr("llegue", colour);
     uintToBase(getRunningPid(), buff, 10);
     putStr(buff, yellow);
@@ -676,43 +679,43 @@ void mutexTest2() {
     //    putStr(buff, green);
     //    putChar('\n', yellow);
     //    putChar('\n', yellow);
-    
+
     int i = 0;
     while (i<90000) {
         i++;
     }
-    
+
     i = 0;
-    
-    
+
+
     adquire(myMutex2);
-    
+
     putChar('\n', red);
     putChar('\n', red);
     putStr("My pid: ", yellow);
     uintToBase(getRunningPid(), buff, 10);
     putStr(buff, yellow);
-    
+
     critical++;
     putStr("valor del mutex: ", yellow);
     uintToBase(critical, buff, 10);
     putStr(buff,yellow);
     putChar('\n', yellow);
     putChar('\n', red);
-    
-    
+
+
     release(myMutex2);
-    
-    
+
+
     i = 0;
     while (i<500) {
         i++;
     }
-    
+
     i = 0;
-    
+
     adquire(myMutex2);
-    
+
     while (i < 5) {
         critical++;
         putStr("My pid: ", yellow);
@@ -725,10 +728,10 @@ void mutexTest2() {
         putChar('\n', red);
         i++;
     }
-    
+
     release(myMutex2);
-    
-    
+
+
     putStr("llegue", colour);
     uintToBase(getRunningPid(), buff, 10);
     putStr(buff, yellow);
@@ -745,10 +748,10 @@ void mutexTest3() {
     //    putStr(buff, green);
     //    putChar('\n', yellow);
     //    putChar('\n', yellow);
-    
-    
+
+
     adquire(myMutex3);
-    
+
     putStr("My pid: ", yellow);
     uintToBase(getRunningPid(), buff, 10);
     putStr(buff, yellow);
@@ -758,16 +761,16 @@ void mutexTest3() {
     putStr(buff,yellow);
     putChar('\n', yellow);
     putChar('\n', red);
-    
+
     release(myMutex3);
-    
+
     int i = 0;
     while (i<500) {
         i++;
     }
-    
+
     i = 0;
-    
+
     adquire(myMutex3);
     while (i < 5) {
         critical--;
@@ -781,7 +784,7 @@ void mutexTest3() {
         putChar('\n', red);
         i++;
     }
-    
+
     release(myMutex3);
     putStr("llegue", colour);
     uintToBase(getRunningPid(), buff, 10);
@@ -789,9 +792,9 @@ void mutexTest3() {
     putStr("valor del mutex: ", yellow);
     uintToBase(critical, buff, 10);
     putStr(buff, yellow);
-    
+
     endProcess(getRunningPid());
-    
+
 }
 
 void mutexTest() {
@@ -799,21 +802,21 @@ void mutexTest() {
     critical = 1;
     tProcess * proc = createProcess("mutez1", mutexTest1, 0, 0, NULL);
     printProcess(proc);
-    
+
     tProcess * anotherP = createProcess("mutex2", mutexTest2, 0, 0, NULL);
     printProcess(anotherP);
-    
+
     tProcess * anotherP1 = createProcess("mutex3", mutexTest3, 0, 0, NULL);
     printProcess(anotherP1);
-    
+
     tProcess * anotherP2 = createProcess("mutex3", mutexTest3, 0, 0, NULL);
     printProcess(anotherP2);
-    
+
     tProcess * anotherP3 = createProcess("mutex2", mutexTest2, 0, 0, NULL);
-    
-    
+
+
     //dumpMemory();
-    
+
     //    push(ready, proc);
     //    push(ready, anotherP);
     //    push(ready, anotherP1);
@@ -838,51 +841,51 @@ void mutexTest() {
  void pipeTest1() {
  pipe_t * pipeT = pipe("test");
  char * resp = mallocMemory(5);
- 
+
  readPipe(pipeT,resp, 4);
  resp[4] = '\0';
  putStr(resp,yellow);
  endProcess(getRunningPid());
  }
- 
+
  void pipeTest2() {
  pipe_t * pipeT = pipe("test");
  char * resp = mallocMemory(5);
- 
+
  readPipe(pipeT,resp, 4);
  resp[4] = '\0';
  putStr(resp,yellow);
  endProcess(getRunningPid());
  }
- 
+
  void pipeTest3() {
  pipe_t * pipeT = pipe("test");
  char * resp = mallocMemory(5);
- 
+
  readPipe(pipeT,resp, 4);
  resp[4] = '\0';
  putStr(resp,yellow);
  endProcess(getRunningPid());
  }
- 
- 
- 
+
+
+
  void pipeTest() {
  //myMutex = initMutex("myMutex");
  critical = 1;
  tProcess * write1 = createProcess("escritura", pipeTestWrite, 0, 0, NULL);
- 
+
  tProcess * write2 = createProcess("escritura2", pipeTestWrite, 0, 0, NULL);
- 
+
  tProcess * read1 = createProcess("lectura2", pipeTest2, 0, 0, NULL);
- 
+
  tProcess * read2 = createProcess("lectura3", pipeTest3, 0, 0, NULL);
- 
+
  tProcess * read3 = createProcess("lecura3", pipeTest1, 0, 0, NULL);
- 
- 
+
+
  //dumpMemory();
- 
+
  push(ready,write1);
  push(ready, read2);
  push(ready, read1);
@@ -891,10 +894,10 @@ void mutexTest() {
  while(i<1000000)
  i+=0.1;
  push(ready, write2);
- 
+
  // push(ready, anotherP1);
  //push(ready, anotherP2);
  while (1);
  endProcess(getRunningPid());
- 
+
  }*/

@@ -247,11 +247,11 @@ uint64_t _writePipe(uint64_t * pipe, uint64_t * a, uint64_t msg, uint64_t amount
     return writePipe(pipe, msg, amount);
 }
 
-void _nice(int pid, int priority) {
+uint64_t _nice(int pid, int priority) {
     if (priority > 100) {
         return;
     }
-    nice(pid, priority);
+return nice(pid, priority);
 }
 
 uint64_t _open(uint64_t fd) {
@@ -285,5 +285,8 @@ uint64_t _getPid() {
 }
 
 uint64_t _getProcessPriority(int pid) {
+    if(getProcessState(pid) == NULL){
+        return 0;
+    }
     return getProcessState(pid)->priority;
 }
