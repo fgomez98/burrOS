@@ -15,9 +15,9 @@ void initPipesDemo(){
   exec("messenger1",messenger1,0,0);
   exec("messenger2",messenger2,0,0);
 
+  char c;
   while (running){
-    char c;
-    readfd(0,&c,1);
+    c = getChar();
     if(c == 'q'){
       running = 0;
     }

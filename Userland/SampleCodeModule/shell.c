@@ -193,7 +193,9 @@ functionType getFunction(char * arg, int argc, char * param, int * flag){
         *flag = -1;
         return 0;
     } else if (strcmp("ps", arg) == 0) {
-        return ps;
+        ps();
+        *flag = 1;
+        return 0;
     } else if (strcmp("memory", arg) == 0) {
         return memory;
     } else if (strcmp("exec", arg) == 0) {
