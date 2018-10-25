@@ -169,8 +169,9 @@ void initializeShell() {
                 }
                 else{
                     printf("\nUnknown command, type help\n");
+                    continue;
                 }
-                continue;
+                
             }
         }
         free(arg1);
