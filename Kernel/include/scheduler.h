@@ -38,5 +38,6 @@ void priorityTest();
 void yield();
 void changeProcessState(int pid, pState state);
 void kill(int pid);
+int nice(int pid, int priority) ;
 
 #endif

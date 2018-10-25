@@ -43,16 +43,12 @@ void putChar(char c) {
 }
 
 void putString(char * str) {
-    write(STDOUT, str, strlen(str));
+    write(STDOUT, str, strlen(str)+1);
  //   _syscall(_putString, str);
 }
 
-void putStringWithSize(char * str, int size){
-    write(STDOUT, str, size);
-}
-
-void nice(pid, priority) {
-    _syscall(_nice, pid, priority);
+int nice(pid, priority) {
+    return _syscall(_nice, pid, priority);
 }
 
 char getChar(){
@@ -86,7 +82,7 @@ void printf(char* fmt, ...) {
     int j = 0;
     while(*fmt){
         if(*fmt != '%'){
-            buffer[j++] = *fmt;
+            putChar(*fmt);
         }else{
           fmt++;
           switch(*fmt){
@@ -118,7 +114,7 @@ void printf(char* fmt, ...) {
         fmt++;
     }
     buffer[j] = '\0';
-    putStringWithSize(buffer, j);
+    putString(buffer);
     va_end(args);
 }
 
