@@ -21,7 +21,7 @@ void help(){
     printf("  ctrl + c - press anytime to force quit a process\n");
     printf("  ctrl + d - press to send EOF\n");
     printf("  & - use comand & comand to execute two comands at the same time\n");
-    printf("  backgroundTest - executes a process in background for a limited time. The process will notify when alive and dead");
+    printf("  backgroundTest - executes a process in background for a limited time. The process will notify when alive and dead\n");
     printf("  clear - clears screen\n");
     printf("  digitalTime - displays time in digital format. Press c to change colour and q to exit\n");
     printf("  echo TEXT - displays the TEXT in screen\n");
