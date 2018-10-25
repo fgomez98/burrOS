@@ -77,8 +77,8 @@ void initializeShell() {
             argc = 0;
 
         if(opMode == '|') {
-            functionType toExecute1 = getFunction(arg1,argc,&flag);
-            functionType toExecute2 = getFunction(arg2,argc,&flag);
+            functionType toExecute1 = getFunction(arg1,argc,param,&flag);
+            functionType toExecute2 = getFunction(arg2,argc,param,&flag);
             if (toExecute1 > 0 && toExecute2 > 0) {
                 makePiping(toExecute1, toExecute2, argc, argv);
                 wait(foreground);
@@ -91,7 +91,7 @@ void initializeShell() {
         }
         else {
             if (*arg2) {
-                functionType toExecute = getFunction(arg2,argc,&flag);
+                functionType toExecute = getFunction(arg2,argc,param,&flag);
                 if(toExecute > 0) {
                     exec(arg1,toExecute,argc,argv);
                     wait(foreground);
@@ -123,7 +123,7 @@ void initializeShell() {
                 }
             }
             if (*arg1) {
-                functionType toExecute = getFunction(arg1,argc,&flag);
+                functionType toExecute = getFunction(arg1,argc,param,&flag);
                 if(toExecute > 0) {
                     exec(arg1,toExecute,argc,argv);
                     wait(foreground);
@@ -169,12 +169,16 @@ void initializeShell() {
 
 
 
-functionType getFunction(char * arg, int argc,int * flag){
+functionType getFunction(char * arg, int argc, char * param, int * flag){
     *flag = 0;
     if (strcmp("help", arg) == 0) {
         return help;
     } else if (strcmp("digitalTime", arg) == 0) {
         return showDigitalHour;
+    } else if (strcmp("echo", arg) == 0) {
+        printf("\n%s",param);
+        *flag = 1;
+        return 0;
     } else if (strcmp("time", arg) == 0) {
         return showTime;
     } else if (strcmp("clear", arg) == 0) {
@@ -227,7 +231,6 @@ functionType getFunction(char * arg, int argc,int * flag){
         return echoInput;
     } else if (strcmp("remark", arg) == 0) {
         if(argc == 0) {
-            printf("retorno -1");
             *flag = -2;
             return 0;
         }

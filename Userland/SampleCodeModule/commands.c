@@ -24,7 +24,7 @@ void help(){
     printf("  backgroundTest - executes a process in background for a limited time. The process will notify when alive and dead");
     printf("  clear - clears screen\n");
     printf("  digitalTime - displays time in digital format. Press c to change colour and q to exit\n");
-    printf("  echo-TEXT - displays the TEXT in screen\n");
+    printf("  echo TEXT - displays the TEXT in screen\n");
     printf("  exit - exits current shell and restarts it\n");
     printf("  help - prints a list containing all the available commands and its descriptions\n");
     printf("  invalid opcode - shows how the cero division exception is handled\n");
