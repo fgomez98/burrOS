@@ -239,24 +239,13 @@ void printfd(){
 
 int close(int fd) {
     fileDecryptor * myfd = getFd(fdList, fd);
+    if(myfd == NULL)
+        return 0;
     if(removeElemList(myfd->users, getRunningPid()) == NULL)
         return 0;
-    if(myfd->pipefd == -1 && getListSize(myfd->users) == 0) {
-        freeMemory(myfd->buffer);
-        freeList(myfd->users);
-        adquire(listMutex);
-        removeElemList(fdList, myfd);
-        release(listMutex);
-        return 1;
-    }
 
-    fileDecryptor * reader = myfd;
-    if(myfd->pipefd != -1)
-        reader = getFd(fdList, myfd->pipefd);
+    //Faltaria un caso en que uno se quede leyendo solo y el de borrar el fd de la lista, despuse lo vemos
 
-    if(getListSize(myfd->users) == 1 && containsList(myfd->users, reader->waitingForRead) == 1) {
-        unblockProcess(myfd->waitingForRead);
-    }
     return 1;
 
 }
@@ -296,8 +285,6 @@ int read(int fd, char * msg, int amount) {
 
     adquire(myfd->readMutex);
     adquire(myfd->useMutex);
-
-    /* Si no hay nada para escribir y no hay nadie que escriba, o hay alguien y soy yo no me bloqueo*/
 
     int readBytes = availableToRead(myfd);
     if(readBytes <= 0) {

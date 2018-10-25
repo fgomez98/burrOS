@@ -57,4 +57,6 @@ void wait(sem * s);
  */
 void post(sem * s);
 
+int isBlocked(sem * s);
+
 #endif /* semaphore_h */

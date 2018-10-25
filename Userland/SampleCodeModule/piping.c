@@ -47,12 +47,16 @@ void runProgram(void (f)(), char *argv[]) {
         char *aux[2];
         aux[1] = argv[1];
         dup(fd[0],0);
+        close(fd[1]);
         f(string);
+        close(fd[0]);
     }
     else {
         dup(fd[1], 1);
+        close(fd[0]);
         f(0);
         putChar(-1);
+        close(fd[1]);
     }
 
     return;
@@ -60,7 +64,7 @@ void runProgram(void (f)(), char *argv[]) {
 
 void echoInput() {
 
-    printf("\nIm reading from input!");
+    printf("\nIm reading from input!\n");
     char c = 1;
     while((c=getCharWithCero())!= -1){
         putChar(c);
