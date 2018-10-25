@@ -8,6 +8,7 @@
 #include "VideoModule.h"
 #include "prodCons.h"
 #include "filofochos.h"
+#include "pipesDemo.h"
 
 void probando(){
     while(1);
@@ -24,8 +25,6 @@ Colour white = {255, 255, 255};
 void initializeShell() {
 
     showBurro();
-    printf("Welcome to the shell!! Please type help to get a list of our commands\n");
-
     static char command[MAXLENGTH];
 
     int running = 1;
@@ -69,6 +68,8 @@ void initializeShell() {
                 exec("backgroundTest", stayAlive, 0, 0);
             } else if (strcmp("messages", arg2) == 0) {
                 exec("message",startMessagesDemo, 0, 0);
+            } else if (strcmp("pipesdemo", arg1) == 0){
+                exec("pipesdemo",initPipesDemo,0,0);
             } else{
                 printf("\nUnknown command, type help\n");
                 continue;
@@ -120,7 +121,11 @@ void initializeShell() {
                 exec("hinchaHuevos", hinchaHuevos, 0, 0);
             } else if (sscanf("echo-%s",arg1,echo)){
               printf("\n%s\n", echo);
-            } else{
+            } else if (strcmp("pipesdemo", arg1) == 0){
+              initPipesDemo();
+            }
+
+            else{
                 printf("\nUnknown command, type help\n");
                 continue;
             }
