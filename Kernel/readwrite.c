@@ -135,8 +135,6 @@ int open(int fd){
 
     if(fd == 0 || fd == 1)
         return -1;
-//    if(fd == 1)
-//        return -1;
 
     fileDecryptor * newfd = getFd(fdList, fd);
     if(newfd != NULL){
@@ -183,8 +181,7 @@ int openWithPid(int fd, int pid) {
 
     if(fd == 0 || fd == 1)
         return -1;
-//    if(fd == 1)
-//        return -1;
+
     fileDecryptor * newfd = getFd(fdList, fd);
     if(newfd != NULL){
         int runningPid = pid;

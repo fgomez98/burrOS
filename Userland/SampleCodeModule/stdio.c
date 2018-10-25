@@ -78,7 +78,7 @@ void printf(char* fmt, ...) {
 
     va_list args;
     va_start(args, fmt);
-
+    
     int i;
     char* s;
     char printable[64];
@@ -86,7 +86,7 @@ void printf(char* fmt, ...) {
     int j = 0;
     while(*fmt){
         if(*fmt != '%'){
-            buffer[j++] = *fmt;
+            putChar(*fmt);
         }else{
             fmt++;
             switch(*fmt){
@@ -118,7 +118,7 @@ void printf(char* fmt, ...) {
         fmt++;
     }
     buffer[j] = '\0';
-    putStringWithSize(buffer, j);
+    putString(buffer);
     va_end(args);
 }
 

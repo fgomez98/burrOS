@@ -84,6 +84,9 @@ int nice(int pid, int priority) {
         return 1;
     }
     //_sti();
+    //TODO: si queremos desalojar al proceso que esta corriendo ahora para correr uno de prioridad superior entoces
+    // yield();
+return 0;
 }
 
 void ageRunningProcess() {// TODO: ver que onda con el proceso padre aka shell
@@ -279,7 +282,7 @@ void sprintProcesses(char* buffer, int buffSize){
     states[1] = "running";
     states[2] = "waiting";
     states[3] = "dead";
-
+    
     intToString(pid, running->pid);
     occ = strcpy2(buffer+index,pid,buffSize);
     index += occ;
