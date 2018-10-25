@@ -178,32 +178,32 @@ int open(int fd){
 }
 
 int openWithPid(int fd, int pid) {
-    
+
     if(fd == 0 || fd == 1)
         return -1;
-    
+
     fileDecryptor * newfd = getFd(fdList, fd);
     if(newfd != NULL){
         int runningPid = pid;
         return addUserToFd(newfd);
     }
-    
+
     newfd = mallocMemory(sizeof(newfd));
     if(newfd == NULL)
         return -1;
-    
-    
+
+
     char * name = mallocMemory(19);
     intToString(name, fd);
-    
+
     char * readMutexName = mallocMemory(strlenght(name) + 6);
     char * writeMutexName = mallocMemory(strlenght(name) + 6);
     char * useMutexName = mallocMemory(strlenght(name) + 6);
-    
+
     newfd->useMutex = initMutex(strconcat(name, " use",useMutexName));
     newfd->readMutex = initMutex(strconcat(name, " read",readMutexName));
     newfd->writeMutex = initMutex(strconcat(name, " write",writeMutexName));
-    
+
     newfd->fd = fd;
     newfd->buffer = mallocMemory(BUFFERSIZE);
     newfd->pipefd = -1;
@@ -211,15 +211,15 @@ int openWithPid(int fd, int pid) {
     newfd->writePosition = 0;
     newfd->waitingForRead = -1;
     newfd->waitingForWrite = -1;
-    
+
     newfd->users = newList(sizeof(int), pidcmp);
-    
+
     addToList(newfd->users, pid);
-    
+
     adquire(listMutex);
     addToList(fdList, newfd);
     release(listMutex);
-    
+
     return 1;
 }
 
@@ -263,7 +263,9 @@ int close(int fd) {
 }
 
 int read(int fd, char * msg, int amount) {
+
     fileDecryptor * myfd;
+
     if (fd == 0) {
         int processStdInFd = getRunningProcess()->stdIn;
         if(processStdInFd == 0) {
@@ -275,7 +277,14 @@ int read(int fd, char * msg, int amount) {
             }
             return i;
         }
-    } else {
+        else {
+            myfd = getFd(fdList, processStdInFd);
+            if(!containsList(myfd->users,getRunningPid())) {
+                return -1;
+            }
+        }
+    }
+    else {
         myfd = getFd(fdList, fd);
         if (myfd == NULL)
             return -1;
