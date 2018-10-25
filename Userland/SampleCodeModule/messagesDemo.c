@@ -37,9 +37,8 @@ void startMessagesDemo() {
                     break;
                 }
                 printf("\n");
-                char * argv[2];
-                argv[0] = pipeName;
-                argv[1] = input;
+                char * argv[1];
+                argv[0] = input;
                 exec("escribe1",writeMessage,i,argv);
                 break;
             }
@@ -55,9 +54,7 @@ void startMessagesDemo() {
                     break;
                 }
                 printf("\n");
-                char * argv[1];
-                argv[0] = pipeName;
-                exec("lee1",readMessage,numberToRead,argv);
+                exec("lee1",readMessage,numberToRead,0);
                 break;
             }
         }
@@ -69,15 +66,8 @@ void writeMessage(int argc, char ** argv) {
     fd[0] = 31;
     fd[1] = 999;
     pipe(fd);
-    write(fd[1], argv[1],argc);
-    printf("I wrote %s\n", argv[1]);
-
-    /* tPipe myPipe = namedPipe(argv[0]);
-    open(fd);
-    write(fd,argv[1], argc);
-    argv[1][argc] = '\0';
-    printf("I wrote %s\n", argv[1]);
-    killCurrentProcess();*/
+    write(fd[1], argv[0],argc);
+    printf("I wrote %s\n", argv[0]);
 }
 
 void readMessage(int argc, char ** argv) {
@@ -90,15 +80,6 @@ void readMessage(int argc, char ** argv) {
     int a = readfd(fd[0], buffer,amount);
     buffer[a] = '\0';
     printf("I read %d bytes: %s\n",a, buffer);
-
-    /*tPipe myPipe = namedPipe(argv[0]);
-    open(fd);
-    int amount = argc;
-    char buffer[amount];
-    int a = readfd(fd, buffer,amount);
-    buffer[a] = '\0';
-    printf("I read %d bytes: %s\n",a, buffer);
-    killCurrentProcess();*/
 }
 
 void writeWelcomeMessage() {

@@ -86,39 +86,39 @@ void printf(char* fmt, ...) {
     int j = 0;
     while(*fmt){
         if(*fmt != '%'){
-            buffer[j++] = *fmt;
+            bufferPrint[j++] = *fmt;
         }else{
             fmt++;
             switch(*fmt){
                 case 'c':
                     i = (char) va_arg(args, int);
-                    buffer[j++] = (char) i;
+                    bufferPrint[j++] = (char) i;
                     break;
                 case 'd':
                     i = va_arg(args, int);
                     uintToBase(i, printable, 10);
-                    putStringToBuffer(buffer,printable,&j);
+                    putStringToBuffer(bufferPrint,printable,&j);
                     break;
                 case 's':
                     s = (char*) va_arg(args, char*);
-                    putStringToBuffer(buffer,s,&j);
+                    putStringToBuffer(bufferPrint,s,&j);
                     break;
                 case 'o':
                     i = va_arg(args, int);
                     uintToBase(i, printable, 8);
-                    putStringToBuffer(buffer,printable,&j);
+                    putStringToBuffer(bufferPrint,printable,&j);
                     break;
                 case 'x':
                     i = va_arg(args, int);
                     uintToBase(i, printable, 16);
-                    putStringToBuffer(buffer,printable,&j);
+                    putStringToBuffer(bufferPrint,printable,&j);
                     break;
             }
         }
         fmt++;
     }
-    buffer[j] = '\0';
-    putStringWithSize(buffer, j);
+    bufferPrint[j] = '\0';
+    putStringWithSize(bufferPrint, j);
     va_end(args);
 }
 
