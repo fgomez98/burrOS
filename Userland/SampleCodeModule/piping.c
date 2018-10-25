@@ -47,7 +47,6 @@ void runProgram(void (f)(), char *argv[]) {
         char *aux[2];
         aux[1] = argv[1];
         dup(fd[0],0);
-        printf("%s",string);
         f(string);
     }
     else {
@@ -81,19 +80,29 @@ void findAndRemark(int argc, char *s[]) {
     char buffer[256];
     int i = 0;
     while((c=getChar())!= -1){
+        if(c != '\b' && c != string[i])
+            i = 0;
         if(c == string[i]) {
-            buffer[i] = c;
-            i++;
+            buffer[i++] = c;
+            putChar(c);
             if(string[i] == 0) {
                 buffer[i] = 0;
+                int j = 0;
+                while(j < i) {
+                    deleteChar();
+                    j++;
+                }
                 printf("[(%s)]", buffer);
                 i = 0;
             }
         }
-        else {
-            i = 0;
+        else if (c == '\b') {
+            if(i>0)
+                i--;
             putChar(c);
         }
+        else
+            putChar(c);
     }
     if(argc == 1){
         free(string);
