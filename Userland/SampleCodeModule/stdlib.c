@@ -1,5 +1,6 @@
 #include "stdlib.h"
 #include "syscall.h"
+#include "sync.h"
 
 int atoi(char * str){
   int res = 0;
@@ -16,6 +17,11 @@ int atoi(char * str){
   }
 
   return sign*res;
+}
+
+void giveControlToShell(){
+    tSem foreground = createSem("foreground");
+    post(foreground);
 }
 
 int isNum(char c){

@@ -53,9 +53,13 @@ void Keyboard_Handler() { // once a key is pressed, it calls an interrupton whic
         } else if (CNTRL_ON) {
             input = getAsciiCode(scan);
             switch (input) {
-                case 'c':
+                case 'c': {
                     kill(getRunningPid());
                     break;
+                }
+                case 'd': {
+                    addToBuffer(-1);
+                }
             }
         } else {
             input = getAsciiCode(scan);

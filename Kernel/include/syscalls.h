@@ -25,7 +25,7 @@ void _createMutex(uint64_t mutexName, uint64_t mutex);
 void _destroyMutex(uint64_t mutex);
 void _adquireMutex(uint64_t mutex);
 void _releaseMutex(uint64_t mutex);
-void _createSem(uint64_t semName, uint64_t sem);
+uint64_t _createSem(uint64_t semName);
 void _destroySem(uint64_t sem);
 void _semWait(uint64_t semaph);
 void _semPost(uint64_t semaph);

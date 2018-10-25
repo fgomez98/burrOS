@@ -101,3 +101,4 @@ void post(sem * s) {
     release(s->lock);
    // _sti();
 }
+

@@ -1,4 +1,6 @@
-void makePiping(void * startingPoint1, void * startingPoint2);
-void runProgram(int argc, char ** argv);
-void readProgram();
-void writeProgram();
+
+
+void makePiping(void (reader)(), void (writer)(char *), int argcant, char *argv[]);
+void runProgram(void (f)(), char *argv[]);
+void echoInput();
+void findAndRemark(int argc, char * s[]);

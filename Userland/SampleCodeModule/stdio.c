@@ -1,6 +1,7 @@
 #include "stdio.h"
 #include "lib.h"
 #include <string.h>
+#include "commands.h"
 #include "syscall.h"
 #define WRITE 1
 #define READ 0
@@ -11,6 +12,11 @@
 
 static char buffer[MAXLENGTH];
 
+
+void deleteChar() {
+    _syscall(_deleteChar);
+}
+
 void scanAndPrint(char* buffer) {
 
   char k;
@@ -19,7 +25,7 @@ void scanAndPrint(char* buffer) {
   while(((k = getChar()) != '\n')  && i< MAXLENGTH - 1){
     if(k == '\b'){
         if (i > 0) {
-            _syscall(_deleteChar);
+            deleteChar();
             i--;
         }
     }
@@ -33,12 +39,8 @@ void scanAndPrint(char* buffer) {
 
   }
 
-void deleteChar() {
-    _syscall(_deleteChar);
-}
-
 void putStringWithSize(char * str, int size){
-    write(STDOUT, str, size);
+    write(STDOUT, str, size + 1);
 }
 
 void putChar(char c) {
@@ -47,7 +49,7 @@ void putChar(char c) {
 }
 
 void putString(char * str) {
-    write(STDOUT, str, strlen(str));
+    write(STDOUT, str, strlen(str)+1);
  //   _syscall(_putString, str);
 }
 
@@ -55,15 +57,22 @@ int nice(pid, priority) {
     return _syscall(_nice, pid, priority);
 }
 
+char getCharWithCero(){
+    char c=0;
+    while(1) {
+        readfd(0,&c,1);
+        if ( c >= -1 && c <128)
+            return c;
+    }
+}
+
 char getChar(){
   char c=0;
 	while(1) {
         readfd(0,&c,1);
-        if ( c > 0 && c <128) {
+        if ( c == -1 ||( c > 0 && c <128))
             return c;
-        }
 	}
-  return 0;
 }
 
 static
@@ -147,7 +156,6 @@ int scanf(const char* fmt, ...){
                   i++;
                   break;
         case 's': c = getString(str, va_arg(args, char*));
-                  printf("skere");
                   i++;
                   break;
         case 'c': c = va_arg(args,char*);
@@ -236,7 +244,7 @@ void getInput(char * string){
   char c;
   int i=0;
   while((c = getChar()) != '\n'){
-    putChar(c);
+      putChar(c);
     if(i < MAXLENGTH && (c != '\b' && c != '$') && (c > 0 && c < 127)){
       string[i++] = c;
     }

@@ -1,4 +1,5 @@
 #include "prodCons.h"
+#include "stdlib.h"
 #include "sync.h"
 #define MAXMONSTERS 5
 #define MAXSUSHIMEN 5
@@ -51,7 +52,7 @@ void initProdCons() { //TODO:matar procesos no esta funcionando bien
     printf(" 1  2  3  4  5  6  7  8  9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30\n");
     char key = 0;
     while (running) {
-        readfd(0,&key,1);
+        key = getChar();
         switch (key) {
             case 's':
                 if ((sushiManCount < MAXSUSHIMEN) && initialized) {
@@ -103,6 +104,8 @@ void initProdCons() { //TODO:matar procesos no esta funcionando bien
     destroyMutex(buffMutex);
     destroySemaphore(finish);
     destroySemaphore(items);
+
+    giveControlToShell();
     return;
 }
 

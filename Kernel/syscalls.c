@@ -2,6 +2,7 @@
 #include "Keyboard.h"
 #include <stdint.h>
 #include "math.h"
+#include "stdlib.h"
 #include "Beep.h"
 #include "TimeDriver.h"
 #include "BuddyAllocationSystem.h"
@@ -185,10 +186,8 @@ void _releaseMutex(uint64_t mu){
   release(m);
 }
 
-void _createSem(uint64_t semName, uint64_t semaph ){
-	uint64_t* ui;
-	ui = (uint64_t*)semaph;
-	*ui = getSem(semName);
+uint64_t _createSem(uint64_t semName){
+	return getSem(semName);
 }
 
 void _destroySem(uint64_t semaph){

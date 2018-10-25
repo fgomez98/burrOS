@@ -4,11 +4,18 @@
 #include <messagesDemo.h>
 #include <sync.h>
 #include <piping.h>
+#include <String.h>
 
 int fd[2];
-typedef void (*functiontype)();
+tSem sem = 0;
+tSem readSem = 0;
+char * string = 0;
 
-void makePiping(void * startingPoint1, void * startingPoint2) {
+void makePiping(void (reader)(), void (writer)(char *), int argcant, char *argv[]) {
+    if(sem == 0)
+        sem = createSem("shell Control");
+    if(readSem == 0)
+        readSem = createSem("read sem");
     if(fd[0] < 10 || fd[1] < 11){
         fd[0] = 10;
         fd[1] = 11;
@@ -17,44 +24,83 @@ void makePiping(void * startingPoint1, void * startingPoint2) {
         fd[0]+=2;
         fd[1]+=2;
     }
-    char * argv1[1];
+    char *argv1[1];
     argv1[0] = 0;
-    char * argv2[1];
+
+    string = argv[0];
+
+    char *argv2[1];
     argv2[0] = 1;
-    exec("piping1", runProgram, readProgram, argv1);
-    exec("piping2", runProgram, writeProgram, argv2);
+
+    printf("\n");
+    //reader
+    exec("piping1", runProgram, writer, argv1);
+    //writer
+    exec("piping2", runProgram, reader, argv2);
     return;
 }
 
-void runProgram(int argc, char ** argv) {
+void runProgram(void (f)(), char *argv[]) {
     pipe(fd);
 
     if(argv[0] == 0) {
+        char *aux[2];
+        aux[1] = argv[1];
         dup(fd[0],0);
+        printf("%s",string);
+        f(string);
     }
     else {
         dup(fd[1], 1);
+        f(0);
+        putChar(-1);
     }
 
-    functiontype f = (argc);
-    f();
     return;
 }
 
-void readProgram() {
-    char c;
-    char message[20];
-    while((c=getChar())) {
-        printf("%c", c);
+void echoInput() {
+
+    printf("\nIm reading from input!");
+    char c = 1;
+    while((c=getCharWithCero())!= -1){
+        putChar(c);
     }
+    printf("Reading is done!");
+    giveControlToShell();
     return;
 }
 
-void writeProgram() {
+void findAndRemark(int argc, char *s[]) {
+    if(argc == 1){
+        string = malloc(50);
+        string = strcpy(string,s[0]);
+    }
+    printf("\nI will remark the string: %s\n", string);
+    char c = 1;
+    char buffer[256];
+    int i = 0;
+    while((c=getChar())!= -1){
+        if(c == string[i]) {
+            buffer[i] = c;
+            i++;
+            if(string[i] == 0) {
+                buffer[i] = 0;
+                printf("[(%s)]", buffer);
+                i = 0;
+            }
+        }
+        else {
+            i = 0;
+            putChar(c);
+        }
+    }
+    if(argc == 1){
+        free(string);
+        string = 0;
+    }
+    printf("Reading is done!");
 
-
-
-    printf("hola como estaas");
-
+    giveControlToShell();
     return;
 }

@@ -21,9 +21,7 @@ void release(tMutex mutex){
 }
 
 tSem createSem(char* semName) {
-    tSem sem;
-    _syscall(_createSem, semName, &sem);
-    return sem;
+    return _syscall(_createSem, semName);
 }
 
 void destroySemaphore(tSem sem) {

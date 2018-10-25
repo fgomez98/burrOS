@@ -153,14 +153,14 @@ void putStrWithSize(char * str, Colour colour, int amount) {
     char c;
     while (i < amount) {
         c=str[i++];
-        buff[j++] = c;
+        if(c != 0)
+            buff[j++] = c;
         if(j == 128) {
             putStrAuxWithSize(buff, colour,j);
             j = 0;
         }
     }
     putStrAuxWithSize(buff, colour,j);
-
 }
 
 void putStrAux(char * str, Colour colour) {

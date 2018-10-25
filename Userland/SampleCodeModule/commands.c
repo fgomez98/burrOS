@@ -1,6 +1,7 @@
 #include "commands.h"
 #include "stdio.h"
 #include <stdint.h>
+#include "stdlib.h"
 #include "VideoModule.h"
 #include "TimeModule.h"
 #include "syscall.h"
@@ -17,27 +18,34 @@ Colour colour5 = {46, 230, 210};
 void help(){
     printf("\nHELP:\n");
     printf("\n");
-    printf("ctrl + c - press anytime to force quit a process\n");
-    printf("& - use comand & comand to execute two comands at the same time\n");
-    printf("backgroundTest - executes a process in background for a limited time. The process will notify when alive and dead");
-    printf("clear - clears screen\n");
-    printf("digitalTime - displays time in digital format. Press c to change colour and q to exit\n");
-    printf("echo-TEXT - displays the TEXT in screen\n");
-    printf("exit - exits current shell and restarts it\n");
-    printf("help - prints a list containing all the available commands and its descriptions\n");
-    printf("invalid opcode - shows how the cero division exception is handled\n");
-    printf("memory - shows bock index in buddy allocation system with it's base adress and final address(exclusive)\n");
-    printf("messages - shows a pipe demostration\n");
-    printf("necesitoquemeapapachen - shows burro\n");
-    printf("philosophers - interactive dinning philosofers problem solution\n");
-    printf("pipesdemo - starts a simple program that creates two processes that say hi to each other using pipes");
-    printf("priority - shows scheduler priority\n");
-    printf("ps - shows information about the current processes in the system\n");
-    printf("sushi - interactive producer vs consumer problem solution with sushi\n");
-    printf("time - displays current time\n");
-    printf("zero division - shows how the cero division exception is handled\n");
-    printf("\nnice [PID] [1-10] - run a program with modified scheduling priority. \nNiceness values range from 1 (least favorable to the process)to 100 (most favorable to the process).\n");
-    printf("\nnice [PID] - prints the process niceness\n");
+    printf("  ctrl + c - press anytime to force quit a process\n");
+    printf("  ctrl + d - press to send EOF\n");
+    printf("  & - use comand & comand to execute two comands at the same time\n");
+    printf("  backgroundTest - executes a process in background for a limited time. The process will notify when alive and dead");
+    printf("  clear - clears screen\n");
+    printf("  digitalTime - displays time in digital format. Press c to change colour and q to exit\n");
+    printf("  echo-TEXT - displays the TEXT in screen\n");
+    printf("  exit - exits current shell and restarts it\n");
+    printf("  help - prints a list containing all the available commands and its descriptions\n");
+    printf("  invalid opcode - shows how the cero division exception is handled\n");
+    printf("  memory - shows bock index in buddy allocation system with it's base adress and final address(exclusive)\n");
+    printf("  messages - shows a pipe demostration\n");
+    printf("  necesitoquemeapapachen - shows burro\n");
+    printf("  philosophers - interactive dinning philosofers problem solution\n");
+    printf("  pipesdemo - starts a simple program that creates two processes that say hi to each other using pipes");
+    printf("  priority - shows scheduler priority\n");
+    printf("  ps - shows information about the current processes in the system\n");
+    printf("  sushi - interactive producer vs consumer problem solution with sushi\n");
+    printf("  time - displays current time\n");
+    printf("  zero division - shows how the cero division exception is handled\n");
+    printf("  nice [PID] [1-10] - run a program with modified scheduling priority. \nNiceness values range from 1 (least favorable to the process)to 100 (most favorable to the process).\n");
+    printf("  nice [PID] - prints the process niceness\n");
+
+    printf(" \n This commands bellow can be used either alone, or to test pipes. You can try 'othercommand | thiscommand'\n");
+    printf("  echoInput - Reads from stdin until it founds EOF\n");
+    printf("  remark (param) - Reads from stdin until it founds EOF and catch the word you send in param in 2 brackets every time you type it\n");
+
+    giveControlToShell();
 }
 
 void cleanScreen(){
@@ -48,6 +56,7 @@ void showTime() {
     printf("\n");
     printf(getTime());
     printf("\n");
+    giveControlToShell();
 }
 
 void showDigitalHour(){
@@ -69,6 +78,7 @@ void showDigitalHour(){
                 break;
             case 'q':
                 cleanScreen();
+                giveControlToShell();
                 return;
                 break;
         }
@@ -84,11 +94,13 @@ int div100(int n) {
 
 void divi(){
     div100(0);
+    giveControlToShell();
 }
 
 
 void showOpcodeExc(){
     opcodeExc();
+    giveControlToShell();
 }
 
 void delay(int i) {
@@ -108,6 +120,7 @@ void ps(){
 
     printf("\n");
     free(buffer);
+    giveControlToShell();
 }
 
 void memory(){
@@ -160,6 +173,8 @@ void showBurro() {
     printf("    /___|          /____|     ,:__| \n");
     printf("   /    /         /    |     /    ) \n");
     printf("   `---'          '----'      `---' \n");
+
+    giveControlToShell();
 }
 
 void stayAlive() {
@@ -170,6 +185,7 @@ void stayAlive() {
         i++;
     }
     printf("i am dead\n");
+    giveControlToShell();
 }
 
 void maDemo(){
@@ -193,6 +209,8 @@ void maDemo(){
 
     printf("The block was freed\n");
     memory();
+
+    giveControlToShell();
 }
 
 int getProcessPriority(int pid) {
@@ -283,5 +301,8 @@ void schedulerDemo() {
         }
         key = 0;
     }
+
+
+    giveControlToShell();
 
 }

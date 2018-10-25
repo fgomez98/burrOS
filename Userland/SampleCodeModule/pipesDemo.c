@@ -22,6 +22,8 @@ void initPipesDemo(){
       running = 0;
     }
   }
+
+  giveControlToShell();
 }
 
 void messenger1(){

@@ -58,3 +58,17 @@ int strlen(const char* str){
     }
     return length;
 }
+
+char* strcpy(char* destination, const char* source) {
+    if (destination == 0) {
+        return 0;
+    }
+    char *ptr = destination;
+    while (*source) {
+        *destination = *source;
+        destination++;
+        source++;
+    }
+    *destination = 0;
+    return ptr;
+}

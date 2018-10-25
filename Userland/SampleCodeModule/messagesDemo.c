@@ -26,7 +26,7 @@ void startMessagesDemo() {
                             printf("%c", c);
                         }
                     }
-                    else {
+                    else if(c > 0 && c < 127){
                         input[i] = c;
                         printf("%c", c);
                         i++;
@@ -59,6 +59,7 @@ void startMessagesDemo() {
             }
         }
     }
+    giveControlToShell();
 }
 
 void writeMessage(int argc, char ** argv) {

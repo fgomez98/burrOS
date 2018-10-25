@@ -256,7 +256,6 @@ int close(int fd) {
 
     if(getListSize(myfd->users) == 1 && containsList(myfd->users, reader->waitingForRead) == 1) {
         unblockProcess(myfd->waitingForRead);
-        putStr("unblock 17a",whiteColor);
     }
     return 1;
 
@@ -268,30 +267,29 @@ int read(int fd, char * msg, int amount) {
 
     if (fd == 0) {
         int processStdInFd = getRunningProcess()->stdIn;
-        if(processStdInFd == 0) {
-            char key;
+        if (processStdInFd == 0) {
+            char key=0;
             int i = 0;
+            //Esto esta mal, porque en la primera lee que no hay nada y retornaba
+            //basura, puse key=0 arriba por las dudas aunque sea retorne 0
             while ((key = getKeyInput()) != 0 && (i < amount)) {
                 msg[i] = key;
                 i++;
             }
             return i;
-        }
-        else {
+        } else{
             myfd = getFd(fdList, processStdInFd);
-            if(!containsList(myfd->users,getRunningPid())) {
-                return -1;
-            }
         }
     }
-    else {
+    else
         myfd = getFd(fdList, fd);
-        if (myfd == NULL)
-            return -1;
 
-        if (!containsList(myfd->users, getRunningPid()))
-            return -1;
-    }
+    if (myfd == NULL)
+        return -1;
+
+    if (!containsList(myfd->users, getRunningPid()))
+        return -1;
+
 
     if(amount > BUFFERSIZE)
         amount = BUFFERSIZE;

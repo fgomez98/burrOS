@@ -69,7 +69,7 @@ void initFilofochos() {
     printf("Press i to start\n");
     char key = 0;
     while (!initialized) {
-        readfd(0,&key,1);
+        key = getChar();
         switch (key) {
             case 'q':
                 running = 0;
@@ -94,7 +94,7 @@ void initFilofochos() {
     key = 0;
     while (running) {
         // key = 0;
-        readfd(0,&key,1);
+        key = getChar();
         switch (key) {
             case 'z':
                 if (filofochosAmount < MAX_FILOSOPHERS) {
@@ -129,6 +129,7 @@ void initFilofochos() {
     for (int i = 0; i < MAX_FILOSOPHERS; i++) {
         destroySemaphore(sem[i]);
     }
+    giveControlToShell();
     return;
 }
 

@@ -23,15 +23,43 @@ void hinchaHuevos() {
 
 Colour white = {255, 255, 255};
 
+
+void processCommand(char * command, char * arg1, char * opMode, char * arg2, char * param){
+
+    sscanf("%s & %s %s",command, arg1,arg2, param);
+    *opMode = '&';
+    if(*arg2 != 0)
+        return;
+
+    *param = 0;
+    sscanf("%s | %s %s",command, arg1,arg2, param);
+    *opMode='|';
+     if(*arg2!=0)
+        return;
+
+    *opMode = 0;
+    *param = 0;
+    sscanf("%s %s",command, arg1,param);
+
+    return;
+}
+
+
 void initializeShell() {
 
+    tSem foreground = createSem("foreground");
     showBurro();
     static char command[MAXLENGTH];
-
     int running = 1;
+    wait(foreground);
     while (running){
+        int argc;
+        char *argv[1];
         char * arg1 = calloc(MAXLENGTH);
+        int flag;
         char * arg2 = calloc(MAXLENGTH);
+        char * param = calloc(MAXLENGTH);
+        char opMode = 0;
         char * echo = calloc(MAXLENGTH);
         char * commandName = calloc(MAXLENGTH);
         char * pid = calloc(10);
@@ -39,139 +67,92 @@ void initializeShell() {
         printf("\n$>");
         scanAndPrint(command);
 
-        sscanf("%s & %s", command, arg1, arg2);
+        sscanf("%s", command);
+        processCommand(command,arg1, &opMode,arg2,param);
 
-        if (*arg2) {
-            if(strcmp("help", arg2) == 0){
-                exec("help",help, 0, 0);
+        if (*param != 0) {
+            argv[0] = param;
+            argc = 1;
+        } else
+            argc = 0;
+
+        if(opMode == '|') {
+            functionType toExecute1 = getFunction(arg1,argc,&flag);
+            functionType toExecute2 = getFunction(arg2,argc,&flag);
+            if (toExecute1 > 0 && toExecute2 > 0) {
+                makePiping(toExecute1, toExecute2, argc, argv);
+                wait(foreground);
+                wait(foreground);
             }
-            else if(strcmp("digitalTime", arg2) == 0){
-                exec("showDigitalHour",showDigitalHour, 0, 0);
-            }
-            else if(strcmp("time", arg2) == 0){
-                exec("showTime",showTime, 0, 0);
-            }
-            else if(strcmp("clear", arg2) == 0){
-                exec("clearScreen",cleanScreen, 0, 0);
-            }
-            else if(strcmp("zeroDivision", arg2) == 0){
-                exec("zeroDiv",divi, 0, 0);
-            }
-            else if(strcmp("invalidOpcode", arg2) == 0){
-                exec("opcodeExc",showOpcodeExc, 0, 0);
-            }
-            else if(strcmp("exit", arg2) == 0){
-                running = 0;
-            }
-            else if(strcmp("ps", arg2) == 0){
-                exec("ps",ps, 0, 0);
-            }
-            else if(strcmp("memory", arg2) == 0){
-                exec("memory",memory, 0, 0);
-            }
-            else if(strcmp("exec", arg2) == 0){
-                int pid = exec("probando",probando, 0, 0);
-            }
-            else if(strcmp("malloc", arg2) == 0){
-                maDemo();
-            } else if (strcmp("sushi", arg2) == 0) {
-                exec("initProdCons",initProdCons, 0, 0);
-            } else if (strcmp("necesitoquemeapapachen", arg2) == 0) {
-                exec("burro",showBurro, 0, 0);
-            } else if (strcmp("backgroundTest", arg2) == 0) {
-                exec("backgroundTest", stayAlive, 0, 0);
-            } else if (strcmp("messages", arg2) == 0) {
-                exec("message",startMessagesDemo, 0, 0);
-            } else if (strcmp("pipesdemo", arg1) == 0){
-                exec("pipesdemo",initPipesDemo,0,0);
-            } else{
+            else {
                 printf("\nUnknown command, type help\n");
                 continue;
             }
-        } if (*arg1) {
-            if(strcmp("help", arg1) == 0){
-                help();
-            }
-            else if(strcmp("digitalTime", arg1) == 0){
-                showDigitalHour();
-            }
-            else if(strcmp("time", arg1) == 0){
-                showTime();
-            }
-            else if(strcmp("clear", arg1) == 0){
-                cleanScreen();
-            }
-            else if(strcmp("zeroDivision", arg1) == 0){
-                divi();
-            }
-            else if(strcmp("invalidOpcode", arg1) == 0){
-                showOpcodeExc();
-            }
-            else if(strcmp("exit", arg1) == 0){
-                running = 0;
-            }
-            else if(strcmp("ps", arg1) == 0){
-                // exec("probando",probando, 0, 0);
-                exec("ps",ps, 0, 0);
-                //ps();
-            }
-            else if(strcmp("memory", arg1) == 0){
-                memory();
-            }
-            else if(strcmp("exec", arg1) == 0){
-                int pid = exec("probando",probando, 0, 0);
-            }
-            else if(strcmp("malloc", arg1) == 0){
-                maDemo();
-            } else if (strcmp("sushi", arg1) == 0) {
-                initProdCons();
-            } else if (strcmp("necesitoquemeapapachen", arg1) == 0) {
-                showBurro();
-            } else if (strcmp("backgroundTest", arg1) == 0) {
-                exec("backgroundTest", stayAlive, 0, 0);
-                printf("\n");
-            } else if (strcmp("messages", arg1) == 0) {
-                exec("startMessagesDemo",startMessagesDemo,0,0);
-                delay(200);
-            } else if (strcmp("circle", arg1) == 0) {
-                DrawFilledCircle(200, 200, 80, white);
-                //drawCircle(200, 200, 80, white);
-                printf("\n");
-            } else if (strcmp("line", arg1) == 0) {
-                line_fast(200, 200, 540, 800, white);
-                printf("\n");
-            } else if (strcmp("philosophers", arg1) == 0) {
-                initFilofochos();
-            } else if (strcmp("test", arg1) == 0) {
-                exec("hinchaHuevos", hinchaHuevos, 0, 0);
-            } else if (sscanf("echo-%s",arg1,echo)){
-              printf("\n%s\n", echo);
-            } else if (strcmp("pipe", arg1) == 0) {
-                makePiping(writeProgram, readProgram);
-            } else if (strcmp("priority", arg1) == 0) {
-                schedulerDemo();
-            }  else if (strcmp("pipesdemo", arg1) == 0){
-              initPipesDemo();
-            } else{
-                sscanf("%s %s %s", command, commandName, pid, niceness);
-                if(strcmp("nice", commandName) == 0){
-                    if(*pid == 0){
-                        printf("\nSyntax error. Command syntax should be: nice [pid] [1-10] to adjust niceness or nice [pid] to get process priority\n");
-                    }
-                    else if (*niceness == 0){
+        }
+        else {
+            if (*arg2) {
+                functionType toExecute = getFunction(arg2,argc,&flag);
+                if(toExecute > 0) {
+                    exec(arg1,toExecute,argc,argv);
+                    wait(foreground);
+                }
+                else if(flag == -1){
+                    running = 0;
+                }
+                else {
+                    sscanf("%s %s %s", command, commandName, pid, niceness);
+                    if (strcmp("nice", commandName) == 0) {
+                        if (*pid == 0) {
+                            printf("\nSyntax error. Command syntax should be: nice [pid] [1-10] to adjust niceness or nice [pid] to get process priority\n");
+                        } else if (*niceness == 0) {
 
-                        getProcessPriorityShell(pid);
+                            getProcessPriorityShell(pid);
+                        } else {
+                            niceShell(pid, niceness);
+                        }
+
+                    } else if (flag == 0) {
+                        printf("\nUnknown command, type help\n");
+                        continue;
                     }
-                    else{
-                        niceShell(pid, niceness);
+                    else if(flag == -2) {
+                        printf("\nParameter missing.\n");
+                        continue;
                     }
 
                 }
-                else{
-                    printf("\nUnknown command, type help\n");
-                    continue;
+            }
+            if (*arg1) {
+                functionType toExecute = getFunction(arg1,argc,&flag);
+                if(toExecute > 0) {
+                    exec(arg1,toExecute,argc,argv);
+                    wait(foreground);
                 }
-                
+                else if(flag == -1){
+                    running = 0;
+                }
+                else {
+                    sscanf("%s %s %s", command, commandName, pid, niceness);
+                    if (strcmp("nice", commandName) == 0) {
+                        if (*pid == 0) {
+                            printf("\nSyntax error. Command syntax should be: nice [pid] [1-10] to adjust niceness or nice [pid] to get process priority\n");
+                        } else if (*niceness == 0) {
+
+                            getProcessPriorityShell(pid);
+                        } else {
+                            niceShell(pid, niceness);
+                        }
+
+                    } else if (flag == 0) {
+                        printf("\nUnknown command, type help\n");
+                        continue;
+                    }
+                    else if(flag == -2) {
+                        printf("\nParameter missing.\n");
+                        continue;
+                    }
+
+                }
             }
         }
         free(arg1);
@@ -179,8 +160,78 @@ void initializeShell() {
         free(echo);
         free(commandName);
         free(pid);
+        free(param);
         free(niceness);
     }
     printf("\n\n\nSee you soon!");
 
+}
+
+
+
+functionType getFunction(char * arg, int argc,int * flag){
+    *flag = 0;
+    if (strcmp("help", arg) == 0) {
+        return help;
+    } else if (strcmp("digitalTime", arg) == 0) {
+        return showDigitalHour;
+    } else if (strcmp("time", arg) == 0) {
+        return showTime;
+    } else if (strcmp("clear", arg) == 0) {
+        cleanScreen();
+        *flag = 1;
+        return 0;
+    } else if (strcmp("zeroDivision", arg) == 0) {
+        return divi;
+    } else if (strcmp("invalidOpcode", arg) == 0) {
+        return showOpcodeExc;
+    } else if (strcmp("exit", arg) == 0) {
+        *flag = -1;
+        return 0;
+    } else if (strcmp("ps", arg) == 0) {
+        return ps;
+    } else if (strcmp("memory", arg) == 0) {
+        return memory;
+    } else if (strcmp("exec", arg) == 0) {
+        return probando;
+    } else if (strcmp("malloc", arg) == 0) {
+        return maDemo;
+    } else if (strcmp("sushi", arg) == 0) {
+        return initProdCons;
+    } else if (strcmp("necesitoquemeapapachen", arg) == 0) {
+        return showBurro;
+    } else if (strcmp("backgroundTest", arg) == 0) {
+        return stayAlive;
+    } else if (strcmp("messages", arg) == 0) {
+        return startMessagesDemo;
+    } else if (strcmp("circle", arg) == 0) {
+        DrawFilledCircle(200, 200, 80, white);
+        //drawCircle(200, 200, 80, white);
+        printf("\n");
+        *flag = 1;
+        return 0;
+    } else if (strcmp("line", arg) == 0) {
+        line_fast(200, 200, 540, 800, white);
+        printf("\n");
+        *flag = 1;
+        return 0;
+    } else if (strcmp("philosophers", arg) == 0) {
+        return initFilofochos;
+    } else if (strcmp("test", arg) == 0) {
+        return hinchaHuevos;
+    }else if (strcmp("priority", arg) == 0) {
+        return schedulerDemo;
+    } else if (strcmp("pipesdemo", arg) == 0) {
+        return initPipesDemo;
+    } else if (strcmp("echoInput", arg) == 0) {
+        return echoInput;
+    } else if (strcmp("remark", arg) == 0) {
+        if(argc == 0) {
+            printf("retorno -1");
+            *flag = -2;
+            return 0;
+        }
+        return findAndRemark;
+    }
+    return 0;
 }

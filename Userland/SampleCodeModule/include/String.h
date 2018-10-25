@@ -6,7 +6,7 @@ int itos(char*str, int num);
 
 /*Returns the amount of digits of the number passed by parameter*/
 int numlength(int num);
-
+char* strcpy(char* destination, const char* source);
 /*Returns the length of the string passed by parameter*/
 // int strlen(const char* str);
 
