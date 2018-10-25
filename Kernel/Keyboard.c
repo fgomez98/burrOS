@@ -79,4 +79,5 @@ void addToBuffer(char input) {
     buffer[putIndex] = input;
     putIndex = (putIndex+1)%SIZE;
     size++;
+//write(0, &input, 1);
 }

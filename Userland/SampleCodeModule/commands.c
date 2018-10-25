@@ -58,7 +58,6 @@ void showDigitalHour(){
     char key = 0;
     int j = 0;
     while (1) {
-//        key = 0;
         _syscall(_read, &key);
         switch (key) {
             case 'c': //hotkey
@@ -244,7 +243,7 @@ void process(int id) {
         delay(5000);
         delay(5000);
         delay(5000);
-        printf("\nI am number %d priority: %d\n", id, getProcessPriority(pid));
+        printf("\nI am number %d. My priority is: %d\n", id, getProcessPriority(pid));
     }
 }
 
@@ -252,6 +251,7 @@ void schedulerDemo() {
     printf("\nSCHEDULER PRIORITY DEMO\n");
     printf("\nPress 'i' to increase process 1 priority\n");
     printf("\nPress 'd' to decrease process 1 priority\n");
+    printf("\n\nKeep in mind process' 2 priority stays in 1 throughout the demo\n");
     int processId = 1;
     int p1Pid = exec("process 1", process, processId++, 0);
     int p2Pid = exec("process 2", process, processId, 0);
