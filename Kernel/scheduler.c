@@ -13,7 +13,6 @@ static queueADT blocked; // cola de procesos bloqueados //TODO: prioridad a proc
 static tProcess * running; // puntero al proceso que se esta corriendo en este momento
 //static tProcess * halting;
 
-//TODO: si hay un proceso de prioridad mas alta ejecutamos ese, expulsando al que esta corriendo ahora?
 
 void yield() {
     _yield();
@@ -41,10 +40,9 @@ void addAll(queueADT dst, queueADT src) {
 }
 
 void addProcess(tProcess * p) {
-    p->state = READY; // es necesario??
+    p->state = READY;
     p->quantumTime = 0;
     push(ready, p);
-    //        yield();
 }
 
 tProcess * removeProcess(int pid) {
@@ -83,8 +81,6 @@ void nice(int pid, int priority) {
         }
     }
     //_sti();
-    //TODO: si queremos desalojar al proceso que esta corriendo ahora para correr uno de prioridad superior entoces
-    // yield();
 }
 
 void ageRunningProcess() {// TODO: ver que onda con el proceso padre aka shell
@@ -95,10 +91,10 @@ void ageRunningProcess() {// TODO: ver que onda con el proceso padre aka shell
 
 void blockProcess(int pid) { //TODO: solamente se bloquean los procesos que estan correindo, quitar parametro pid
     //_cli();
-    //        putStr("Block: ", green);
-    //        uintToBase(pid, buff, 10);
-    //        putStr(buff, yellow);
-    //        putChar('\n', yellow);
+//            putStr("Block: ", green);
+//            uintToBase(pid, buff, 10);
+//            putStr(buff, yellow);
+//            putChar('\n', yellow);
     // running->state = WAITING;
     changeProcessState(pid, WAITING);
     //     _sti();
@@ -107,10 +103,10 @@ void blockProcess(int pid) { //TODO: solamente se bloquean los procesos que esta
 
 int unblockProcess(int pid) {
     //_cli();
-    //        putStr("Volvi: ", green);
-    //        uintToBase(pid, buff, 10);
-    //        putStr(buff, yellow);
-    //        putChar('\n', yellow);
+//            putStr("Volvi: ", green);
+//            uintToBase(pid, buff, 10);
+//            putStr(buff, yellow);
+//            putChar('\n', yellow);
     tProcess * elem = mallocMemory(sizeof(tProcess));
     elem->pid = pid;
     tProcess * aux = removeElem(blocked, elem);
@@ -162,7 +158,7 @@ void sort(tProcess * p, pState state) {
         case DEAD:
             p->state = DEAD;
             // y que dsp el scheduler se encargue de borrarlo sino running apunta a cualquier cosa y cagamo
-            // si lo saco de la colas es que no esta corriendo puedo borrarlo directo
+            // si lo saco de la colass es que no esta corriendo puedo borrarlo directo
             deleteProcess(p);
             //putStr("CASO DEAD EN SORT", green);
             //push(ready, p);
@@ -175,7 +171,7 @@ void sort(tProcess * p, pState state) {
     }
 }
 
-tProcess * getProcessState(int pid) { //TODO: esta mal el nombre de la funcion, retoran el proceso no el estado. Quien la usa??
+tProcess * getProcessState(int pid) { 
     if (running->pid == pid) {
         return running;
     }
@@ -205,6 +201,11 @@ void scheduler() {
         //push(ready, running);
         addProcess(running);
     }
+//    if (getSize(ready) == 0) {
+//        running = halting;
+//        running->state = RUNNING;
+//        return;
+//    }
     while ((running = pop(ready))->state != READY) {
         if (running->state == DEAD) {
             putStr("SCHEDULER ENCONTRO UN PROCESSO EN DEAD", green); //TODO: esta al re pedo
@@ -254,7 +255,7 @@ void init_(void * startingPoint) {
     blocked = newQueue(sizeof(tProcess), cmpProcess);
     
     //HALT PROCESS
-    // halting = createProcess("halter", halter, 0, 0, NULL);
+//    halting = createProcess("halter", halter, 0, 0, NULL);
     
     //RUN FIRST PROCESS
     running = createProcess("theGodFather", startingPoint, 0, 0, NULL);

@@ -54,7 +54,6 @@ void showDigitalHour(){
     char key = 0;
     int j = 0;
     while (1) {
-//        key = 0;
         _syscall(_read, &key);
         switch (key) {
             case 'c': //hotkey

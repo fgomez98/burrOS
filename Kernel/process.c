@@ -46,6 +46,7 @@ tProcess * createProcessWithDup(char* processName,void* startingPoint, int paren
 }
 
 void runProcess(int argc, char * argv[], void * startingPoint) { // por orden de como se levantan los argumentos
+//    open(0);
     ((int (*)(int, void**))(startingPoint))(argc, argv);
     _killCurrentProcess();
 }

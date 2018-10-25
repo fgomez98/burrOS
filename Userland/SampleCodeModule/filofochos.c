@@ -69,7 +69,6 @@ void initFilofochos() {
     printf("Press i to start\n");
     char key = 0;
     while (!initialized) {
-        //key = 0;
         _syscall(_read, &key);
         switch (key) {
             case 'q':
