@@ -79,9 +79,38 @@ void findAndRemark(int argc, char *s[]) {
     char c = 1;
     char buffer[256];
     int i = 0;
+    int aux = 0;
     while((c=getChar())!= -1){
-        if(c != '\b' && c != string[i])
+        putChar(c);
+        if (c == '\b') {
+            if (i > 0)
+                i--;
+        } else {
+            buffer[i++] = c;
+            buffer[i] = 0;
+            int j = 0;
+            while(buffer[j] == string[j] && j < i) {
+                j++;
+            }
+            if (string[j] == 0) {
+                int del = 0;
+                while (del < i) {
+                    deleteChar();
+                    del++;
+                }
+                printf("[(%s)]", buffer);
+                i = 0;
+            }
+            else if(j < i){
+                i = 0;
+                if(c == string[0])
+                    i++;
+            }
+        }
+
+       /* if(c != '\b' && c != string[i]) {
             i = 0;
+        }
         if(c == string[i]) {
             buffer[i++] = c;
             putChar(c);
@@ -97,12 +126,13 @@ void findAndRemark(int argc, char *s[]) {
             }
         }
         else if (c == '\b') {
-            if(i>0)
+            if(i>0) {
                 i--;
+            }
             putChar(c);
         }
         else
-            putChar(c);
+            putChar(c);*/
     }
     if(argc == 1){
         free(string);
