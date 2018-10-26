@@ -100,10 +100,10 @@ void initProdCons() { //TODO:matar procesos no esta funcionando bien
         drawSushiState(countSushiMan(), countMonster());
     }
     clearSushiState(sushiManCount, monsterCount);
-    printf("\nGame Over\n");
+    printf("\nGame Over\n");/*
     destroyMutex(buffMutex);
     destroySemaphore(finish);
-    destroySemaphore(items);
+    destroySemaphore(items);*/
 
     giveControlToShell();
     return;

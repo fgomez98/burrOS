@@ -47,13 +47,16 @@ void runProgram(void (f)(), char *argv[]) {
         char *aux[2];
         aux[1] = argv[1];
         dup(fd[0],0);
-        printf("%s",string);
+        close(fd[1]);
         f(string);
+        close(fd[0]);
     }
     else {
         dup(fd[1], 1);
+        close(fd[0]);
         f(0);
         putChar(-1);
+        close(fd[1]);
     }
 
     return;
@@ -61,7 +64,7 @@ void runProgram(void (f)(), char *argv[]) {
 
 void echoInput() {
 
-    printf("\nIm reading from input!");
+    printf("\nIm reading from input!\n");
     char c = 1;
     while((c=getCharWithCero())!= -1){
         putChar(c);
@@ -80,20 +83,60 @@ void findAndRemark(int argc, char *s[]) {
     char c = 1;
     char buffer[256];
     int i = 0;
+    int aux = 0;
     while((c=getChar())!= -1){
+        putChar(c);
+        if (c == '\b') {
+            if (i > 0)
+                i--;
+        } else {
+            buffer[i++] = c;
+            buffer[i] = 0;
+            int j = 0;
+            while(buffer[j] == string[j] && j < i) {
+                j++;
+            }
+            if (string[j] == 0) {
+                int del = 0;
+                while (del < i) {
+                    deleteChar();
+                    del++;
+                }
+                printf("[(%s)]", buffer);
+                i = 0;
+            }
+            else if(j < i){
+                i = 0;
+                if(c == string[0])
+                    i++;
+            }
+        }
+
+       /* if(c != '\b' && c != string[i]) {
+            i = 0;
+        }
         if(c == string[i]) {
-            buffer[i] = c;
-            i++;
+            buffer[i++] = c;
+            putChar(c);
             if(string[i] == 0) {
                 buffer[i] = 0;
+                int j = 0;
+                while(j < i) {
+                    deleteChar();
+                    j++;
+                }
                 printf("[(%s)]", buffer);
                 i = 0;
             }
         }
-        else {
-            i = 0;
+        else if (c == '\b') {
+            if(i>0) {
+                i--;
+            }
             putChar(c);
         }
+        else
+            putChar(c);*/
     }
     if(argc == 1){
         free(string);

@@ -103,8 +103,10 @@ int pipe(int fd[]) {
     if(fd == NULL || fd[0] == NULL || fd[1] == NULL || fd[0] == 1 || fd[1] == 1 || fd[0] == 0 ||fd[1] == 0)
         return -1;
 
+
     fileDecryptor * myfd1 = getFd(fdList, fd[0]);
     fileDecryptor * myfd2 = getFd(fdList, fd[1]);
+
     if(myfd1 == NULL || myfd2 == NULL) {
         if(myfd1 != NULL && myfd1->pipefd != -1)
             return -1;
@@ -112,6 +114,7 @@ int pipe(int fd[]) {
             return -1;
 
         createPipeLink(fd[0], fd[1]);
+
         return 1;
     }
     else if(pipeAlreadyExists(myfd1,myfd2)) {
@@ -120,7 +123,6 @@ int pipe(int fd[]) {
         return 1;
     }
     else if(myfd1->pipefd == -1 && myfd2->pipefd == -1) {
-
         myfd1->pipefd = myfd2->fd;
         myfd2->pipefd = myfd1->fd;
 
@@ -239,24 +241,13 @@ void printfd(){
 
 int close(int fd) {
     fileDecryptor * myfd = getFd(fdList, fd);
+    if(myfd == NULL)
+        return 0;
     if(removeElemList(myfd->users, getRunningPid()) == NULL)
         return 0;
-    if(myfd->pipefd == -1 && getListSize(myfd->users) == 0) {
-        freeMemory(myfd->buffer);
-        freeList(myfd->users);
-        adquire(listMutex);
-        removeElemList(fdList, myfd);
-        release(listMutex);
-        return 1;
-    }
 
-    fileDecryptor * reader = myfd;
-    if(myfd->pipefd != -1)
-        reader = getFd(fdList, myfd->pipefd);
+    //Faltaria un caso en que uno se quede leyendo solo y el de borrar el fd de la lista, despuse lo vemos
 
-    if(getListSize(myfd->users) == 1 && containsList(myfd->users, reader->waitingForRead) == 1) {
-        unblockProcess(myfd->waitingForRead);
-    }
     return 1;
 
 }
@@ -296,8 +287,6 @@ int read(int fd, char * msg, int amount) {
 
     adquire(myfd->readMutex);
     adquire(myfd->useMutex);
-
-    /* Si no hay nada para escribir y no hay nadie que escriba, o hay alguien y soy yo no me bloqueo*/
 
     int readBytes = availableToRead(myfd);
     if(readBytes <= 0) {

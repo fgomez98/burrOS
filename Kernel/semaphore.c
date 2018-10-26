@@ -102,3 +102,12 @@ void post(sem * s) {
    // _sti();
 }
 
+int isBlocked(sem * s){
+    adquire(s->lock);
+    if(getSize(s->queue) > 0){
+        release(s->lock);
+        return 1;
+    }
+    release(s->lock);
+    return 0;
+}

@@ -2,6 +2,7 @@
 #include "VideoDriver.h"
 #include "ScanCodes.h"
 #include "scheduler.h"
+#include "semaphore.h"
 #include "Keyboard.h"
 #define FALSE 0
 #define TRUE 1
@@ -54,6 +55,10 @@ void Keyboard_Handler() { // once a key is pressed, it calls an interrupton whic
             input = getAsciiCode(scan);
             switch (input) {
                 case 'c': {
+                    //Devuelve el control a la consola
+                    sem * foreground = getSem("foreground");
+                    while(isBlocked(foreground))
+                        post(foreground);
                     kill(getRunningPid());
                     break;
                 }

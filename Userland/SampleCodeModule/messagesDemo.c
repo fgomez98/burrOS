@@ -7,9 +7,8 @@
 
 void startMessagesDemo() {
     int fd[2];
-    fd[0] = 31;
+    fd[0] = 998;
     fd[1] = 999;
-    pipe(fd);
     writeWelcomeMessage();
     char * pipeName = "thisIsADemoPipe";
     char c;
@@ -36,6 +35,7 @@ void startMessagesDemo() {
                     printf("Nothing to write\n");
                     break;
                 }
+                input[i] = 0;
                 printf("\n");
                 char * argv[1];
                 argv[0] = input;
@@ -64,23 +64,27 @@ void startMessagesDemo() {
 
 void writeMessage(int argc, char ** argv) {
     int fd[2];
-    fd[0] = 31;
+    fd[0] = 998;
     fd[1] = 999;
     pipe(fd);
+    close(fd[0]);
     write(fd[1], argv[0],argc);
     printf("I wrote %s\n", argv[0]);
+    close(fd[1]);
 }
 
 void readMessage(int argc, char ** argv) {
     int fd[2];
-    fd[0] = 31;
+    fd[0] = 998;
     fd[1] = 999;
     pipe(fd);
+    close(fd[1]);
     int amount = argc;
-    char buffer[amount];
+    char buffer[amount+1];
     int a = readfd(fd[0], buffer,amount);
     buffer[a] = '\0';
     printf("I read %d bytes: %s\n",a, buffer);
+    close(fd[0]);
 }
 
 void writeWelcomeMessage() {

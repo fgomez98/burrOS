@@ -15,9 +15,9 @@ void initPipesDemo(){
   exec("messenger1",messenger1,0,0);
   exec("messenger2",messenger2,0,0);
 
+  char c;
   while (running){
-    char c;
-    readfd(0,&c,1);
+    c = getChar();
     if(c == 'q'){
       running = 0;
     }
@@ -27,9 +27,9 @@ void initPipesDemo(){
 }
 
 void messenger1(){
-  fd1[0] = 40;
+  fd1[0] = 898;
   fd1[1] = 900;
-  fd2[0] = 41;
+  fd2[0] = 899;
   fd2[1] = 901;
 
   pipe(fd1);
@@ -49,9 +49,9 @@ void messenger1(){
 }
 
 void messenger2(){
-  fd1[0] = 40;
+  fd1[0] = 898;
   fd1[1] = 900;
-  fd2[0] = 41;
+  fd2[0] = 899;
   fd2[1] = 901;
 
   pipe(fd1);

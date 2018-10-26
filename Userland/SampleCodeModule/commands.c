@@ -21,7 +21,7 @@ void help(){
     printf("  ctrl + c - press anytime to force quit a process\n");
     printf("  ctrl + d - press to send EOF\n");
     printf("  & - use comand & comand to execute two comands at the same time\n");
-    printf("  backgroundTest - executes a process in background for a limited time. The process will notify when alive and dead");
+    printf("  backgroundTest - executes a process in background for a limited time. The process will notify when alive and dead\n");
     printf("  clear - clears screen\n");
     printf("  digitalTime - displays time in digital format. Press c to change colour and q to exit\n");
     printf("  echo TEXT - displays the TEXT in screen\n");
@@ -32,7 +32,7 @@ void help(){
     printf("  messages - shows a pipe demostration\n");
     printf("  necesitoquemeapapachen - shows burro\n");
     printf("  philosophers - interactive dinning philosofers problem solution\n");
-    printf("  pipesdemo - starts a simple program that creates two processes that say hi to each other using pipes");
+    printf("  pipesdemo - starts a simple program that creates two processes that say hi to each other using pipes\n");
     printf("  priority - shows scheduler priority\n");
     printf("  ps - shows information about the current processes in the system\n");
     printf("  sushi - interactive producer vs consumer problem solution with sushi\n");
@@ -129,6 +129,7 @@ void memory(){
     _syscall(_sprintMemory, buffer, 3000);
     printf("%s",buffer);
     free(buffer);
+    giveControlToShell();
 }
 
 void showBurro() {
@@ -185,7 +186,6 @@ void stayAlive() {
         i++;
     }
     printf("i am dead\n");
-    giveControlToShell();
 }
 
 void maDemo(){

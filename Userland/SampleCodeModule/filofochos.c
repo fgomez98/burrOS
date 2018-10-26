@@ -1,4 +1,5 @@
 #include "filofochos.h"
+#include "stdlib.h"
 #define MIDX XRESOLUTION/2
 #define MIDY YRESOLUTION/2
 #define abs(x) (((x)<0) ? -(x) : (x))
@@ -11,7 +12,7 @@
 char * semNames[MAX_FILOSOPHERS] = {"philosophersSem1", "philosophersSem2", "philosophersSem3", "philosophersSem4", "philosophersSem5", "philosophersSem6"};
 static tMutex mutex;
 static tSem sem[MAX_FILOSOPHERS];
-static tSem finish;
+//static tSem finish;
 static int running;
 static int filofochosAmount;
 static int goToSleep;
@@ -20,24 +21,26 @@ static Colour white = {255, 255, 255};
 static Colour black = {0,0,0};
 
 static Colour filofochoColours[] = {
-    {100, 100, 255},
-    {180, 40, 18},
-    {100, 1000, 255},
-    {50, 50, 280},
-    {70, 0, 94},
-    {255, 165, 0}
+        {100, 100, 255},
+        {180, 40, 18},
+        {100, 1000, 255},
+        {50, 50, 280},
+        {70, 0, 94},
+        {255, 165, 0}
 };
 
 int philState[MAX_FILOSOPHERS] = {THINKING, THINKING, THINKING, THINKING, THINKING, THINKING};
 
 static Colour forks[MAX_FILOSOPHERS] = {
-    {255, 255, 255},
-    {255, 255, 255},
-    {255, 255, 255},
-    {255, 255, 255},
-    {255, 255, 255},
-    {255, 255, 255},
+        {255, 255, 255},
+        {255, 255, 255},
+        {255, 255, 255},
+        {255, 255, 255},
+        {255, 255, 255},
+        {255, 255, 255},
 };
+
+void philospher(int id);
 
 //TODO: hace falta mostrar cuadno los filosofos tienen hambre??, se pone medio inentendible el dibujo
 void initFilofochos() {
@@ -46,8 +49,8 @@ void initFilofochos() {
     goToSleep = 0;
     char initialized = 0;
     mutex = createMutex(FILOMUTEX);
-    finish = createSem(FINISH);
-    char waitCant = 0;
+//    finish = createSem(FINISH);
+//    char waitCant = 0;
     for (int i = 0; i < MAX_FILOSOPHERS; i++) {
         forks[i] = white;
     }
@@ -69,7 +72,8 @@ void initFilofochos() {
     printf("Press i to start\n");
     char key = 0;
     while (!initialized) {
-        key = getChar();
+        key = 0;
+        _syscall(_read, &key);
         switch (key) {
             case 'q':
                 running = 0;
@@ -89,12 +93,10 @@ void initFilofochos() {
                 drawTable();
                 break;
         }
-        key = 0;
     }
-    key = 0;
     while (running) {
-        // key = 0;
-        key = getChar();
+        key = 0;
+        _syscall(_read, &key);
         switch (key) {
             case 'z':
                 if (filofochosAmount < MAX_FILOSOPHERS) {
@@ -113,24 +115,17 @@ void initFilofochos() {
                 }
                 break;
             case 'q':
-                waitCant = filofochosAmount;
+//                waitCant = filofochosAmount;
                 running = 0;
                 break;
-            }
-        key = 0;
+        }
     }
-    for (int i = 0; i < waitCant; i++) {
-        wait(finish);
-        drawTable();
-    }
+//    for (int i = 0; i < waitCant; i++) {
+////        wait(finish);
+////        drawTable();
+//    }
     cleanScreen();
-    destroyMutex(mutex);
-    destroySemaphore(finish);
-    for (int i = 0; i < MAX_FILOSOPHERS; i++) {
-        destroySemaphore(sem[i]);
-    }
     giveControlToShell();
-    return;
 }
 
 int left(int i) {
@@ -166,7 +161,7 @@ void test(int id) {
         drawFilofochos();
         drawForks();
         post(sem[id]);
-    } 
+    }
 }
 
 void take_fork(int id) {
@@ -197,16 +192,16 @@ void philospher(int id) {
         eat();
         put_fork(id);
     }
-        // al hacer put fork tmb lo marca en thinking y el fork en blanco
+    // al hacer put fork tmb lo marca en thinking y el fork en blanco
     adquire(mutex);
     goToSleep = 0;
     clearTable();
     filofochosAmount--;
     drawTable();
     release(mutex);
-   if (!running) {
-       post(finish);
-      // clearTable();
+    if (!running) {
+//       post(finish);
+        clearTable();
     }
 }
 
@@ -326,7 +321,7 @@ void drawForks() {
             drawFork(forks[3], MIDX - 50, MIDX - 50, MIDY - 250, MIDY - 180);
             break;
     }
-    
+
 }
 
 void clearForks() {
@@ -362,7 +357,7 @@ void clearForks() {
             drawFork(black, MIDX - 50, MIDX - 50, MIDY - 250, MIDY - 180);
             break;
     }
-    
+
 }
 
 void drawTable() {

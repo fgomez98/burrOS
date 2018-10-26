@@ -6,5 +6,6 @@ typedef void (*functionType)();
 void initializeShell();
 void processCommand(char * command, char * arg1, char * opMode, char * arg2, char * param);
 functionType getFunction(char * arg, int argc,char * param, int * flag);
+int execFunction(char * arg, int argc, char * param);
 
 #endif
