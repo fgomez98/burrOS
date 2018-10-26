@@ -129,6 +129,7 @@ void memory(){
     _syscall(_sprintMemory, buffer, 3000);
     printf("%s",buffer);
     free(buffer);
+    giveControlToShell();
 }
 
 void showBurro() {
