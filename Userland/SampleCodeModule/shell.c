@@ -93,8 +93,9 @@ void initializeShell() {
             if (*arg2) {
                 functionType toExecute = getFunction(arg2,argc,param,&flag);
                 if(toExecute > 0) {
-                    exec(arg1,toExecute,argc,argv);
-                    wait(foreground);
+                    exec(arg2,toExecute,argc,argv);
+                    if(flag == 0)
+                        wait(foreground);
                 }
                 else if(flag == -1){
                     running = 0;
@@ -123,7 +124,7 @@ void initializeShell() {
                 }
             }
             if (*arg1) {
-                int flag = executeFunctionFromShell(arg1,argc,param);
+                flag = executeFunctionFromShell(arg1,argc,param);
                 if(flag == 0)
                     wait(foreground);
                 else if(flag == -1){
@@ -238,6 +239,10 @@ functionType getFunction(char * arg, int argc, char * param, int * flag){
     } else if (strcmp("digitalTime", arg) == 0) {
         return showDigitalHour;
     } else if (strcmp("echo", arg) == 0) {
+        if(*param == 0){
+            *flag = -2;
+            return 0;
+        }
         printf("\n%s",param);
         *flag = 1;
         return 0;
