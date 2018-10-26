@@ -183,7 +183,7 @@ int executeFunctionFromShell(char * arg, int argc, char * param){
         if(argc == 0)
             return -2;
         printf("\n%s",param);
-        return 1;
+        return 2;
     } else if (strcmp("time", arg) == 0) {
         showTime();
         return 1;
@@ -291,6 +291,10 @@ functionType getFunction(char * arg, int argc, char * param, int * flag){
     } else if (strcmp("echoInput", arg) == 0) {
         return echoInput;
     } else if (strcmp("remark", arg) == 0) {
+        if(argc == 0){
+            *flag = -2;
+            return 0;
+        }
         return findAndRemark;
     }
     return 0;
