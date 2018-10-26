@@ -186,7 +186,6 @@ void stayAlive() {
         i++;
     }
     printf("i am dead\n");
-    giveControlToShell();
 }
 
 void maDemo(){

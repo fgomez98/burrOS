@@ -123,15 +123,13 @@ void initializeShell() {
                 }
             }
             if (*arg1) {
-                functionType toExecute = getFunction(arg1,argc,param,&flag);
-                if(toExecute > 0) {
-                    exec(arg1,toExecute,argc,argv);
+                int flag = executeFunctionFromShell(arg1,argc,param);
+                if(flag == 0)
                     wait(foreground);
-                }
                 else if(flag == -1){
                     running = 0;
                 }
-                else {
+                else{
                     sscanf("%s %s %s", command, commandName, pid, niceness);
                     if (strcmp("nice", commandName) == 0) {
                         if (*pid == 0) {
@@ -143,11 +141,11 @@ void initializeShell() {
                             niceShell(pid, niceness);
                         }
 
-                    } else if (flag == 0) {
+                    } else if (flag == -2) {
                         printf("\nUnknown command, type help\n");
                         continue;
                     }
-                    else if(flag == -2) {
+                    else if(flag == -3) {
                         printf("\nParameter missing.\n");
                         continue;
                     }
@@ -168,7 +166,71 @@ void initializeShell() {
 }
 
 
+//Si devuelve 1 no hago wait(foreground)
+int executeFunctionFromShell(char * arg, int argc, char * param){
+    if (strcmp("help", arg) == 0) {
+        exec("help",help,0,0);
+        return 0;
+    } else if (strcmp("digitalTime", arg) == 0) {
+        exec("showDigitalHour",showDigitalHour,0,0);
+        return 0;
+    } else if (strcmp("echo", arg) == 0) {
+        if(*param == 0)
+            return -3;
+        printf("\n%s",param);
+        return 1;
+    } else if (strcmp("time", arg) == 0) {
+        return showTime;
+    } else if (strcmp("clear", arg) == 0) {
+        exec("cleanScreen",cleanScreen,0,0);
+        return 1;
+    } else if (strcmp("zeroDivision", arg) == 0) {
+        exec("divi",divi,0,0);
+        return 0;
+    } else if (strcmp("invalidOpcode", arg) == 0) {
+        exec("showOpcodeExc",showOpcodeExc,0,0);
+        return 0;
+    } else if (strcmp("exit", arg) == 0) {
+        return -1;
+    } else if (strcmp("ps", arg) == 0) {
+        exec("ps",ps,0,0);
+        return ps;
+    } else if (strcmp("memory", arg) == 0) {
+        exec("memory",memory,0,0);
+        return 0;
+    } else if (strcmp("sushi", arg) == 0) {
+        exec("initProdCons",initProdCons,0,0);
+        return 0;
+    } else if (strcmp("necesitoquemeapapachen", arg) == 0) {
+        exec("showBurro",showBurro,0,0);
+        return 0;
+    } else if (strcmp("backgroundTest", arg) == 0) {
+        exec("stayAlive",stayAlive,0,0);
+        return 1;
+    } else if (strcmp("messages", arg) == 0) {
+        exec("startMessagesDemo",startMessagesDemo,0,0);
+        return 0;
+    } else if (strcmp("philosophers", arg) == 0) {
+        exec("initFilofochos",initFilofochos,0,0);
+        return 0;
+    } else if (strcmp("priority", arg) == 0) {
+        exec("schedulerDemo",schedulerDemo,0,0);
+        return 0;
+    } else if (strcmp("pipesdemo", arg) == 0) {
+        exec("initPipesDemo",initPipesDemo,0,0);
+        return 0;
+    } else if (strcmp("echoInput", arg) == 0) {
+        exec("echoInput",echoInput,0,0);
+        return 0;
+    } else if (strcmp("remark", arg) == 0) {
+        exec("findAndRemark",findAndRemark,0,0);
+        return 0;
+    }
+    return -2;
+}
 
+
+//Si es uno no hago wait
 functionType getFunction(char * arg, int argc, char * param, int * flag){
     *flag = 0;
     if (strcmp("help", arg) == 0) {
@@ -181,10 +243,9 @@ functionType getFunction(char * arg, int argc, char * param, int * flag){
         return 0;
     } else if (strcmp("time", arg) == 0) {
         return showTime;
-    } else if (strcmp("clear", arg) == 0) {
-        cleanScreen();
+    } else if (strcmp("cleanScreen", arg) == 0) {
         *flag = 1;
-        return 0;
+        return cleanScreen;
     } else if (strcmp("zeroDivision", arg) == 0) {
         return divi;
     } else if (strcmp("invalidOpcode", arg) == 0) {
@@ -193,34 +254,20 @@ functionType getFunction(char * arg, int argc, char * param, int * flag){
         *flag = -1;
         return 0;
     } else if (strcmp("ps", arg) == 0) {
-        ps();
-        *flag = 1;
-        return 0;
+        return ps;
     } else if (strcmp("memory", arg) == 0) {
         return memory;
     } else if (strcmp("exec", arg) == 0) {
         return probando;
-    } else if (strcmp("malloc", arg) == 0) {
-        return maDemo;
     } else if (strcmp("sushi", arg) == 0) {
         return initProdCons;
     } else if (strcmp("necesitoquemeapapachen", arg) == 0) {
         return showBurro;
     } else if (strcmp("backgroundTest", arg) == 0) {
+        *flag = 1;
         return stayAlive;
     } else if (strcmp("messages", arg) == 0) {
         return startMessagesDemo;
-    } else if (strcmp("circle", arg) == 0) {
-        DrawFilledCircle(200, 200, 80, white);
-        //drawCircle(200, 200, 80, white);
-        printf("\n");
-        *flag = 1;
-        return 0;
-    } else if (strcmp("line", arg) == 0) {
-        line_fast(200, 200, 540, 800, white);
-        printf("\n");
-        *flag = 1;
-        return 0;
     } else if (strcmp("philosophers", arg) == 0) {
         return initFilofochos;
     } else if (strcmp("test", arg) == 0) {
@@ -232,10 +279,7 @@ functionType getFunction(char * arg, int argc, char * param, int * flag){
     } else if (strcmp("echoInput", arg) == 0) {
         return echoInput;
     } else if (strcmp("remark", arg) == 0) {
-        if(argc == 0) {
-            *flag = -2;
-            return 0;
-        }
+
         return findAndRemark;
     }
     return 0;
