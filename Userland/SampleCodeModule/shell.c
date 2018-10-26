@@ -108,7 +108,7 @@ void initializeShell() {
                     sscanf("%s %s %s", command, commandName, pid, niceness);
                     if (strcmp("nice", commandName) == 0) {
                         if (*pid == 0) {
-                            printf("\nSyntax error. Command syntax should be: nice [pid] [1-10] to adjust niceness or nice [pid] to get process priority\n");
+                            printf("\nSyntax error. Command syntax should be: nice [pid] [1-100] to adjust niceness or nice [pid] to get process priority\n");
                         } else if (*niceness == 0) {
 
                             getProcessPriorityShell(pid);
@@ -138,7 +138,7 @@ void initializeShell() {
                     sscanf("%s %s %s", command, commandName, pid, niceness);
                     if (strcmp("nice", commandName) == 0) {
                         if (*pid == 0) {
-                            printf("\nSyntax error. Command syntax should be: nice [pid] [1-10] to adjust niceness or nice [pid] to get process priority\n");
+                            printf("\nSyntax error. Command syntax should be: nice [pid] [1-100] to adjust niceness or nice [pid] to get process priority\n");
                         } else if (*niceness == 0) {
 
                             getProcessPriorityShell(pid);
@@ -231,7 +231,9 @@ int executeFunctionFromShell(char * arg, int argc, char * param){
     } else if (strcmp("remark", arg) == 0) {
         if(argc == 0)
             return -2;
-        findAndRemark(argc,param);
+        char *argv[1];
+        argv[0] = param;
+        exec("findAndRemark",findAndRemark,argc,argv);
         return 1;
     }
     return 0;

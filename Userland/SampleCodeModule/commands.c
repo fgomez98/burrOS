@@ -32,7 +32,7 @@ void help(){
     printf("  messages - shows a pipe demostration\n");
     printf("  necesitoquemeapapachen - shows burro\n");
     printf("  philosophers - interactive dinning philosofers problem solution\n");
-    printf("  pipesdemo - starts a simple program that creates two processes that say hi to each other using pipes");
+    printf("  pipesdemo - starts a simple program that creates two processes that say hi to each other using pipes\n");
     printf("  priority - shows scheduler priority\n");
     printf("  ps - shows information about the current processes in the system\n");
     printf("  sushi - interactive producer vs consumer problem solution with sushi\n");
